@@ -32,6 +32,8 @@
 
 - (NSString *)formationFolderName;
 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated validationEnabled:(BOOL)validationEnabled;
+
 @end
 
 @interface RecordViewController : UIViewController <UISplitViewBarButtonPresenter>
@@ -42,7 +44,6 @@
 - (NSDictionary *)dictionaryFromForm;
 - (BOOL) isInEdittingMode;
 
-#define RECORD_DEFAULT_NAME @"New Record"
-#define RECORD_DEFAULT_GPS_STABLILIZING_INTERVAL_LENGTH 10
+#define RECORD_DEFAULT_GPS_STABLILIZING_INTERVAL_LENGTH 12
 
 @end

@@ -22,7 +22,7 @@
 
 - (void)setDatabase:(UIManagedDocument *)database {
     _database=database;
-        
+            
     //Synchronize with the database
     [self synchronizeWithFormationFolderDatabase];
 }
@@ -33,6 +33,10 @@
     //Notify the user of user selection if user did not picked the blank option; otherqise pass empty string to the delegate
     NSString *userSelection=[[self userSelection] isEqualToString:FORMATION_FOLDER_PICKER_BLANK_OPTION] ? @"" : [self userSelection];
     [self.delegate formationFolderPickerViewController:self userDidSelectFormationFolderWithName:userSelection];
+}
+
+- (NSArray *)userSelectedComponentsFromSelection:(NSString *)previousSelection {
+    return [NSArray arrayWithObject:previousSelection];
 }
 
 #pragma mark - UIPickerViewControllerDelegate

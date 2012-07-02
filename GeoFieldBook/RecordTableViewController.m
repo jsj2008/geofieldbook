@@ -38,6 +38,15 @@
 #pragma mark - UI Outlets
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *setLocationButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+
+#pragma mark - Popover Controllers
+
+@property (nonatomic,weak) UIPopoverController *formationFolderPopoverController;
+
+#pragma mark - Currently active record
+
+@property (nonatomic,weak) Record *chosenRecord;
 
 @end
 
@@ -49,9 +58,14 @@
 @synthesize modifiedRecord=_modifiedRecord;
 @synthesize recordModifiedInfo=_recordModifiedInfo;
 @synthesize setLocationButton = _setLocationButton;
+@synthesize editButton = _editButton;
 
 @synthesize autosaveDelegate=_autosaveDelegate;
 @synthesize delegate=_delegate;
+
+@synthesize formationFolderPopoverController=_formationFolderPopoverController;
+
+@synthesize chosenRecord=_chosenRecord;
 
 #pragma mark - Controller State Initialization
 
@@ -189,13 +203,20 @@
 
 #pragma mark - Record Creation/Update/Deletion
 
-- (void)saveChangesToDatabase {
+- (void)saveChangesToDatabase:(UIManagedDocument *)database completion:(completion_handler_t)completionHandler {
     //Save changes to database
-    [self.database saveToURL:self.database.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success){
-        if (!success) {
-            //handle errors
-            [self putUpDatabaseErrorAlertWithMessage:@"Could not save changes to the database. Please try again."];
-        }
+    [database saveToURL:database.fileURL 
+       forSaveOperation:UIDocumentSaveForOverwriting 
+      completionHandler:^(BOOL success)
+     {
+         //If there was a failure, put up an alert
+         if (!success) {
+             //handle errors
+             [self putUpDatabaseErrorAlertWithMessage:@"Could not save changes to the database. Please try again."];
+         }
+         
+        //Pass control to the completion handler when the saving is done
+        completionHandler(success);
     }];
 }
 
@@ -214,23 +235,27 @@
 - (void)putDetailViewIntoEditingMode {
     //Get the detail vc and if it's of RecordViewController class, put it into editing mode
     id detailvc=[self.splitViewController.viewControllers lastObject];
-    if ([detailvc isKindOfClass:[RecordViewController class]])
-        [detailvc setEditing:YES animated:YES];
+         [detailvc setEditing:YES animated:YES validationEnabled:NO];
 }
 
 //Create a new record entity with the specified record type
 - (void)createRecordForRecordType:(NSString *)recordType {
     Record *record=[Record recordForRecordType:recordType andFolderName:self.folder.folderName 
                         inManagedObjectContext:self.database.managedObjectContext];
-        
-    //Save
-    [self saveChangesToDatabase];
     
     //highlight the newly created record
     [self highlightRecord:record];
     
-    //Put the detail view (now showing the newly created record's info) into editing mode
-    [self putDetailViewIntoEditingMode];
+    //Save changes to database
+    [self saveChangesToDatabase:self.database completion:^(BOOL success){
+        if (success) {
+            //highlight the newly created record
+            [self highlightRecord:record];
+            
+            //Put the detail view (now showing the newly created record's info) into editing mode
+            [self putDetailViewIntoEditingMode];
+        }
+    }];
 }
 
 //Modify a record with the specified record type
@@ -240,12 +265,14 @@
     //Update the record
     [record updateWithNewRecordInfo:recordInfo];
     
-    //Save
-    [self saveChangesToDatabase];
-    
-    //highlight the newly modified record
-    [self highlightRecord:record];
-
+    //Save changes to database
+    [self saveChangesToDatabase:self.database completion:^(BOOL success){
+        if (success) {
+            //highlight the newly modified record if it's also the currently chosen record
+            if (record==self.chosenRecord)
+                [self highlightRecord:record];
+        }
+    }];
 }
 
 //Delete the record at the specified index path in the table
@@ -254,8 +281,8 @@
     Record *record=[self.fetchedResultsController objectAtIndexPath:indexPath];
     [self.database.managedObjectContext deleteObject:record];
     
-    //Save
-    [self saveChangesToDatabase];
+    //Save changes to database
+    [self saveChangesToDatabase:self.database completion:^(BOOL success){}];
 }
 
 #pragma mark - FormationFolderPickerDelegate methods
@@ -305,16 +332,12 @@
 {
     //Modify the specified record with the specified info
     [self modifyRecord:record withNewInfo:recordInfo];
-    
-    //Dismiss the modal view controller
-    [self dismissModalViewControllerAnimated:YES];
 }
 
 - (void)userDidNavigateAwayFrom:(RecordViewController *)sender 
            whileModifyingRecord:(Record *)record 
               withNewRecordInfo:(NSDictionary *)recordInfo
 {
-    NSLog(@"Navigating away but amster is still here!");
     [self autosaveRecord:record withNewRecordInfo:recordInfo];
 }
 
@@ -336,7 +359,7 @@
     self.setLocationButton.title=[formationFolderName length] ? formationFolderName : @"Set Location";
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {    
     //Setup the autosaver if self is going off stack and the detail view is still in editing mode
     [self setupAutosaveBeforeGoingOffStack];
     
@@ -345,6 +368,7 @@
 
 - (void)viewDidUnload {
     [self setSetLocationButton:nil];
+    [self setEditButton:nil];
     [super viewDidUnload];
 }
 
@@ -359,8 +383,13 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     //If seguing to a modal record type selector, set the destination controller's array of record types
     if ([segue.identifier isEqualToString:@"Select Record Type"]) {
+        //Prepare the segue's destination
         [segue.destinationViewController setRecordTypes:[Record allRecordTypes]];
         [segue.destinationViewController setDelegate:self];
+        
+        //End the table view's editing mode if the table is in editing mode
+        if (self.tableView.editing)
+            [self editPressed:self.editButton];
     } else if ([segue.identifier isEqualToString:@"Show Record"]) {
         //Transfer the bar button item over
         id <UISplitViewBarButtonPresenter> detailvc=[self barButtonPresenter];
@@ -381,14 +410,29 @@
         Record *record=[self.fetchedResultsController objectAtIndexPath:indexPath];
         [segue.destinationViewController setRecord:record];
         
+        //Save the chosen record
+        self.chosenRecord=record;
+        
         //Set the delegate of the destination view controller to be self
         [segue.destinationViewController setDelegate:self];
     }
     
     //Seguing to the formation folder picker popover
     else if ([segue.identifier isEqualToString:@"Formation Folder Picker"]) {
+        //Prepare the destination view controller
         [segue.destinationViewController setDatabase:self.database];
         [segue.destinationViewController setDelegate:self];
+        
+        //Dismiss the formation folder picker popover if it's already there
+        if (self.formationFolderPopoverController.isPopoverVisible)
+            [self.formationFolderPopoverController dismissPopoverAnimated:YES];
+        
+        //Save the new formation folder picker popover
+        UIStoryboardPopoverSegue *popoverSegue=(UIStoryboardPopoverSegue *)segue;
+        self.formationFolderPopoverController=popoverSegue.popoverController;
+        
+        //Set the previously selected formation name
+        [segue.destinationViewController setPreviousSelection:self.folder.formationFolder.folderName];
     }
 }
 
@@ -434,7 +478,7 @@
     Record *record=[self.fetchedResultsController objectAtIndexPath:indexPath];
     
     //show the name, date and time
-    cell.name.text=record.name;    
+    cell.name.text=[NSString stringWithFormat:@"%@ (%@)",record.name,[record.class description]];    
     cell.date.text=[Record dateFromNSDate:record.date];
     cell.time.text = [Record timeFromNSDate:record.date];
     
@@ -442,15 +486,7 @@
     UIImage *image = [[UIImage alloc] initWithData:record.image.imageData];
     cell.recordImageView.image=image;
     
-    //Allow reordering of cell if the table view is in editing mode
-    if (self.tableView.editing)
-        cell.showsReorderControl=YES;
-    
     return cell;
-}
-
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
 }
 
 #pragma mark - Table View Delegate
@@ -463,15 +499,6 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
     if (editingStyle==UITableViewCellEditingStyleDelete) {
         [self deleteRecordAtIndexPath:indexPath];
     }
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
-{
-    return proposedDestinationIndexPath;
-}
-
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
-    [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:destinationIndexPath];
 }
 
 @end

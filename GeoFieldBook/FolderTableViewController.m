@@ -40,9 +40,19 @@
 
 @property (nonatomic,strong) Folder *toBeDeletedFolder;
 
+#pragma mark - Popover Controllers
+
+@property (nonatomic,weak) UIPopoverController *formationPopoverController;
+@property (nonatomic,strong) UIPopoverController *folderInfoPopoverController;
+
+#pragma mark - Buttons
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+
 @end
 
 @implementation FolderTableViewController 
+@synthesize editButton = _editButton;
 
 @synthesize autosaverCancelBlock=_autosaverCancelBlock;
 @synthesize autosaverConfirmTitle=_autosaverConfirmTitle;
@@ -51,6 +61,9 @@
 @synthesize toBeDeletedFolder=_toBeDeletedFolder;
 
 @synthesize database=_database;
+
+@synthesize formationPopoverController=_formationPopoverController;
+@synthesize folderInfoPopoverController=_folderInfoPopoverController;
 
 #pragma mark - Setters
 
@@ -79,18 +92,8 @@
 }
 
 - (void)normalizeDatabase {
-    //If the managed document has not been saved to disk, save it
-    if (![[NSFileManager defaultManager] fileExistsAtPath:[self.database.fileURL path]]) {
-        [self.database saveToURL:self.database.fileURL 
-                forSaveOperation:UIDocumentSaveForCreating 
-               completionHandler:^(BOOL sucess){
-                   //Set up the fetched result controller
-                   [self setupFetchedResultsController];                   
-               }];
-    }
-    
     //If the managed document is closed, open it
-    else if (self.database.documentState==UIDocumentStateClosed) {
+    if (self.database.documentState==UIDocumentStateClosed) {
         [self.database openWithCompletionHandler:^(BOOL success){
             //Set up the fetched result controller
             [self setupFetchedResultsController];
@@ -134,9 +137,6 @@
 {
     //Update the folder
     [folder setFormationFolderWithName:formationFolder];
-    
-    //Save the database
-    [self saveChangesToDatabase];
 }
 
 #pragma mark - RecordTVCAutosaver methods
@@ -268,6 +268,13 @@
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    //Save any change to database
+    [self saveChangesToDatabase];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Support all orientations
@@ -281,6 +288,10 @@
     if ([segue.identifier isEqualToString:@"Add/Edit Folder"]) {
         //Set the delegate of the destination controller
         [segue.destinationViewController setDelegate:self];
+        
+        //End the table view's editing mode if the table is in editing mode
+        if (self.tableView.editing)
+            [self editPressed:self.editButton];
         
         //Set the folder of the destination controller if the table view is in editting mode
         if (self.tableView.editing) {
@@ -307,6 +318,18 @@
         //Set the database of the formation folder tvc to self's database
         UINavigationController *navigationController=segue.destinationViewController;
         [(FormationFolderTableViewController *)navigationController.topViewController setDatabase:self.database];
+        
+        //If the formation popover is already there, dismiss it
+        if (self.formationPopoverController.isPopoverVisible)
+            [self.formationPopoverController dismissPopoverAnimated:YES];
+        
+        //End the table view's editing mode if the table is in editing mode
+        if (self.tableView.editing)
+            [self editPressed:self.editButton];
+        
+        //Save the popover controller
+        UIStoryboardPopoverSegue *popoverSegue=(UIStoryboardPopoverSegue *)segue;
+        self.formationPopoverController=popoverSegue.popoverController;
     }
 }
 
@@ -362,7 +385,18 @@
     NSString *recordCounter=[folder.records count]>1 ? @"Records" : @"Record";
     cell.detailTextLabel.text=[NSString stringWithFormat:@"%d %@",[folder.records count],recordCounter];
     
+    //Add gesture recognizer for long press
+    UILongPressGestureRecognizer *longPressRecognizer=[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressOnTableCell:)];
+    [cell addGestureRecognizer:longPressRecognizer];
+    
     return cell;
+}
+
+- (void)longPressOnTableCell:(UILongPressGestureRecognizer *)longPress {
+    //Show a popover
+    //UITableViewCell *cell=(UITableViewCell *)longPress.view;
+    //Folder *folder=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
+    //cell.textLabel.text=folder.folderDescription;
 }
 
 #pragma mark - Table view delegate
@@ -428,4 +462,8 @@
     return UIInterfaceOrientationIsPortrait(orientation);
 }
 
+- (void)viewDidUnload {
+    [self setEditButton:nil];
+    [super viewDidUnload];
+}
 @end
