@@ -401,7 +401,6 @@
 -(void) setUpLocationManager {
     [self.gatheringGPS setHidesWhenStopped:YES];
     self.locationManager = [[CLLocationManager alloc] init];
-    if(!self.locationManager) NSLog(@"initialized here");
     self.locationManager.delegate = self;
     self.locationManager.distanceFilter = kCLDistanceFilterNone; 
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation; //accuracy in 100 meters    
@@ -508,6 +507,8 @@
     
     if (!image) image = [info objectForKey:UIImagePickerControllerOriginalImage];
     self.imageView.image = image;
+    
+    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);//last 3 args for completion notification
     
     [self dismissImagePicker];
 }
