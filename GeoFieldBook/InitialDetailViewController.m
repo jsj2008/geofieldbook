@@ -7,57 +7,39 @@
 //
 
 #import "InitialDetailViewController.h"
+#import "RecordViewController.h"
+#import "FormationFolderTableViewController.h"
+#import "GeoDatabaseManager.h"
 
-@interface InitialDetailViewController () <UINavigationControllerDelegate>
+@interface InitialDetailViewController ()
 
-@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet UIImageView *geofieldbookLogo;
 
 @end
 
 @implementation InitialDetailViewController
 
-@synthesize splitViewBarButtonItem=_splitViewBarButtonItem;
-@synthesize toolbar=_toolbar;
+@synthesize geofieldbookLogo = _geofieldbookLogo;
 
-- (void)setSplitViewBarButtonItem:(UIBarButtonItem *)splitViewBarButtonItem {
-    //Add the buttonto the toolbar
-    NSMutableArray *items=[self.toolbar.items mutableCopy];
-    
-    //Remove the old button if it exists
-    if (_splitViewBarButtonItem)
-        [items removeObject:self.splitViewBarButtonItem];
-    
-    //Add the new button on the leftmost if it's not nil
-    if (splitViewBarButtonItem)
-        [items insertObject:splitViewBarButtonItem atIndex:0];
-    
-    //Set the items to be the toolbar's items
-    self.toolbar.items=[items copy];
-        
-    _splitViewBarButtonItem=splitViewBarButtonItem; 
-}
-
-#pragma mark - UINavigationControllerDelegate methods
-
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)newMaster animated:(BOOL)animated {
-    //Change the splitview button's title if it exists
-    if (self.splitViewBarButtonItem)
-        self.splitViewBarButtonItem.title=newMaster.navigationItem.title;
-}
+#pragma mark - View Controller Lifecycles
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    //Set self to be the master's navigation controller's delegate to change the button's title when a push segue in master happens
-    UINavigationController *masterNavigation=[self.splitViewController.viewControllers objectAtIndex:0];
-    masterNavigation.delegate=self;
+    //Center the geofieldbook logo
+    CGRect frame=self.geofieldbookLogo.frame;
+    CGFloat centerX=(self.view.bounds.size.width-frame.size.width)/2;
+    CGFloat centerY=(self.view.bounds.size.height-frame.size.height)/2;
+    self.geofieldbookLogo.frame=CGRectMake(centerX, centerY, frame.size.width, frame.size.height); 
 }
-
-#pragma mark - View Controller Lifecycles
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
 }
 
+- (void)viewDidUnload {
+    [self setGeofieldbookLogo:nil];
+    [super viewDidUnload];
+}
 @end

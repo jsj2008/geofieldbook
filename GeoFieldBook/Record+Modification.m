@@ -7,6 +7,7 @@
 //
 
 #import "Record+Modification.h"
+#import "Record+State.h"
 #import "Image+Creation.h"
 
 @implementation Record (Modification)
@@ -26,8 +27,16 @@
     
     //Update the image if it's not NSNULL
     id imageData = [recordInfo objectForKey:RECORD_IMAGE_DATA];
-    if ([imageData isKindOfClass:[NSData class]])
+    if ([imageData isKindOfClass:[NSData class]]) {
+        //Delete the old image
+        [self.managedObjectContext deleteObject:self.image];
+        
+        //Set the new image
         self.image = [Image imageWithBinaryData:imageData inManagedObjectContext:self.managedObjectContext];    
+    }
+    
+    //mark record as updated
+    self.recordState=RecordStateUpdated;
 }
 
 @end

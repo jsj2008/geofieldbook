@@ -7,56 +7,65 @@
 //
 
 #import "FormationTableViewController.h"
+
 #import "FormationViewController.h"
+
 #import "Formation.h"
 #import "Formation+Creation.h"
 #import "Formation+Modification.h"
+#import "Formation+DictionaryKeys.h"
+
+#import "ModelGroupNotificationNames.h"
+
 #import "TextInputFilter.h"
 
-@interface FormationTableViewController() <FormationViewControllerDelegate,NSFetchedResultsControllerDelegate>
-
-- (void)setupFetchedResultsController;
+@interface FormationTableViewController() <FormationViewControllerDelegate,NSFetchedResultsControllerDelegate,UIActionSheetDelegate>
 
 @property (nonatomic) BOOL formationsWereReordered;
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *selectAllButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *selectNone;
+
+@property (strong, nonatomic) UIBarButtonItem *hiddenButton;
+
+@property (strong, nonatomic) NSArray *toBeDeletedFormations;
 
 @end
 
 @implementation FormationTableViewController
 
-@synthesize formationFolder=_formationFolder;
-@synthesize database=_database;
+@synthesize addButton = _addButton;
+@synthesize deleteButton = _deleteButton;
+@synthesize editButton = _editButton;
+@synthesize hiddenButton=_hiddenButton;
+@synthesize selectAllButton = _selectAllButton;
+@synthesize selectNone = _selectNone;
 
 @synthesize formationsWereReordered=_formationsWereReordered;
 
+@synthesize toBeDeletedFormations=_toBeDeletedFormations;
+
 #pragma mark - Getters and Setters
 
-- (void)setDatabase:(UIManagedDocument *)database {
-    _database=database;
+- (NSArray *)toBeDeletedFormations {
+    if (!_toBeDeletedFormations)
+        _toBeDeletedFormations=[NSArray array];
     
-    //Setup fetched results controller
-    [self setupFetchedResultsController];
+    return _toBeDeletedFormations;
 }
 
-- (void)setFormationFolder:(NSString *)formationFolder {
-    _formationFolder=formationFolder;
+- (void)setToBeDeletedFormations:(NSArray *)toBeDeletedFormations {
+    _toBeDeletedFormations=toBeDeletedFormations;
     
-    //Setup fetched results controller
-    [self setupFetchedResultsController];
-}
-
-#pragma mark - Controller State Initialization
-
-- (void)setupFetchedResultsController {
-    //Setup the request
-    NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Formation"];
-    request.predicate=[NSPredicate predicateWithFormat:@"formationFolder.folderName=%@",self.formationFolder];
-    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"formationSortNumber" ascending:YES]];
+    //Update the title of the delete button
+    int numFormations=self.toBeDeletedFormations.count;
+    self.deleteButton.title=numFormations ? [NSString stringWithFormat:@"Delete (%d)",numFormations] : @"Delete";
     
-    //Setup the feched results controller
-    self.fetchedResultsController=[[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.database.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-    
-    //Set the fetched results controller's delegate to self
-    self.fetchedResultsController.delegate=self;
+    //Enable the delete button
+    self.deleteButton.enabled=numFormations>0;
 }
 
 #pragma mark - Prepare for segues
@@ -67,160 +76,233 @@
         //Set the delegate of the destination controller as self
         [segue.destinationViewController setDelegate:self];
         
-        //If the sender is a UITableViewCell, set the folder name of the destination controller as well
+        //If the sender is a UITableViewCell, set the formation of the destination controller as well
         if ([sender isKindOfClass:[UITableViewCell class]]) {
             UITableViewCell *cell=sender;
             Formation *selectedFormation=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
-            [segue.destinationViewController setFormationName:selectedFormation.formationName];
+            [segue.destinationViewController setFormation:selectedFormation];
+            [segue.destinationViewController setFormationColorName: selectedFormation.colorName];
         }
     }
 }
 
 #pragma mark - Alert Generators
 
-//Put up an alert about some database failure with specified message
-- (void)putUpDatabaseErrorAlertWithMessage:(NSString *)message {
-    UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Database Error" 
-                                                  message:message 
-                                                 delegate:nil 
-                                        cancelButtonTitle:@"Dismiss" 
-                                        otherButtonTitles: nil];
+- (void)putUpAlertWithTitle:(NSString *)title andMessage:(NSString *)message {
+    UIAlertView *alert=[[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
     [alert show];
 }
 
 - (void)putUpDuplicateNameAlertWithName:(NSString *)duplicateName {
-    UIAlertView *duplicationAlert=[[UIAlertView alloc] initWithTitle:@"Name Duplicate" message:[NSString stringWithFormat:@"A formation with the name '%@' already exists in this folder!",duplicateName] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
-    [duplicationAlert show];
+    NSString *message=[NSString stringWithFormat:@"A formation with the name '%@' already exists in this folder!",duplicateName];
+    [self putUpAlertWithTitle:@"Name Duplicate" andMessage:message];
+}
+
+#pragma mark - Notification Manipulators
+
+- (void)postNotificationWithName:(NSString *)name andUserInfo:(NSDictionary *)userInfo {
+    //Post the notification
+    NSNotificationCenter *center=[NSNotificationCenter defaultCenter];
+    [center postNotificationName:name object:self userInfo:userInfo];    
 }
 
 #pragma mark - Formation Manipulation
 
-- (void)saveChangesToDatabase {
+typedef void (^database_save_t)(void);
+
+- (void)saveChangesToDatabaseWithCompletionHandler:(database_save_t)completionHandler {
     //Save changes to database
     [self.database saveToURL:self.database.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success){
-        if (!success) {
+        if (success) {
+            //Call completion handler
+            completionHandler();
+        } else {
             //handle errors
             [self putUpDatabaseErrorAlertWithMessage:@"Failed to save changes to database. Please try to submit them again."];
         }
     }];
 }
 
-- (BOOL)createNewFormationWithName:(NSString *)formationName {
-    //create a new formation, if that returns nil (name duplicate), put up an alert
-    if (![Formation formationForName:formationName inFormationFolderWithName:self.formationFolder inManagedObjectContext:self.database.managedObjectContext])
-    {
+- (BOOL)createNewFormationWithInfo:(NSDictionary *)formationInfo {
+    //Get the formation name
+    NSString *formationName=[formationInfo objectForKey:GeoFormationName];
+    formationName=[TextInputFilter filterDatabaseInputText:formationName];
+    
+    //create a new formation, if that returns nil (folder not found), put up an alert
+    if (![Formation formationForInfo:formationInfo inFormationFolderWithName:self.formationFolder.folderName inManagedObjectContext:self.database.managedObjectContext]) {
         [self putUpDuplicateNameAlertWithName:formationName];
         return NO;
     }
     
-    [self saveChangesToDatabase];
+    //Save changes to database
+    [self saveChangesToDatabaseWithCompletionHandler:^(void){
+        //Broadcast changes
+        [self postNotificationWithName:GeoNotificationModelGroupFormationDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+    }];
+    
     return YES;
 }
 
-- (BOOL)modifyFormationWithName:(NSString *)originalName toName:(NSString *)newName {
-    //Filter new name
-    newName=[TextInputFilter filterDatabaseInputText:newName];
+- (BOOL)modifyFormation:(Formation *)formation withNewInfo:(NSDictionary *)formationInfo {
+    //Filter formation name
+    NSString *formationName=[formationInfo objectForKey:GeoFormationName];
+    formationName=[TextInputFilter filterDatabaseInputText:formationName];
     
-    //Get the formation with the specified original name
-    Formation *selectedFormation=nil;
-    for (Formation *formation in [self.fetchedResultsController fetchedObjects]) {
-        if ([formation.formationName isEqualToString:originalName])
-            selectedFormation=formation;
-    }
-    
-    //Update its name, if that returns NO (i.e. the update failed because of name duplication), put up an alert
-    if (![selectedFormation changeFormationNameTo:newName]) {
-        [self putUpDuplicateNameAlertWithName:newName];
+    //Update the formation, if that returns NO (i.e. the update failed because of name duplication), put up an alert
+    if (![formation updateFormationWithFormationInfo:formationInfo]) {
+        [self putUpDuplicateNameAlertWithName:formationName];
         return NO;
     }
     
-    //Else, save
-    [self saveChangesToDatabase];
+    //Save changes to database
+    [self saveChangesToDatabaseWithCompletionHandler:^(void){
+        //Broadcast changes
+        [self postNotificationWithName:GeoNotificationModelGroupFormationDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+    }];
+    
     return YES;
 }
 
-- (void)deleteFormation:(Formation *)formation {
+- (void)deleteFormations:(NSArray *)formations {
     //Delete the folder
-    [self.database.managedObjectContext deleteObject:formation];
+    for (Formation *formation in formations)
+        [self.database.managedObjectContext deleteObject:formation];
     
-    //Save
-    [self saveChangesToDatabase];
+    //Save changes to database
+    [self saveChangesToDatabaseWithCompletionHandler:^(void){
+        //Broadcast changes
+        [self postNotificationWithName:GeoNotificationModelGroupFormationDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+    }];
 }
-
-#pragma mark - Database-side Formation Reordering
-
 
 #pragma mark - Target-Action Handlers
 
+- (void)toggleSelectButtons {
+    //Setup the select buttons
+    NSMutableArray *toolbarItems=self.toolbarItems.mutableCopy;
+    if (self.tableView.editing) {
+        [toolbarItems insertObject:self.selectAllButton atIndex:1];
+        [toolbarItems insertObject:self.selectNone atIndex:toolbarItems.count-1];
+    }
+    else {
+        [toolbarItems removeObject:self.selectAllButton];
+        [toolbarItems removeObject:self.selectNone];
+    }
+    
+    self.toolbarItems=toolbarItems.copy;
+}
+
+- (void)setupButtonsForEditingMode:(BOOL)editing {
+    //Change the style of the action button
+    self.editButton.style=editing ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered;
+    
+    //Show/Hide add/delete button
+    UIBarButtonItem *hiddenButton=self.hiddenButton;
+    self.hiddenButton=editing ? self.addButton : self.deleteButton;
+    NSMutableArray *toolbarItems=[self.toolbarItems mutableCopy];
+    if (editing)
+        [toolbarItems removeObject:self.addButton];
+    else
+        [toolbarItems removeObject:self.deleteButton];
+    [toolbarItems insertObject:hiddenButton atIndex:1];
+    self.toolbarItems=[toolbarItems copy];
+    
+    //Reset the title of the delete button and disable it
+    self.deleteButton.title=@"Delete";
+    self.deleteButton.enabled=NO;
+    
+    //Set up select buttons
+    [self toggleSelectButtons];
+}
+
 - (IBAction)editPressed:(UIBarButtonItem *)sender {
-    //Toggle the table view's editing mode
+    //Set the table view to editting mode
     [self.tableView setEditing:!self.tableView.editing animated:YES];
     
-    //Save any changes to database if editing mode is over
-    if (!self.editing)
-        [self saveChangesToDatabase];
+    //Set up the buttons
+    [self setupButtonsForEditingMode:self.tableView.editing];
     
-    //Change the style of the button to edit or done
-    sender.style=self.tableView.editing ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered;
-    sender.title=self.tableView.editing ? @"Done" : @"Edit";
+    //Reset the array of to be deleted records
+    self.toBeDeletedFormations=nil;
+}
+
+- (IBAction)deletePressed:(UIBarButtonItem *)sender {
+    int numOfDeletedFormations=self.toBeDeletedFormations.count;
+    NSString *message=numOfDeletedFormations > 1 ? [NSString stringWithFormat:@"Are you sure you want to delete %d formations?",numOfDeletedFormations] : @"Are you sure you want to delete this formation?";
+    NSString *destructiveButtonTitle=numOfDeletedFormations > 1 ? @"Delete Formations" : @"Delete Formation";
+    
+    //Put up an alert
+    UIActionSheet *deleteActionSheet=[[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:nil];
+    [deleteActionSheet showInView:self.view];
+}
+
+- (IBAction)selectAll:(UIBarButtonItem *)sender {
+    //Select all the csv files
+    self.toBeDeletedFormations=self.fetchedResultsController.fetchedObjects;
+    
+    //Select all the rows
+    for (UITableViewCell *cell in self.tableView.visibleCells)
+        [self.tableView selectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES scrollPosition:UITableViewScrollPositionNone];
+}
+
+- (IBAction)selectNone:(UIBarButtonItem *)sender {
+    //Empty the selected csv files
+    self.toBeDeletedFormations=[NSArray array];
+    
+    //Deselect all the rows
+    for (UITableViewCell *cell in self.tableView.visibleCells)
+        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES];
 }
 
 #pragma mark - Formation View Controller Delegate methods
 
 - (void)formationViewController:(FormationViewController *)sender 
-      didObtainNewFormationName:(NSString *)formationName
+      didObtainNewFormationInfo:(NSDictionary *)formationInfo
 {
     //Create a new formation with the specified name and if that returns YES (success), dismiss the modal
-    if ([self createNewFormationWithName:formationName]) {
+    if ([self createNewFormationWithInfo:formationInfo]) {
         //Dismiss the modal
         [self dismissModalViewControllerAnimated:YES];
     }
 }
 
 - (void)formationViewController:(FormationViewController *)sender 
-didAskToModifyFormationWithName:(NSString *)originalName 
-             andObtainedNewName:(NSString *)formationName
+        didAskToModifyFormation:(Formation *)formation 
+             andObtainedNewInfo:(NSDictionary *)formationInfo
 {
     //Modify the formation with the specified original name and if that returns YES (success), dismiss the modal
-    if ([self modifyFormationWithName:originalName toName:formationName]) {
+    if ([self modifyFormation:formation withNewInfo:formationInfo]) {
         //Dismiss the modal
         [self dismissModalViewControllerAnimated:YES];
     }
 }
 
-#pragma mark - TableViewControllerDataSource methods
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Formation Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
-    
-    // Configure the cell
-    Formation *formation=[self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.editingAccessoryType=UITableViewCellAccessoryDetailDisclosureButton;
-    cell.textLabel.text = formation.formationName;
-    
-    return cell;
-}
-
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    //If the table view is currently in editting mode, segue to the MoDalNewFolderViewController and set its 
+    //Segue to the MoDalNewFolderViewController
+    [self performSegueWithIdentifier:@"Formation Manipulation" sender:[self.tableView cellForRowAtIndexPath:indexPath]];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //If the table view is in editing mode, increment the count for delete
     if (self.tableView.editing) {
-        [self performSegueWithIdentifier:@"Formation Manipulation" sender:[self.tableView cellForRowAtIndexPath:indexPath]];
+        //Add the selected formation to the delete list
+        Formation *formation=[self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSMutableArray *toBeDeletedFormations=[self.toBeDeletedFormations mutableCopy];
+        [toBeDeletedFormations addObject:formation];
+        self.toBeDeletedFormations=[toBeDeletedFormations copy];
     }
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    //If the editing style is delete, delete the corresponding folder
-    if (editingStyle==UITableViewCellEditingStyleDelete) {
-        //Get the selected formation and delete it
-        [self deleteFormation:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //If the table view is in editing mode, decrement the count for delete
+    if (self.tableView.editing) {
+        //Remove the selected formation from the delete list
+        Formation *formation=[self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSMutableArray *toBeDeletedFormations=[self.toBeDeletedFormations mutableCopy];
+        [toBeDeletedFormations removeObject:formation];
+        self.toBeDeletedFormations=[toBeDeletedFormations copy];
     }
 }
 
@@ -254,9 +336,33 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 
 #pragma mark - View Controller Lifecycles
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	return YES;
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    //Hide the delete button
+    self.hiddenButton=self.deleteButton;
+    NSMutableArray *toolbarItems=[self.toolbarItems mutableCopy];
+    [toolbarItems removeObject:self.deleteButton];
+    self.toolbarItems=[toolbarItems copy];
+    
+    //hide the select buttons
+    [self toggleSelectButtons];
+}
+
+#pragma mark - UIActionSheetDelegate protocol methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    //If the action sheet is the delete formation action sheet and user clicks "Delete Formations" or "Delete Formation", delete the formation(s)
+    NSSet *deleteButtonTitles=[NSSet setWithObjects:@"Delete Formations",@"Delete Formation", nil];
+    NSString *clickedButtonTitle=[actionSheet buttonTitleAtIndex:buttonIndex];
+    if (self.tableView.editing && [deleteButtonTitles containsObject:clickedButtonTitle]) {
+        //Delete the selected formations
+        [self deleteFormations:self.toBeDeletedFormations];
+                
+        //End editing mode
+        if (self.tableView.editing)
+            [self editPressed:self.editButton];
+    }
 }
 
 @end

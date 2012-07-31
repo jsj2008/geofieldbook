@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UISplitViewBarButtonPresenter.h"
 
-@interface InitialDetailViewController : UIViewController <UISplitViewBarButtonPresenter>
+@interface InitialDetailViewController : UIViewController
 
 @end

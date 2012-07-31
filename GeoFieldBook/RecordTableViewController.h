@@ -7,37 +7,38 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CoreDataTableViewController.h"
+#import <CoreLocation/CoreLocation.h>
+
+#import "PrototypeRecordTableViewController.h"
 #import "Record+Modification.h"
 #import "CustomRecordCell.h"
 
-@class RecordTableViewController;
+#import "RecordTableViewControllerDelegate.h"
 
-@protocol RecordTVCAutosaverDelegate <NSObject>
+@interface RecordTableViewController : PrototypeRecordTableViewController
 
-typedef void (^autosaver_block_t)(void);
+@property (nonatomic) BOOL willShowCheckboxes;
 
-- (void)recordTableViewController:(RecordTableViewController *)sender 
-                        showAlert:(UIAlertView *)alertView 
-          andExecuteBlockOnCancel:(autosaver_block_t)cancelBlock 
-                  andExecuteBlock:(autosaver_block_t)confirmBlock 
-         whenClickButtonWithTitle:(NSString *)buttonTitle;
-@end
-
-@protocol RecordTableViewControllerDelegate <NSObject>
-
-- (void)recordTableViewController:(RecordTableViewController *)sender 
-                needsUpdateFolder:(Folder *)folder 
-           setFormationFolderName:(NSString *)formationFolder;
-
-@end
-
-@interface RecordTableViewController : CoreDataTableViewController
-
-@property (nonatomic,strong) Folder *folder;
-@property (nonatomic,strong) UIManagedDocument *database;
-
-@property (nonatomic,weak) id <RecordTVCAutosaverDelegate> autosaveDelegate;
 @property (nonatomic,weak) id <RecordTableViewControllerDelegate> delegate;
+
+#pragma mark - Currently active record
+
+@property (nonatomic,strong) Record *chosenRecord;
+@property (nonatomic,readonly) NSArray *records;
+
+#pragma mark - Record Manipulators
+
+- (void)modifyRecord:(Record *)record withNewInfo:(NSDictionary *)recordInfo;
+
+#pragma mark - Filter related properties
+
+@property (nonatomic,strong) NSArray *selectedRecordTypes;
+
+#pragma mark - Change active records
+
+- (BOOL)hasNextRecord;
+- (BOOL)hasPrevRecord;
+- (void)forwardToNextRecord;
+- (void)backToPrevRecord;
 
 @end

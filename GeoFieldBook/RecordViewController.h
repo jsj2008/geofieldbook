@@ -7,42 +7,30 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
+
 #import "CoreLocation/CoreLocation.h"
 #import "Record+Creation.h"
 #import "Record+DictionaryKeys.h"
-#import "UISplitViewBarButtonPresenter.h"
 #import "Image.h"
 #import "Record+DateAndTimeFormatter.h"
 
-@class RecordViewController;
+#import "RecordViewControllerDelegate.h"
 
-@protocol RecordViewControllerDelegate <NSObject>
-
-- (void)recordViewController:(RecordViewController *)sender 
-         userDidModifyRecord:(Record *)record 
-           withNewRecordInfo:(NSDictionary *)recordInfo;
-
-@optional
-
-- (void)userDidNavigateAwayFrom:(RecordViewController *)sender 
-           whileModifyingRecord:(Record *)record 
-              withNewRecordInfo:(NSDictionary *)recordInfo;
-
-- (UIManagedDocument *)databaseForFormationPicker;
-
-- (NSString *)formationFolderName;
-
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated validationEnabled:(BOOL)validationEnabled;
-
-@end
-
-@interface RecordViewController : UIViewController <UISplitViewBarButtonPresenter>
+@interface RecordViewController : UIViewController
 
 @property (nonatomic,strong) Record *record;
 @property (nonatomic,weak) id <RecordViewControllerDelegate> delegate;
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
+
 - (NSDictionary *)dictionaryFromForm;
 - (BOOL) isInEdittingMode;
+- (void)cancelEditingMode;
+
+- (void)showKeyboard;
+- (void)resignAllTextFieldsAndAreas;
 
 #define RECORD_DEFAULT_GPS_STABLILIZING_INTERVAL_LENGTH 12
 

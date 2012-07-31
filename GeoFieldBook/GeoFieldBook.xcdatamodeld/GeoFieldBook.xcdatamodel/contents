@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11E53" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Answer" representedClassName="Answer" syncable="YES">
+        <attribute name="content" optional="YES" attributeType="String" defaultValueString=" " syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="numberOfRecords" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="question" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Question" inverseName="answers" inverseEntity="Question" syncable="YES"/>
+    </entity>
     <entity name="Bedding" representedClassName="Bedding" parentEntity="Record" syncable="YES">
         <relationship name="formation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Formation" inverseName="beddings" inverseEntity="Formation" syncable="YES"/>
     </entity>
@@ -8,8 +16,8 @@
         <relationship name="upperFormation" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Formation" inverseName="upperContacts" inverseEntity="Formation" syncable="YES"/>
     </entity>
     <entity name="Fault" representedClassName="Fault" parentEntity="Record" syncable="YES">
-        <attribute name="plunge" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="trend" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="plunge" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="trend" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <relationship name="formation" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Formation" inverseName="faults" inverseEntity="Formation" syncable="YES"/>
     </entity>
     <entity name="Folder" representedClassName="Folder" syncable="YES">
@@ -20,6 +28,7 @@
         <relationship name="records" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Record" inverseName="folder" inverseEntity="Record" syncable="YES"/>
     </entity>
     <entity name="Formation" representedClassName="Formation" syncable="YES">
+        <attribute name="colorName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="formationName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="formationSortNumber" optional="YES" attributeType="Integer 32" defaultValueString="0.0" syncable="YES"/>
         <relationship name="beddings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Bedding" inverseName="formation" inverseEntity="Bedding" syncable="YES"/>
@@ -34,39 +43,57 @@
         <relationship name="folders" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Folder" inverseName="formationFolder" inverseEntity="Folder" syncable="YES"/>
         <relationship name="formations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Formation" inverseName="formationFolder" inverseEntity="Formation" syncable="YES"/>
     </entity>
+    <entity name="Group" representedClassName="Group" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="numberOfMembers" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="students" optional="YES" toMany="YES" minCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="group" inverseEntity="Student" syncable="YES"/>
+    </entity>
     <entity name="Image" representedClassName="Image" syncable="YES">
         <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="imageHash" optional="YES" attributeType="Binary" syncable="YES"/>
         <relationship name="whoUses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Record" inverseName="image" inverseEntity="Record" syncable="YES"/>
     </entity>
     <entity name="JointSet" representedClassName="JointSet" parentEntity="Record" syncable="YES">
         <relationship name="formation" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Formation" inverseName="joinSets" inverseEntity="Formation" syncable="YES"/>
     </entity>
     <entity name="Other" representedClassName="Other" parentEntity="Record" syncable="YES"/>
+    <entity name="Question" representedClassName="Question" syncable="YES">
+        <attribute name="prompt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="answers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Answer" inverseName="question" inverseEntity="Answer" syncable="YES"/>
+    </entity>
     <entity name="Record" representedClassName="Record" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="dip" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="dip" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="dipDirection" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="fieldOservations" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="idOnServer" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="imageHashData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="strike" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="strike" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <relationship name="folder" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Folder" inverseName="records" inverseEntity="Folder" syncable="YES"/>
-        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="whoUses" inverseEntity="Image" syncable="YES"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Image" inverseName="whoUses" inverseEntity="Image" syncable="YES"/>
+    </entity>
+    <entity name="Student" representedClassName="Student" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="group" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Group" inverseName="students" inverseEntity="Group" syncable="YES"/>
     </entity>
     <elements>
+        <element name="Answer" positionX="160" positionY="192" width="128" height="135"/>
         <element name="Bedding" positionX="171" positionY="597" width="128" height="60"/>
         <element name="Contact" positionX="250" positionY="438" width="128" height="75"/>
-        <element name="Fault" positionX="189" positionY="252" width="128" height="90"/>
-        <element name="Folder" positionX="79" positionY="108" width="128" height="105"/>
-        <element name="Formation" positionX="-101" positionY="396" width="128" height="150"/>
+        <element name="Fault" positionX="252" positionY="234" width="128" height="90"/>
+        <element name="Folder" positionX="79" positionY="108" width="128" height="120"/>
+        <element name="Formation" positionX="-101" positionY="396" width="128" height="180"/>
         <element name="Formation_Folder" positionX="-92" positionY="234" width="128" height="90"/>
+        <element name="Group" positionX="160" positionY="192" width="128" height="75"/>
         <element name="Image" positionX="277" positionY="108" width="128" height="90"/>
         <element name="JointSet" positionX="198" positionY="720" width="128" height="60"/>
         <element name="Other" positionX="333" positionY="594" width="128" height="45"/>
+        <element name="Question" positionX="160" positionY="192" width="128" height="90"/>
         <element name="Record" positionX="466" positionY="162" width="128" height="225"/>
+        <element name="Student" positionX="160" positionY="192" width="128" height="60"/>
     </elements>
 </model>

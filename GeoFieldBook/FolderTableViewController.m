@@ -9,36 +9,29 @@
 #import "FolderTableViewController.h"
 #import "ModalFolderViewController.h"
 #import "RecordTableViewController.h"
-#import "InitialDetailViewController.h"
-#import "FormationFolderTableViewController.h"
 #import "TextInputFilter.h"
 #import "GeoDatabaseManager.h"
-#import "UISplitViewBarButtonPresenter.h"
 
 #import "Folder.h"
+#import "Record.h"
 #import "Folder+Creation.h"
 #import "Folder+Modification.h"
 #import "Folder+DictionaryKeys.h"
 
-@interface FolderTableViewController() <ModalFolderDelegate,UISplitViewControllerDelegate,RecordTVCAutosaverDelegate,UIAlertViewDelegate,RecordTableViewControllerDelegate>
+#import "CheckBox.h"
 
-- (void)normalizeDatabase;        //Make sure the database's document state is normal
-- (BOOL)createNewFolderWithInfo:(NSDictionary *)folderInfo;    //Create a folder in the database with the specified name
-- (BOOL)modifyFolder:(Folder *)folder withNewInfo:(NSDictionary *)folderInfo;   //Modify a folder's name
-- (void)deleteFolder:(Folder *)folder;   //Delete the specified folder
-- (void)showInitialDetailView;            //Put the G-mode initial view onto the right screen (detail view)
+#import "GeoFilter.h"
+#import "CustomFolderCell.h"
 
-- (id <UISplitViewBarButtonPresenter>)barButtonPresenter;
+#import "ModelGroupNotificationNames.h"
 
-#pragma mark - Temporary data of the autosaver
+@interface FolderTableViewController() <ModalFolderDelegate,UIActionSheetDelegate,RecordTableViewControllerDelegate,CustomFolderCellDelegate,NSFetchedResultsControllerDelegate>
 
-@property (nonatomic,strong) autosaver_block_t autosaverCancelBlock;
-@property (nonatomic,strong) autosaver_block_t autosaverConfirmBlock;
-@property (nonatomic,strong) NSString *autosaverConfirmTitle;
+@property (nonatomic, strong) GeoFilter *recordFilter;
 
 #pragma mark - Temporary "to-be-deleted" data
 
-@property (nonatomic,strong) Folder *toBeDeletedFolder;
+@property (nonatomic,strong) NSArray *toBeDeletedFolders;
 
 #pragma mark - Popover Controllers
 
@@ -48,81 +41,76 @@
 #pragma mark - Buttons
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *selectAllButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *selectNone;
 
 @end
 
 @implementation FolderTableViewController 
+
+@synthesize recordFilter=_recordFilter;
+@synthesize willFilterByFolder=_willFilterByFolder;
+
 @synthesize editButton = _editButton;
+@synthesize deleteButton = _deleteButton;
+@synthesize addButton = _addButton;
+@synthesize selectAllButton = _selectAllButton;
+@synthesize selectNone = _selectNone;
 
-@synthesize autosaverCancelBlock=_autosaverCancelBlock;
-@synthesize autosaverConfirmTitle=_autosaverConfirmTitle;
-@synthesize autosaverConfirmBlock=_autosaverConfirmBlock;
-
-@synthesize toBeDeletedFolder=_toBeDeletedFolder;
-
-@synthesize database=_database;
+@synthesize toBeDeletedFolders=_toBeDeletedFolders;
 
 @synthesize formationPopoverController=_formationPopoverController;
 @synthesize folderInfoPopoverController=_folderInfoPopoverController;
 
-#pragma mark - Setters
+#pragma mark - Getters and Setters
 
-- (void)setDatabase:(UIManagedDocument *)database {
-    if (_database!=database) {
-        _database=database;
-        
-        //Make sure the document is open and set up the fetched result controller
-        [self normalizeDatabase];        
-    }
-}
-
-#pragma mark - Controller State Initialization
-
-//Set up the FetchedResultsController to fetch folder entities from the database
-- (void)setupFetchedResultsController {
-    //Setup its request
-    NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Folder"];
-    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"folderName" ascending:YES]];
+- (GeoFilter *)recordFilter {
+    if (!_recordFilter)
+        _recordFilter=[[GeoFilter alloc] init];
     
-    //Create the fetchedResultsController
-    self.fetchedResultsController=[[NSFetchedResultsController alloc] initWithFetchRequest:request 
-                                                                      managedObjectContext:self.database.managedObjectContext 
-                                                                        sectionNameKeyPath:nil 
-                                                                                 cacheName:nil];
+    return _recordFilter;
 }
 
-- (void)normalizeDatabase {
-    //If the managed document is closed, open it
-    if (self.database.documentState==UIDocumentStateClosed) {
-        [self.database openWithCompletionHandler:^(BOOL success){
-            //Set up the fetched result controller
-            [self setupFetchedResultsController];
-        }];
-    }
+- (NSArray *)toBeDeletedFolders {
+    if (!_toBeDeletedFolders)
+        _toBeDeletedFolders=[NSArray array];
     
-    //Else if the managed document is open, just use it
-    else if (self.database.documentState==UIDocumentStateNormal) {
-        //Set up the fetched result controller
-        [self setupFetchedResultsController];
-    }
+    return _toBeDeletedFolders;
 }
 
-//Put up the initial detail view (the one with the geology logo) on the detail view
-- (void)showInitialDetailView {
-    [self performSegueWithIdentifier:@"Show Home Page" sender:self];
+- (void)setToBeDeletedFolders:(NSArray *)toBeDeletedFolders {
+    _toBeDeletedFolders=toBeDeletedFolders;
+    
+    //Update the title of the delete button
+    int numFolders=self.toBeDeletedFolders.count;
+    self.deleteButton.title=numFolders ? [NSString stringWithFormat:@"Delete (%d)",numFolders] : @"Delete";
+    
+    //Disable the delete button if no record is selected
+    self.deleteButton.enabled=numFolders>0;
+}
+
+- (NSArray *)selectedFolders {
+    return [self.recordFilter selectedFolderNames];
+}
+
+- (void)setWillFilterByFolder:(BOOL)willFilterByFolder {
+    _willFilterByFolder=willFilterByFolder;
+    
+    //Reload the table view
+    [self.tableView reloadData];
+}
+
+#pragma mark - Notification Center
+
+- (void)postNotificationWithName:(NSString *)name andUserInfo:(NSDictionary *)userInfo {
+    //Post the notification
+    NSNotificationCenter *center=[NSNotificationCenter defaultCenter];
+    [center postNotificationName:name object:self userInfo:userInfo];    
 }
 
 #pragma mark - Alert Generators
-
-//Put up an alert about some database failure with specified message
-- (void)putUpDatabaseErrorAlertWithMessage:(NSString *)message {
-    UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Database Error" 
-                                                  message:message 
-                                                 delegate:nil 
-                                        cancelButtonTitle:@"Dismiss" 
-                                        otherButtonTitles: nil];
-    [alert show];
-}
 
 - (void)putUpDuplicateNameAlertWithName:(NSString *)duplicateName {
     UIAlertView *duplicationAlert=[[UIAlertView alloc] initWithTitle:@"Name Duplicate" message:[NSString stringWithFormat:@"A folder with the name '%@' already exists!",duplicateName] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
@@ -139,61 +127,6 @@
     [folder setFormationFolderWithName:formationFolder];
 }
 
-#pragma mark - RecordTVCAutosaver methods
-
-- (void)recordTableViewController:(RecordTableViewController *)sender 
-                        showAlert:(UIAlertView *)alertView 
-          andExecuteBlockOnCancel:(autosaver_block_t)cancelBlock 
-                  andExecuteBlock:(autosaver_block_t)confirmBlock 
-         whenClickButtonWithTitle:(NSString *)buttonTitle
-{
-    //Set the delegate of the alert to be self
-    alertView.delegate=self;
-    
-    //Save the blocks
-    self.autosaverCancelBlock=cancelBlock;
-    self.autosaverConfirmBlock=confirmBlock;
-    self.autosaverConfirmTitle=buttonTitle;
-    
-    //Show the alert
-    [alertView show];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    //If the alert view is the delete folder alert and user clicks "Continue", delete the folder
-    if ([alertView.title isEqualToString:@"Delete Folder"]) {
-        if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Continue"]) {
-            //Delete the folder
-            [self deleteFolder:self.toBeDeletedFolder];
-            self.toBeDeletedFolder=nil;
-        }
-    }
-    
-    else {
-        //If the user clicked on the confirm button (the button with the title sent by RecordViewController via its delegate protocol)
-        if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:self.autosaverConfirmTitle]) {
-            //Execute the confirm block and unset it
-            self.autosaverConfirmBlock();
-            self.autosaverConfirmBlock=nil;
-            
-            //Show home view
-            [self showInitialDetailView];
-        }
-        
-        //If user canceled the alert view, execute the cancel block and put up the initial detail view controller on the detail side
-        else if (buttonIndex==alertView.cancelButtonIndex) {
-            //Cancel button on the autosaver's alert view clicked
-            self.autosaverCancelBlock();
-            
-            //Nillify cancel block
-            self.autosaverCancelBlock=nil;
-            
-            //Show home view
-            [self showInitialDetailView];
-        }
-    }
-}
-
 #pragma mark - Folder Creation/Editing/Deletion
 
 - (void)saveChangesToDatabase {
@@ -201,6 +134,7 @@
     [self.database saveToURL:self.database.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success){
         if (!success) {
             //handle errors
+            NSLog(@"Database error: %@",self.database);
             [self putUpDatabaseErrorAlertWithMessage:@"Failed to save changes to database. Please try to submit them again."];
         }
     }];
@@ -214,13 +148,21 @@
     }
         
     //Else, save
-    else
+    else 
         [self saveChangesToDatabase];
+    
+    //Update the record filter (add the name of the newly created folder)
+    [self.recordFilter userDidSelectFolderWithName:[folderInfo objectForKey:FOLDER_NAME]];
+    
+    //Reload
+    [self.tableView reloadData];
     
     return YES;
 }
 
 - (BOOL)modifyFolder:(Folder *)folder withNewInfo:(NSDictionary *)folderInfo {
+    NSString *originalName=folder.folderName;
+    
     //Update its name, if that returns NO (i.e. the update failed because of name duplication), put up an alert and return NO
     if (![folder updateWithNewInfo:folderInfo]) {
         [self putUpDuplicateNameAlertWithName:[folderInfo objectForKey:FOLDER_NAME]];
@@ -231,54 +173,152 @@
     else
         [self saveChangesToDatabase];
     
+    //Update the filter
+    [self.recordFilter changeFolderName:originalName toFolderName:[folderInfo objectForKey:FOLDER_NAME]];
+    
+    //Reload
+    [self.tableView reloadData];
+    
     return YES;
 }
 
-- (void)deleteFolder:(Folder *)folder {
-    //Delete the folder
-    [self.database.managedObjectContext deleteObject:folder];
+- (void)deleteFolders:(NSArray *)folders {
+    for (Folder *folder in folders) {
+        //Update the record filter
+        [self.recordFilter userDidDeselectFolderWithName:folder.folderName];
+    
+        //Delete the folder
+        [self.database.managedObjectContext deleteObject:folder];
+    }
     
     //Save
     [self saveChangesToDatabase];
+    
+    //Send out a notification to indicate that the folder database has changed
+    [self postNotificationWithName:GeoNotificationModelGroupFolderDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
 }
 
 #pragma mark - View lifecycle
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    //Hide delete button
+    [self toggleDeleteButtonForEditingMode:self.tableView.editing];
+    
+    //hide the select buttons
+    [self toggleSelectButtonsForEditingMode:self.tableView.editing];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    //Set up the database using the GeoDatabaseManager fetch method=====>the block will get called only the first time the database gets created
-    //success is YES if the database saving process succeeded or NO otherwise
-    self.database=[[GeoDatabaseManager standardDatabaseManager] fetchDatabaseFromDisk:self completion:^(BOOL success){
-        //May be show up an alert if not success?
-        if (!success) {
-            //Put up an alert
-            [self putUpDatabaseErrorAlertWithMessage:@"Failed to access the database. Please make sure the database is not corrupted."];
-        } 
-    }];
     
-    //Set self to be the split view's delegate
-    self.splitViewController.delegate=self;
-    
-    //Perform a segue to the initial view controller if no autosaver blocks are set
-    if (![[self.splitViewController.viewControllers lastObject] isKindOfClass:[InitialDetailViewController class]]) 
-    {
-        if (!self.autosaverCancelBlock || !self.autosaverConfirmBlock)
-            [self showInitialDetailView];
-    }
+    [self reloadVisibleCells];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    //Save any change to database
-    [self saveChangesToDatabase];
+    //Switch out of editing mode
+    if (self.tableView.editing)
+        [self editPressed:self.editButton];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Support all orientations
-    return YES;
+#pragma mark - Target-Action Handlers
+
+- (void)reloadCheckboxesInVisibleCellsForEditingMode:(BOOL)editing {
+    for (CustomFolderCell *cell in self.tableView.visibleCells) {
+        if (editing || !self.willFilterByFolder)
+            [cell hideCheckBoxAnimated:YES];
+        else {
+            //Show the checkboxes
+            [cell showCheckBoxAnimated:YES];
+        }
+    }
+}
+
+- (void)setupUIForEditingMode:(BOOL)editing {
+    //Setup the buttons
+    [self setupButtonsForEditingMode:editing];
+    
+    //Reload the checkboxes
+    [self reloadCheckboxesInVisibleCellsForEditingMode:editing];
+}
+
+- (void)toggleSelectButtonsForEditingMode:(BOOL)editing {
+    //Setup the select buttons
+    NSMutableArray *toolbarItems=self.toolbarItems.mutableCopy;
+    if (editing) {
+        [toolbarItems insertObject:self.selectAllButton atIndex:1];
+        [toolbarItems insertObject:self.selectNone atIndex:toolbarItems.count-1];
+    }
+    else {
+        [toolbarItems removeObject:self.selectAllButton];
+        [toolbarItems removeObject:self.selectNone];
+    }
+    
+    self.toolbarItems=toolbarItems.copy;
+}
+
+- (void)toggleDeleteButtonForEditingMode:(BOOL)editing {
+    //Setup the select buttons
+    NSMutableArray *toolbarItems=self.toolbarItems.mutableCopy;
+    if (editing && ![toolbarItems containsObject:self.deleteButton])
+        [toolbarItems insertObject:self.deleteButton atIndex:1];
+    else if (!editing)
+        [toolbarItems removeObject:self.deleteButton];
+    
+    self.toolbarItems=toolbarItems.copy;
+}
+
+- (void)setupButtonsForEditingMode:(BOOL)editing {
+    //Set the style of the action button
+    self.editButton.style=editing ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered;
+    
+    //Show the delete button if in editing mode
+    [self toggleDeleteButtonForEditingMode:self.tableView.editing];
+    
+    //Set up select buttons
+    [self toggleSelectButtonsForEditingMode:self.tableView.editing];
+}
+
+- (IBAction)editPressed:(UIBarButtonItem *)sender {
+    //Set the table view to editting mode
+    [self.tableView setEditing:!self.tableView.editing animated:YES];
+    
+    //Setup the UI
+    [self setupUIForEditingMode:self.tableView.editing];
+    
+    //Reset the array of to be deleted folders
+    self.toBeDeletedFolders=nil;
+}
+
+- (IBAction)deletePressed:(UIBarButtonItem *)sender {
+    int numOfDeletedFolders=self.toBeDeletedFolders.count;
+    NSString *message=numOfDeletedFolders > 1 ? [NSString stringWithFormat:@"Are you sure you want to delete %d folders?",numOfDeletedFolders] : @"Are you sure you want to delete this folder?";
+    NSString *destructiveButtonTitle=numOfDeletedFolders > 1 ? @"Delete Folders" : @"Delete Folder";
+    
+    //Put up an alert
+    UIActionSheet *deleteActionSheet=[[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:nil];
+    [deleteActionSheet showInView:self.view];
+}
+
+- (IBAction)selectAll:(UIBarButtonItem *)sender {
+    //Select all the csv files
+    self.toBeDeletedFolders=self.fetchedResultsController.fetchedObjects;
+    
+    //Select all the rows
+    for (UITableViewCell *cell in self.tableView.visibleCells)
+        [self.tableView selectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES scrollPosition:UITableViewScrollPositionNone];
+}
+
+- (IBAction)selectNone:(UIBarButtonItem *)sender {
+    //Empty the selected csv files
+    self.toBeDeletedFolders=[NSArray array];
+    
+    //Deselect all the rows
+    for (UITableViewCell *cell in self.tableView.visibleCells)
+        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES];
 }
 
 #pragma mark - Prepare for segues
@@ -288,10 +328,6 @@
     if ([segue.identifier isEqualToString:@"Add/Edit Folder"]) {
         //Set the delegate of the destination controller
         [segue.destinationViewController setDelegate:self];
-        
-        //End the table view's editing mode if the table is in editing mode
-        if (self.tableView.editing)
-            [self editPressed:self.editButton];
         
         //Set the folder of the destination controller if the table view is in editting mode
         if (self.tableView.editing) {
@@ -303,45 +339,27 @@
     
     //Seguing to the RecordTableViewController
     else if ([segue.identifier isEqualToString:@"Show Records"]) {
-        //Get the cell that activates the segue and set up the destination controller
-        UITableViewCell *cell=(UITableViewCell *)sender;
-        Folder *folder=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
-        [segue.destinationViewController setTitle:folder.folderName];
+        //Common setup
         [segue.destinationViewController setDatabase:self.database];
-        [segue.destinationViewController setFolder:folder];
-        [segue.destinationViewController setAutosaveDelegate:self];
         [segue.destinationViewController setDelegate:self];
+        
+        //Get the cell that activates the segue and set up the destination controller if the sender is a table cell
+        if ([sender isKindOfClass:[UITableViewCell class]]) {
+            UITableViewCell *cell=(UITableViewCell *)sender;
+            Folder *folder=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
+            [segue.destinationViewController setTitle:folder.folderName];
+            [segue.destinationViewController setFolder:folder];
+        }
+        
+        //If the sender is a record
+        else if ([sender isKindOfClass:[Record class]]) {
+            Record *record=(Record *)sender;
+            Folder *folder=record.folder;
+            [segue.destinationViewController setTitle:folder.folderName];
+            [segue.destinationViewController setFolder:folder];
+            [segue.destinationViewController setChosenRecord:record];
+        }
     }
-    
-    //Seguing to the modal formation folder tvc
-    else if ([segue.identifier isEqualToString:@"Show Formation Folders"]) {
-        //Set the database of the formation folder tvc to self's database
-        UINavigationController *navigationController=segue.destinationViewController;
-        [(FormationFolderTableViewController *)navigationController.topViewController setDatabase:self.database];
-        
-        //If the formation popover is already there, dismiss it
-        if (self.formationPopoverController.isPopoverVisible)
-            [self.formationPopoverController dismissPopoverAnimated:YES];
-        
-        //End the table view's editing mode if the table is in editing mode
-        if (self.tableView.editing)
-            [self editPressed:self.editButton];
-        
-        //Save the popover controller
-        UIStoryboardPopoverSegue *popoverSegue=(UIStoryboardPopoverSegue *)segue;
-        self.formationPopoverController=popoverSegue.popoverController;
-    }
-}
-
-#pragma mark - Target-Action Handlers
-
-- (IBAction)editPressed:(UIBarButtonItem *)sender {
-    //Set the table view to editting mode
-    [self.tableView setEditing:!self.tableView.editing animated:YES];
-
-    //Change the style of the button to edit or done
-    sender.style=self.tableView.editing ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered;
-    sender.title=self.tableView.editing ? @"Done" : @"Edit";
 }
 
 #pragma mark - ModalFolderDelegate methods
@@ -369,34 +387,33 @@
 
 #pragma mark - Table view data source
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Folder Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
-    
-    // Configure the cell
-    Folder *folder=[self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.editingAccessoryType=UITableViewCellAccessoryDetailDisclosureButton;
-    cell.textLabel.text=folder.folderName;
-    NSString *recordCounter=[folder.records count]>1 ? @"Records" : @"Record";
-    cell.detailTextLabel.text=[NSString stringWithFormat:@"%d %@",[folder.records count],recordCounter];
-    
-    //Add gesture recognizer for long press
-    UILongPressGestureRecognizer *longPressRecognizer=[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressOnTableCell:)];
-    [cell addGestureRecognizer:longPressRecognizer];
-    
-    return cell;
+- (void)reloadVisibleCells {
+    for (CustomFolderCell *cell in self.tableView.visibleCells)
+        cell.folder=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
 }
 
-- (void)longPressOnTableCell:(UILongPressGestureRecognizer *)longPress {
-    //Show a popover
-    //UITableViewCell *cell=(UITableViewCell *)longPress.view;
-    //Folder *folder=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
-    //cell.textLabel.text=folder.folderDescription;
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CustomFolderCell *cell=(CustomFolderCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
+    
+    //Set the delegate of the cell to be notified when user toggles on/off checkboxes to include/exclude folders from being showed on the map
+    cell.delegate=self;
+    
+    //Select cell if its folder is in the list of selected folders
+    Folder *folder=[self.fetchedResultsController objectAtIndexPath:indexPath];
+    if ([self.selectedFolders containsObject:folder]) {
+        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    } else {
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    }
+    
+    //Show/Hide the checkboxes
+    if (self.willFilterByFolder && !self.tableView.editing)
+        [cell showCheckBoxAnimated:YES];
+    else
+        [cell hideCheckBoxAnimated:YES];
+    
+    return cell;
 }
 
 #pragma mark - Table view delegate
@@ -408,62 +425,100 @@
     }
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    //If the editing style is delete, delete the corresponding folder
-    if (editingStyle==UITableViewCellEditingStyleDelete) {
-        //Get the selected folder and save it to delete later
-        self.toBeDeletedFolder=[self.fetchedResultsController objectAtIndexPath:indexPath];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //If the table view is in editing mode, increment the count for delete
+    if (self.tableView.editing) {
+        //Add the selected folder to the delete list
+        Folder *folder=[self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSMutableArray *toBeDeletedFolders=[self.toBeDeletedFolders mutableCopy];
+        if (![toBeDeletedFolders containsObject:folder])
+            [toBeDeletedFolders addObject:folder];
+        self.toBeDeletedFolders=[toBeDeletedFolders copy];
+    }
+    
+    //If the table view is not in editing mode, segue to show the records
+    else
+        [self performSegueWithIdentifier:@"Show Records" sender:[self.tableView cellForRowAtIndexPath:indexPath]];
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //If the table view is in editing mode, decrement the count for delete
+    if (self.tableView.editing) {
+        //Remove the selected folder from the delete list
+        Folder *folder=[self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSMutableArray *toBeDeletedFolders=[self.toBeDeletedFolders mutableCopy];
+        [toBeDeletedFolders removeObject:folder];
+        self.toBeDeletedFolders=[toBeDeletedFolders copy];
+    }
+}
+
+#pragma mark - CustomFolderCellDelegate methods
+
+- (void)folderCell:(CustomFolderCell *)sender userDidSelectDidCheckBoxForFolder:(Folder *)folder {
+    [self.recordFilter userDidSelectFolderWithName:folder.folderName];
         
-        //Put up an alert
-        UIAlertView *deleteAlert=[[UIAlertView alloc] initWithTitle:@"Delete Folder" message:@"You are about to delete an entire folder of records. Do you want to continue?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];
-        [deleteAlert show];
+    //Post a notification to indicate that the folder database has changed
+    [self postNotificationWithName:GeoNotificationModelGroupFolderDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+}
+
+- (void)folderCell:(CustomFolderCell *)sender userDidDeselectDidCheckBoxForFolder:(Folder *)folder {
+    [self.recordFilter userDidDeselectFolderWithName:folder.folderName];
+    
+    //Post a notification to indicate that the folder database has changed
+    [self postNotificationWithName:GeoNotificationModelGroupFolderDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+}
+
+#pragma mark - NSFetchedResultsControllerDelegate protocol methods
+
+- (void)controller:(NSFetchedResultsController *)controller 
+   didChangeObject:(id)anObject 
+       atIndexPath:(NSIndexPath *)indexPath 
+     forChangeType:(NSFetchedResultsChangeType)type 
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    UITableView *tableView = self.tableView;
+    
+    switch(type) {
+            
+        case NSFetchedResultsChangeInsert:
+            //If a folder is inserted, add it to the filter
+            if (type==NSFetchedResultsChangeInsert) {
+                Folder *folder=[self.fetchedResultsController objectAtIndexPath:newIndexPath];
+                [self.recordFilter userDidSelectFolderWithName:folder.folderName];
+            }
+            
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+ 
+#pragma mark - UIActionSheetDelegate protocol methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    //If the action sheet is the delete folder action sheet and user clicks "Delete Folders" or "Delete Folder", delete the folder(s)
+    NSSet *deleteButtonTitles=[NSSet setWithObjects:@"Delete Folders",@"Delete Folder", nil];
+    NSString *clickedButtonTitle=[actionSheet buttonTitleAtIndex:buttonIndex];
+    if (self.tableView.editing && [deleteButtonTitles containsObject:clickedButtonTitle]) {
+        //Delete the selected folders
+        [self deleteFolders:self.toBeDeletedFolders];
+        
+        //End editing mode
+        if (self.tableView.editing)
+            [self editPressed:self.editButton];
     }
 }
 
-#pragma mark - UISplitViewControllerDelegate methods
-
-- (id <UISplitViewBarButtonPresenter>)barButtonPresenter {
-    //Get the detail view controller
-    id detailvc=[self.splitViewController.viewControllers lastObject];
-    
-    //if the detail view controller does not want to be the splitview bar button presenter, set detailvc to nil
-    if (![detailvc conformsToProtocol:@protocol(UISplitViewBarButtonPresenter)]) {
-        detailvc=nil;
-    }
-    
-    return detailvc;
-}
-
--(void)splitViewController:(UISplitViewController *)svc 
-    willHideViewController:(UIViewController *)navigation 
-         withBarButtonItem:(UIBarButtonItem *)barButtonItem 
-      forPopoverController:(UIPopoverController *)pc
-{
-    //Set the bar button item's title to self's title
-    barButtonItem.title=self.navigationController.topViewController.navigationItem.title;
-    
-    //Put up the button
-    [self barButtonPresenter].splitViewBarButtonItem = barButtonItem;
-}
-
-- (void)splitViewController:(UISplitViewController *)svc 
-     willShowViewController:(UIViewController *)navigation 
-  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem 
-{
-    //Take the button off
-    [self barButtonPresenter].splitViewBarButtonItem=nil;
-}
-
-//Hide the master in portrait modes only
--(BOOL)splitViewController:(UISplitViewController *)svc 
-  shouldHideViewController:(UIViewController *)vc 
-             inOrientation:(UIInterfaceOrientation)orientation
-{
-    return UIInterfaceOrientationIsPortrait(orientation);
-}
-
-- (void)viewDidUnload {
-    [self setEditButton:nil];
-    [super viewDidUnload];
-}
 @end
