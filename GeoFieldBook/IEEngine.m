@@ -749,7 +749,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     
     [self writeFormationFilesWithColor:formationsByFolders];
     
-    //Post a notification when done
+    //Post a notification when done so that the spinner stops
     [self postNotificationWithName:GeoNotificationIEEngineExportingDidEnd withUserInfo:[NSDictionary dictionary]];
 }
 
@@ -774,7 +774,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     NSArray *transposed2DArray=[self transposedFormationArrayFromDictionary:formationsByFolders];
     [self writeFormations:transposed2DArray];  
     
-    //Post a notification when done
+    //Post a notification when done so that the spinner stops
     [self postNotificationWithName:GeoNotificationIEEngineExportingDidEnd withUserInfo:[NSDictionary dictionary]];
 }
 
