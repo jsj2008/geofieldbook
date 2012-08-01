@@ -6,10 +6,14 @@
 //  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <CommonCrypto/CommonDigest.h>
 
 #import "TextInputFilter.h"
 
 #import "Record.h"
+#import "Folder.h"
+
 #import "Image+Creation.h"
 #import "RecordViewController.h"
 #import "Record+Modification.h"
@@ -23,6 +27,9 @@
 #import "Fault.h"
 #import "Other.h"
 
+#import "FormationFolderTableViewController.h"
+#import "GeoDatabaseManager.h"
+
 #import "StrikePickerViewController.h"
 #import "DipPickerViewController.h"
 #import "DipDirectionPickerViewController.h"
@@ -32,9 +39,10 @@
 
 #import "Image+Creation.h"
 
-#import <MobileCoreServices/MobileCoreServices.h>
+#import "MKGeoRecordAnnotation.h"
+#import "FilterByRecordTypeController.h"
 
-#import <CommonCrypto/CommonDigest.h>
+#import "SettingManager.h"
 
 @interface RecordViewController() <UINavigationControllerDelegate,CLLocationManagerDelegate, StrikePickerDelegate,DipPickerDelegate,DipDirectionPickerDelegate,PlungePickerDelegate,TrendPickerDelegate,FormationPickerDelegate,UIAlertViewDelegate,UIImagePickerControllerDelegate>
 
@@ -42,25 +50,6 @@
 #define FORMATION_PICKER_NAME @"RecordViewController.Formation_Picker"
 #define LOWER_FORMATION_PICKER_NAME @"RecordViewController.Lower_Formation_Picker"
 #define UPPER_FORMATION_PICKER_NAME @"RecordViewController.Upper_Formation_Picker"
-
-- (void)updateSplitViewBarButtonPresenterWith:(UIBarButtonItem *)splitViewBarButtonItem;
-- (void)userDoneEditingRecord;         //handles when user finishes editing the record's info
-- (void)resignAllTextFieldsAndAreas;
-
-#pragma mark - Validation Mechanism Declarations
-
-- (BOOL)validateMandatoryFieldsOfInfo:(NSDictionary *)recordInfo 
-                        alertsEnabled:(BOOL)alertsEnabled;
-
-#pragma mark - Form Setup Controller Method Declarations
-
-- (void)formSetupForBeddingType;
-- (void)formSetupForContactType;
-- (void)formSetupForJointSetType;
-- (void)formSetupForFaultType;
-- (void)formSetupForOtherType;
-
-- (void)updateFormForRecord:(Record *)record;
 
 #pragma mark - Private Properties
 
@@ -74,7 +63,6 @@
 
 #pragma mark - Non-interactive UI Elements
 
-@property (weak,nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *gatheringGPS; 
 @property (nonatomic, strong) UIPopoverController *imagePopover;
@@ -82,7 +70,6 @@
 
 #pragma mark - Buttons
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
 @property (weak, nonatomic) IBOutlet UIButton *browseButton;
 @property (weak, nonatomic) IBOutlet UIButton *takePhotoButton;
 @property (weak, nonatomic) IBOutlet UIButton *acquireButton;
@@ -119,7 +106,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *upperFormationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fieldObservationLabel;
 
-
 @end
 
 @implementation RecordViewController
@@ -130,6 +116,7 @@
 @synthesize gpsTimer = _gpsTimer;
 @synthesize gatheringGPS = _gatheringGPS;
 @synthesize editButton = _editButton;
+@synthesize cancelButton = _cancelButton;
 @synthesize acquiredImage=_acquiredImage;
 @synthesize hasTakenImage=_hasTakenImage;
 
@@ -163,9 +150,6 @@
 
 @synthesize editing=_editing;
 
-@synthesize toolbar=_toolbar;
-@synthesize splitViewBarButtonItem=_splitViewBarButtonItem;
-
 @synthesize delegate=_delegate;
 
 @synthesize browseButton = _browseButton;
@@ -175,38 +159,31 @@
 
 @synthesize acquiredDate=_acquireDate;
 
-#pragma mark - Getters and Setters
-
-- (void)setSplitViewBarButtonItem:(UIBarButtonItem *)splitViewBarButtonItem {
-    //Update the bar button presenter
-    [self updateSplitViewBarButtonPresenterWith:splitViewBarButtonItem];
-    
-    _splitViewBarButtonItem=splitViewBarButtonItem;
+- (void)showKeyboard {
+    [self.recordNameTextField becomeFirstResponder];
 }
 
+#pragma mark - Getters and Setters
+
 - (void)setRecord:(Record *)record {
+    //If the current record is not nil and self is still in editing mode, show an autosave alert
+    if (self.record && self.editing) {
+        //End editing mode
+        [self setEditing:NO animated:YES];
+        
+        //Notify the delegate
+        [self.delegate userDidNavigateAwayFrom:self 
+                          whileModifyingRecord:self.record 
+                                   withNewInfo:[self dictionaryFromForm]];
+    }
+    
     _record=record;
     
     //Update the text fields and labels
     [self updateFormForRecord:self.record];
+        
+    [self.view setNeedsDisplay];    
 }
-
-- (void)updateSplitViewBarButtonPresenterWith:(UIBarButtonItem *)splitViewBarButtonItem {
-    //Add the button to the toolbar
-    NSMutableArray *items=[self.toolbar.items mutableCopy];
-    
-    //Remove the old button if it exists
-    if (self.splitViewBarButtonItem)
-        [items removeObject:self.splitViewBarButtonItem];
-    
-    //Add the new button on the leftmost if it's not nil
-    if (splitViewBarButtonItem)
-        [items insertObject:splitViewBarButtonItem atIndex:0];
-    
-    //Set the items to be the toolbar's items
-    self.toolbar.items=[items copy];
-}
-
 
 - (NSArray *)textFields {
     return [NSArray arrayWithObjects:self.recordNameTextField,self.strikeTextField,self.dipTextField,self.dipDirectionTextField,self.formationTextField,self.trendTextField,self.plungeTextField,self.lowerFormationTextField,self.upperFormationTextField, nil];
@@ -293,7 +270,7 @@
     //Only acquire data when self is in editing mode
     if (self.editing) {
         //Save the acquired date
-        self.acquiredDate=[[NSDate alloc] init];
+        self.acquiredDate=[NSDate date];
         
         //reset the txtfields appropriately.
         self.dateTextField.text = [Record dateFromNSDate:self.acquiredDate];
@@ -357,6 +334,16 @@
 
 #define IMAGE_IN_POPOVER YES
 
+//Dismiss the image picker
+- (void)dismissImagePicker
+{	
+    //Dismiss the picker if it's on screen
+    if (self.imagePopover.isPopoverVisible) {
+        [self.imagePopover dismissPopoverAnimated:YES];
+        self.imagePopover = nil;
+    }
+}
+
 - (IBAction)takePhoto:(UIButton *)sender {
     //Allow the user to take the photo if camera is available
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
@@ -385,16 +372,6 @@
         
         //Specify that the image picker presenter is the sender
         self.imagePickerPresenter=sender;
-    }
-}
-
-//Dismiss the image picker
-- (void)dismissImagePicker
-{	
-    //Dismiss the picker if it's on screen
-    if (self.imagePopover.isPopoverVisible) {
-        [self.imagePopover dismissPopoverAnimated:YES];
-        self.imagePopover = nil;
     }
 }
 
@@ -434,7 +411,18 @@
 
 - (IBAction)editPressed:(UIBarButtonItem *)sender {
     //Toggle the editting mode
-    [self setEditing:!self.editing animated:YES validationEnabled:YES];
+    if (self.editing)
+        [self endEditingModeAndSaveWithValidationsEnabled:YES];
+    else  {
+        //Start editing mode
+        [self setEditing:YES animated:YES];
+    }
+}
+
+- (IBAction)cancelPressed:(UIBarButtonItem *)sender {
+    //Notify the delegate
+    if ([self.delegate respondsToSelector:@selector(userWantsToCancelEditingMode:)])
+        [self.delegate userWantsToCancelEditingMode:self];
 }
 
 #pragma mark - Form Validations
@@ -444,8 +432,8 @@
                         alertsEnabled:(BOOL)alertsEnabled 
 {
     //Put up alerts if validations fail
-    NSArray *validationKeys=[Record validatesMandatoryPresenceOfRecordInfo:recordInfo];
-    if ([validationKeys count] && alertsEnabled) {
+    NSArray *validationKeys=[self.record validatesMandatoryPresenceOfRecordInfo:recordInfo];
+    if (validationKeys.count && alertsEnabled) {
         //Get the name of the fields that do not pass validations
         NSMutableArray *failedFieldNames=[NSMutableArray array];
         for (NSString *failedKey in validationKeys)
@@ -470,8 +458,9 @@
     self.editButton.title=self.editing ? @"Done" : @"Edit";
         
     //If in editing mode, enable all the text fields; otherwise, disable them
-    for (UITextField *textField in self.textFields)
+    for (UITextField *textField in self.textFields) {
         textField.enabled=self.editing;
+    }
     
     //Enable or disable the text area
     self.fieldObservationTextArea.editable=self.editing;
@@ -512,10 +501,10 @@
     if ([self validateMandatoryFieldsOfInfo:recordInfo alertsEnabled:YES])
         [self userDoneEditingRecord];
     else 
-        [self setEditing:YES animated:YES validationEnabled:NO];
+        [self setEditing:YES animated:YES];
 }
 
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated validationEnabled:(BOOL)validationEnabled { 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated { 
     _editing=editing;
     
     //Toggle enable/disable dependending on whether self is in editing mode or not
@@ -524,18 +513,36 @@
     //Style input fields accordingly to editing
     [self styleFormInputFields];
     
-    //If the editing mode is over, process the newly modified info
-    if (!self.editing) {
-        //Stop updating location if still updating
+    //Notify the delegate
+    if (editing && [self.delegate respondsToSelector:@selector(userDidCancelEditingMode:)])
+        [self.delegate userDidStartEditingMode:self];
+    if (!editing && [self.delegate respondsToSelector:@selector(userDidCancelEditingMode:)])
+        [self.delegate userDidCancelEditingMode:self];
+    
+    //Stop updating location if still updating and self goes out of editing mode
+    if (!self.editing && [self.gatheringGPS isAnimating])
         [self timerFired];
-        
-        if (validationEnabled)
-            //Process the user input with validations
-            [self processFormInputsWithValidations];
-        else
-            //Process without validations
-            [self userDoneEditingRecord];
-    }
+}
+
+- (void)endEditingModeAndSaveWithValidationsEnabled:(BOOL)validationEnabled {
+    //End editing mode
+    [self setEditing:NO animated:YES];
+    
+    //Process form inputs
+    if (validationEnabled)
+        //Process the user input with validations
+        [self processFormInputsWithValidations];
+    else
+        //Process without validations
+        [self userDoneEditingRecord];
+}
+
+- (void)cancelEditingMode {
+    //Turn the editing mode off
+    [self setEditing:NO animated:YES];
+    
+    //Reload the view
+    [self updateFormForRecord:self.record];
 }
 
 #pragma mark - UIAlertViewDelegate methods
@@ -545,10 +552,7 @@
     if ([alertView.title isEqualToString:@"Missing Information"]) {
         if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Continue"]) {
             //End editing mode without going through the validations again
-            [self setEditing:NO animated:YES validationEnabled:NO];
-            
-            //Process the form inputs
-            [self userDoneEditingRecord];
+            [self endEditingModeAndSaveWithValidationsEnabled:NO];
         }
     }
 }
@@ -583,7 +587,7 @@
         CGRect aRect=self.view.frame;
         aRect.size.height-=keyboardSize.height;
         if (!CGRectContainsPoint(aRect, self.fieldObservationTextArea.frame.origin)) {
-            CGPoint scrollPoint=CGPointMake(0.0,keyboardSize.height-self.fieldObservationTextArea.frame.origin.y);
+            CGPoint scrollPoint=CGPointMake(0.0,self.fieldObservationTextArea.frame.origin.y-self.fieldObservationLabel.frame.size.height);
             [self.scrollView setContentOffset:scrollPoint animated:YES];
         }
     }
@@ -658,15 +662,17 @@
     }
 }
 
-#pragma mark - UINavigationControllerDelegate methods
-
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)newMaster animated:(BOOL)animated {
-    //Change the splitview button's title if it exists
-    if (self.splitViewBarButtonItem)
-        self.splitViewBarButtonItem.title=newMaster.navigationItem.title;
-}
-
 #pragma mark - Prepare for segues
+
+- (NSArray *)formationsForFormationPicker {
+    //Fetch formation entities from the database
+    NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Formation"];
+    request.predicate=[NSPredicate predicateWithFormat:@"formationFolder.folderName=%@",self.record.folder.formationFolder.folderName];
+    request.sortDescriptors=[NSArray arrayWithObjects:[NSSortDescriptor sortDescriptorWithKey:@"formationSortNumber" ascending:YES],[NSSortDescriptor sortDescriptorWithKey:@"formationName" ascending:YES],nil];
+    NSArray *results=[self.record.managedObjectContext executeFetchRequest:request error:NULL];
+    
+    return results;
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     //Strike picker segue
@@ -701,17 +707,14 @@
     
     //Seguing to the formation picker view controller for the formation text field
     else if ([segue.identifier isEqualToString:@"Formation Picker"]) {
-        //Set the database of the formation picker
-        [segue.destinationViewController setDatabase:[self.delegate databaseForFormationPicker]];
-        
+        //Set the formations for the formation picker
+        [(FormationPickerViewController *)segue.destinationViewController setFormations:[self formationsForFormationPicker]];
+                
         //Set initialSelection for the formation picker if the current record has no formation set yet
         [segue.destinationViewController setInitialSelectionEnabled:![self.formationTextField.text length]];
         
         //Set the name of the picker
         [segue.destinationViewController setPickerName:FORMATION_PICKER_NAME];
-        
-        //Set the name of the formation folder
-        [segue.destinationViewController setFolderName:[self.delegate formationFolderName]];
         
         //Set the previously selected formation name
         [segue.destinationViewController setPreviousSelection:self.formationTextField.text];
@@ -719,8 +722,8 @@
     
     //Seguing to the formation picker view controller for the lower formation text field
     else if ([segue.identifier isEqualToString:@"Lower Formation Picker"]) {
-        //Set the database of the lower formation picker
-        [segue.destinationViewController setDatabase:[self.delegate databaseForFormationPicker]];
+        //Set the formations for the formation picker
+        [(FormationPickerViewController *)segue.destinationViewController setFormations:[self formationsForFormationPicker]];
         
         //Set initialSelection for the formation picker if the current record has no lower formation set yet
         [segue.destinationViewController setInitialSelectionEnabled:![self.lowerFormationTextField.text length]];
@@ -728,17 +731,14 @@
         //Set the name of the picker
         [segue.destinationViewController setPickerName:LOWER_FORMATION_PICKER_NAME];
         
-        //Set the name of the formation folder
-        [segue.destinationViewController setFolderName:[self.delegate formationFolderName]];
-        
         //Set the previously selected formation name
         [segue.destinationViewController setPreviousSelection:self.lowerFormationTextField.text];
     }
     
     //Seguing to the formation picker view controller for the upper formation text field
     else if ([segue.identifier isEqualToString:@"Upper Formation Picker"]) {
-        //Set the database of the formation picker
-        [segue.destinationViewController setDatabase:[self.delegate databaseForFormationPicker]];
+        //Set the formations for the formation picker
+        [(FormationPickerViewController *)segue.destinationViewController setFormations:[self formationsForFormationPicker]];
         
         //Set initialSelection for the formation picker if the current record has no upper formation set yet
         [segue.destinationViewController setInitialSelectionEnabled:![self.upperFormationTextField.text length]];
@@ -746,21 +746,86 @@
         //Set the name of the picker
         [segue.destinationViewController setPickerName:UPPER_FORMATION_PICKER_NAME];
         
-        //Set the name of the formation folder
-        [segue.destinationViewController setFolderName:[self.delegate formationFolderName]];
-        
         //Set the previously selected formation name
         [segue.destinationViewController setPreviousSelection:self.upperFormationTextField.text];
     }
+}
+
+#pragma mark - Gesture Handlers
+
+- (void)downSwipe:(UISwipeGestureRecognizer *)swipeGesture {
+    //Notify the delegate only if self is not in editing mode
+    if (!self.editing && [self.delegate respondsToSelector:@selector(userDidSwipeDownInRecordViewController:)])
+        [self.delegate userDidSwipeDownInRecordViewController:self];
+}
+
+- (void)upSwipe:(UISwipeGestureRecognizer *)swipeGesture {
+    //Notify the delegate only if not in editing mode
+    if (!self.editing && [self.delegate respondsToSelector:@selector(userDidSwipeUpInRecordViewController:)])
+        [self.delegate userDidSwipeUpInRecordViewController:self];
+}
+
+- (void)removeSwipeGestureRecognizersInView:(UIView *)view {
+    for (UIGestureRecognizer *gestureRecognizer in view.gestureRecognizers) {
+        if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]])
+            [view removeGestureRecognizer:gestureRecognizer];
+    }
+}
+
+- (void)setupSwipeGestureRecognizersForView:(UIView *)view {
+    //Remove all swipe gesture recognizers
+    [self removeSwipeGestureRecognizersInView:self.view];
+    
+    //Add swipe gesture recognizers only if specified in settings
+    BOOL swipeRecordGestureEnabled=[SettingManager standardSettingManager].swipeToTurnRecordEnabled;
+    if (swipeRecordGestureEnabled) {
+        //Get the required number of fingers
+        int numOfRequiredFingers=[[SettingManager standardSettingManager] recordSwipeGestureNumberOfFingersRequired].intValue;
+        
+        //Add swipe geestures
+        UISwipeGestureRecognizer *downSwipeGestureRecognizer=[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(downSwipe:)];
+        downSwipeGestureRecognizer.numberOfTouchesRequired=numOfRequiredFingers;
+        downSwipeGestureRecognizer.direction=UISwipeGestureRecognizerDirectionDown;
+        [self.view addGestureRecognizer:downSwipeGestureRecognizer];
+        
+        UISwipeGestureRecognizer *upSwipeGestureRecognizer=[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(upSwipe:)];
+        upSwipeGestureRecognizer.numberOfTouchesRequired=numOfRequiredFingers;
+        upSwipeGestureRecognizer.direction=UISwipeGestureRecognizerDirectionUp;
+        [self.view addGestureRecognizer:upSwipeGestureRecognizer];
+    }
+}
+
+- (void)setupGestureRecognizersForView:(UIView *)view {
+    //Add swipe gesture recognizers
+    [self setupSwipeGestureRecognizersForView:view];
+    
+    
+    //Add double tap recognizer (a double tap outside the text fields or text areas will dismiss the keyboard)
+    UITapGestureRecognizer *tapGestureRecognizer=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard:)];
+    tapGestureRecognizer.numberOfTapsRequired=2;
+    [view addGestureRecognizer:tapGestureRecognizer];
+}
+
+#pragma mark - Notification Center
+
+- (void)swipeRecordGestureSettingDidChange:(NSNotification *)notification {
+    //Reset swipe record gesture
+    [self setupSwipeGestureRecognizersForView:self.view];
+}
+
+- (void)registerForNotifications {
+    NSNotificationCenter *notificationCenter=[NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(swipeRecordGestureSettingDidChange:) name:SettingManagerUserPreferencesDidChange object:nil];
 }
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     //Update the form
-    [self updateFormForRecord:self.record];
+    if (self.record)
+        [self updateFormForRecord:self.record];
     
     //Set self up to receive notifications when the keyboard appears and disappears (to adjust the text fields and areas when keyboard shows up)
     [self registerForKeyboardNotifications];
@@ -768,34 +833,12 @@
     //initialize and set up location services
     [self setUpLocationManager];
     
-}
-
-- (void)viewWillAppear:(BOOL)animated   
-{
-    [super viewWillAppear:animated];
+    //Add gesture recognizers if record swipe gesture is enabled in settings
+    [self setupGestureRecognizersForView:self.view];
     
-    //Set self to be the master's navigation controller's delegate to change the button's title when a push segue in master happens
-    UINavigationController *masterNavigation=[self.splitViewController.viewControllers objectAtIndex:0];
-    masterNavigation.delegate=self;
-    
-    //Update the bar button presenter if self.splitViewBarButtonItem exists (transferred from somewhere else when this vc got segued to)
-    [self updateSplitViewBarButtonPresenterWith:self.splitViewBarButtonItem];
-    
-    //Add double tap recognizer (a double tap outside the text fields or text areas will dismiss the keyboard)
-    UITapGestureRecognizer *tapGestureRecognizer=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard:)];
-    tapGestureRecognizer.numberOfTapsRequired=2;
-    [self.view addGestureRecognizer:tapGestureRecognizer];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    //If self is still in editing mode and the delegate has not been kicked off the anvigation stack, notify the delegate before going off screen
-    if (self.editing && self.delegate)
-        [self.delegate userDidNavigateAwayFrom:self 
-                          whileModifyingRecord:self.record 
-                             withNewRecordInfo:[self dictionaryFromForm]];
-}
+    //Register for notifications
+    [self registerForNotifications];
+} 
 
 - (void)viewWillLayoutSubviews {
     //If the image picker popover is still on screen, adjust its frame
@@ -812,6 +855,22 @@
         
         //Reposition the popover
         [self.imagePopover presentPopoverFromRect:self.imagePickerPresenter.bounds inView:self.imagePickerPresenter permittedArrowDirections:UIPopoverArrowDirectionRight animated:YES];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    //If the current record is not nil and self is still in editing mode, show an autosave alert
+    if (self.record && self.editing) {
+        //End editing mode
+        [self setEditing:NO animated:YES];
+        
+        //Notify the delegate
+        [self.delegate userDidNavigateAwayFrom:self 
+                          whileModifyingRecord:self.record 
+                                   withNewInfo:[self dictionaryFromForm]];
+        
     }
 }
 
@@ -843,13 +902,14 @@
     [self setLongitudeTextField:nil];
     [self setDateTextField:nil];
     [self setTimeTextField:nil];
+    [self setCancelButton:nil];
     [super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-	return YES;
+	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
 #pragma mark - Set up the record form for each individual type of record
@@ -869,12 +929,12 @@
     self.acquiredDate=self.record.date;
     
     //Set the strike and dip
-    self.strikeTextField.text=[NSString stringWithFormat:@"%@",self.record.strike];
-    self.dipTextField.text=[NSString stringWithFormat:@"%@",self.record.dip];
+    self.strikeTextField.text=self.record.strike ? [NSString stringWithFormat:@"%@",self.record.strike] : @"";
+    self.dipTextField.text=self.record.dip ? [NSString stringWithFormat:@"%@",self.record.dip] : @"";
     
     //Set the dip direction and field observation
     self.dipDirectionTextField.text=self.record.dipDirection;
-    self.fieldObservationTextArea.text=self.record.fieldOservations;
+    self.fieldObservationTextArea.text=self.record.fieldObservations;
     
     //Set the record type
     self.recordTypeLabel.text=[self.record.class description];
@@ -883,6 +943,14 @@
 - (void)updateFormForRecord:(Record *)record {
     //Clear the color of the field observation text area
     self.fieldObservationTextArea.backgroundColor=[UIColor clearColor];
+    
+    //Show all the textfields except for the name textfield
+    [self.textFields makeObjectsPerformSelector:@selector(setHidden:) withObject:nil];
+    
+    //Hide the strike, dip, and dip direction, field observation labels
+    NSSet *showedLabels=[NSSet setWithObjects:self.strikeLabel,self.dipLabel,self.dipDirectionLabel,self.formationLabel, nil];
+    for (UILabel *label in showedLabels)
+        label.hidden=NO;
     
     //Hide the formation, trend, plunge. lower, upper formations textfields and will put them up again if the record type requires them (WHITELISTING)
     NSSet *hiddenFields=[NSSet setWithObjects:self.trendTextField,self.trendLabel,self.plungeLabel,self.plungeTextField,self.formationLabel,self.formationTextField,self.lowerFormationLabel,self.lowerFormationTextField,self.upperFormationLabel,self.upperFormationTextField, nil];
@@ -944,8 +1012,8 @@
         textField.hidden=NO;
     
     //Set the trend and plunge text fields
-    self.plungeTextField.text=fault.plunge ? fault.plunge : @"";
-    self.trendTextField.text=fault.trend ? fault.trend : @"";
+    self.plungeTextField.text=fault.plunge ? [NSString stringWithFormat:@"%@",fault.plunge] : @"";
+    self.trendTextField.text=fault.trend ? [NSString stringWithFormat:@"%@",fault.trend] : @"";
     
     //Set the formation text field
     self.formationTextField.text=fault.formation ? fault.formation.formationName : @"";    
@@ -957,9 +1025,9 @@
     self.recordNameTextField.hidden=NO;
     
     //Hide the strike, dip, and dip direction, field observation labels
-    NSSet *hiddenFields=[NSSet setWithObjects:self.strikeLabel,self.dipLabel,self.dipDirectionLabel,self.formationLabel, nil];
-    for (UITextField *textField in hiddenFields)
-        textField.hidden=YES;
+    NSSet *showedLabels=[NSSet setWithObjects:self.strikeLabel,self.dipLabel,self.dipDirectionLabel,self.formationLabel, nil];
+    for (UILabel *label in showedLabels)
+        label.hidden=YES;
 }
 
 @end

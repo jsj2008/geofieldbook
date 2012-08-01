@@ -12,42 +12,55 @@
 #import "Formation_Folder+Creation.h"
 #import "Formation_Folder.h"
 #import "Formation_Folder+Modification.h"
+
+#import "GeoDatabaseManager.h"
 #import "TextInputFilter.h"
 
-@interface FormationFolderTableViewController() <FormationFolderViewControllerDelegate,UIAlertViewDelegate>
+@interface FormationFolderTableViewController() <FormationFolderViewControllerDelegate,UIActionSheetDelegate>
 
-- (void)setupFetchedResultsController;
+@property (nonatomic,strong) NSArray *toBeDeletedFolders;
 
-@property (nonatomic,strong) Formation_Folder *toBeDeletedFolder;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *selectAllButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *selectNone;
+
+@property (strong, nonatomic) UIBarButtonItem *hiddenButton;
 
 @end
 
 @implementation FormationFolderTableViewController
 
-@synthesize database=_database;
-@synthesize toBeDeletedFolder=_toBeDeletedFolder;
+@synthesize selectedFolders=_selectedFolders;
+
+@synthesize addButton = _addButton;
+@synthesize deleteButton = _deleteButton;
+@synthesize editButton = _editButton;
+@synthesize selectAllButton = _selectAllButton;
+@synthesize selectNone = _selectNone;
+@synthesize hiddenButton=_hiddenButton;
+
+@synthesize toBeDeletedFolders=_toBeDeletedFolders;
 
 #pragma mark - Getters and Setters
 
-- (void)setDatabase:(UIManagedDocument *)database {
-    _database=database;
+- (NSArray *)toBeDeletedFolders {
+    if (!_toBeDeletedFolders)
+        _toBeDeletedFolders=[NSArray array];
     
-    //Setup the fectched results controller
-    [self setupFetchedResultsController];
+    return _toBeDeletedFolders;
 }
 
-#pragma mark - Controller State Initialization
-
-- (void)setupFetchedResultsController {
-    //Set up the request for fetched result controllers
-    NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Formation_Folder"];
-    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"folderName" ascending:YES]];
+- (void)setToBeDeletedFolders:(NSArray *)toBeDeletedFolders {
+    _toBeDeletedFolders=toBeDeletedFolders;
     
-    //Set up the fetched results controller
-    self.fetchedResultsController=[[NSFetchedResultsController alloc] initWithFetchRequest:request 
-                                                                      managedObjectContext:self.database.managedObjectContext 
-                                                                        sectionNameKeyPath:nil 
-                                                                                 cacheName:nil];
+    //Update the title of the delete button
+    int numFolders=self.toBeDeletedFolders.count;
+    self.deleteButton.title=numFolders ? [NSString stringWithFormat:@"Delete (%d)",numFolders] : @"Delete";
+    
+    //Disable the delete button if no record is selected
+    self.deleteButton.enabled=numFolders>0;
 }
 
 #pragma mark - Prepare for segues
@@ -74,32 +87,12 @@
         //Set the folder name of the destination view controller
         UITableViewCell *cell=sender;
         Formation_Folder *folder=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
-        [segue.destinationViewController setFormationFolder:folder.folderName];
+        [segue.destinationViewController setFormationFolder:folder];
         [segue.destinationViewController navigationItem].title=folder.folderName;
     }
 }
 
-#pragma mark - UIAlertViewDelegate methods
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    //If user clicked "Continue" (in the delete formation folder alert view), delete the folder
-    if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Continue"]) {
-        [self deleteFormationFolder:self.toBeDeletedFolder];
-        self.toBeDeletedFolder=nil;
-    }
-}
-
 #pragma mark - Alert Generators
-
-//Put up an alert about some database failure with specified message
-- (void)putUpDatabaseErrorAlertWithMessage:(NSString *)message {
-    UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"Database Error" 
-                                                  message:message 
-                                                 delegate:nil 
-                                        cancelButtonTitle:@"Dismiss" 
-                                        otherButtonTitles: nil];
-    [alert show];
-}
 
 - (void)putUpDuplicateNameAlertWithName:(NSString *)duplicateName {
     UIAlertView *duplicationAlert=[[UIAlertView alloc] initWithTitle:@"Name Duplicate" message:[NSString stringWithFormat:@"A formation folder with the name '%@' already exists!",duplicateName] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
@@ -152,9 +145,11 @@
     return YES;
 }
 
-- (void)deleteFormationFolder:(Formation_Folder *)formationFolder {
-    //Delete the folder
-    [self.database.managedObjectContext deleteObject:formationFolder];
+- (void)deleteFormationFolders:(NSArray *)formationFolders {
+    for (Formation_Folder *formationFolder in formationFolders) {
+        //Delete the folder
+        [self.database.managedObjectContext deleteObject:formationFolder];
+    }
     
     //Save
     [self saveChangesToDatabase];
@@ -162,13 +157,81 @@
 
 #pragma mark - Target-Action Handlers
 
+- (void)toggleSelectButtons {
+    //Setup the select buttons
+    NSMutableArray *toolbarItems=self.toolbarItems.mutableCopy;
+    if (self.tableView.editing) {
+        [toolbarItems insertObject:self.selectAllButton atIndex:1];
+        [toolbarItems insertObject:self.selectNone atIndex:toolbarItems.count-1];
+    }
+    else {
+        [toolbarItems removeObject:self.selectAllButton];
+        [toolbarItems removeObject:self.selectNone];
+    }
+    
+    self.toolbarItems=toolbarItems.copy;
+}
+
+- (void)setupButtonsForEditingMode:(BOOL)editing {
+    //Change the style of the action button
+    self.editButton.style=editing ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered;
+    
+    //Show/Hide add/delete button
+    UIBarButtonItem *hiddenButton=self.hiddenButton;
+    self.hiddenButton=editing ? self.addButton : self.deleteButton;
+    NSMutableArray *toolbarItems=[self.toolbarItems mutableCopy];
+    if (editing)
+        [toolbarItems removeObject:self.addButton];
+    else
+        [toolbarItems removeObject:self.deleteButton];
+    [toolbarItems insertObject:hiddenButton atIndex:1];
+    self.toolbarItems=[toolbarItems copy];
+    
+    //Reset the title of the delete button and disable it
+    self.deleteButton.title=@"Delete";
+    self.deleteButton.enabled=NO;
+    
+    //Set up select buttons
+    [self toggleSelectButtons];
+}
+
 - (IBAction)editPressed:(UIBarButtonItem *)sender {
-    //Toggle the table view's editing mode
+    //Set the table view to editting mode
     [self.tableView setEditing:!self.tableView.editing animated:YES];
     
-    //Change the style of the button to edit or done
-    sender.style=self.tableView.editing ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered;
-    sender.title=self.tableView.editing ? @"Done" : @"Edit";
+    //Set up the buttons
+    [self setupButtonsForEditingMode:self.tableView.editing];
+    
+    //Reset the array of to be deleted records
+    self.toBeDeletedFolders=nil;
+}
+
+- (IBAction)deletePressed:(UIBarButtonItem *)sender {
+    int numOfDeletedFolders=self.toBeDeletedFolders.count;
+    NSString *message=numOfDeletedFolders > 1 ? [NSString stringWithFormat:@"Are you sure you want to delete %d formation folders?",numOfDeletedFolders] : @"Are you sure you want to delete this formation folder?";
+    NSString *destructiveButtonTitle=numOfDeletedFolders > 1 ? @"Delete Folders" : @"Delete Folder";
+    
+    //Put up an alert
+    UIActionSheet *deleteActionSheet=[[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:nil];
+    [deleteActionSheet showInView:self.view];
+}
+
+- (IBAction)selectAll:(UIBarButtonItem *)sender {
+    //Select all the csv files
+    self.toBeDeletedFolders=self.fetchedResultsController.fetchedObjects;
+    
+    //Select all the rows
+    for (UITableViewCell *cell in self.tableView.visibleCells)
+        [self.tableView selectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES scrollPosition:UITableViewScrollPositionNone];
+}
+
+- (IBAction)selectNone:(UIBarButtonItem *)sender {
+    //Empty the selected csv files
+    self.toBeDeletedFolders=[NSArray array];
+    
+    //Deselect all the rows
+    for (UITableViewCell *cell in self.tableView.visibleCells)
+        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES];
 }
 
 #pragma mark - Formation Folder View Controller Delegate methods
@@ -194,27 +257,6 @@
     }
 }
 
-#pragma mark - TableViewControllerDataSource methods
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Formation Folder Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
-    
-    // Configure the cell
-    Formation_Folder *formationFolder=[self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.editingAccessoryType=UITableViewCellAccessoryDetailDisclosureButton;
-    cell.textLabel.text=formationFolder.folderName;
-    NSString *formationCounter=[formationFolder.formations count]>1 ? @"Formations" : @"Formation";
-    cell.detailTextLabel.text=[NSString stringWithFormat:@"%d %@",[formationFolder.formations count],formationCounter];
-    
-    return cell;
-}
-
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
@@ -224,23 +266,67 @@
     }
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    //If the editing style is delete, delete the corresponding folder
-    if (editingStyle==UITableViewCellEditingStyleDelete) {
-        //Get the selected folder and save it to delete later
-        self.toBeDeletedFolder=[self.fetchedResultsController objectAtIndexPath:indexPath];
-        
-        //Put up an alert
-        UIAlertView *deleteAlert=[[UIAlertView alloc] initWithTitle:@"Delete Formation Folder" message:@"You are about to delete an entire formation folder. Do you want to continue?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];
-        [deleteAlert show];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //If the table view is in editing mode, increment the count for delete
+    if (self.tableView.editing) {
+        //Add the selected folder to the delete list
+        Folder *folder=[self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSMutableArray *toBeDeletedFolders=[self.toBeDeletedFolders mutableCopy];
+        [toBeDeletedFolders addObject:folder];
+        self.toBeDeletedFolders=[toBeDeletedFolders copy];
+    }
+    
+    //If the table view is not in editing mode, segue to show the records
+    else
+        [self performSegueWithIdentifier:@"Show Formations" sender:[self.tableView cellForRowAtIndexPath:indexPath]];
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //If the table view is in editing mode, decrement the count for delete
+    if (self.tableView.editing) {
+        //Remove the selected folder from the delete list
+        Folder *folder=[self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSMutableArray *toBeDeletedFolders=[self.toBeDeletedFolders mutableCopy];
+        [toBeDeletedFolders removeObject:folder];
+        self.toBeDeletedFolders=[toBeDeletedFolders copy];
     }
 }
 
+
 #pragma mark - View Controller Lifecycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    //Hide the delete button
+    self.hiddenButton=self.deleteButton;
+    NSMutableArray *toolbarItems=[self.toolbarItems mutableCopy];
+    [toolbarItems removeObject:self.deleteButton];
+    self.toolbarItems=[toolbarItems copy];
+    
+    //hide the select buttons
+    [self toggleSelectButtons];
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
+}
+
+#pragma mark - UIActionSheetDelegate protocol methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    //If the action sheet is the delete folder action sheet and user clicks "Delete Folders" or "Delete Folder", delete the folder(s)
+    NSSet *deleteButtonTitles=[NSSet setWithObjects:@"Delete Folders",@"Delete Folder", nil];
+    NSString *clickedButtonTitle=[actionSheet buttonTitleAtIndex:buttonIndex];
+    if (self.tableView.editing && [deleteButtonTitles containsObject:clickedButtonTitle]) {
+        //Delete the selected folders
+        [self deleteFormationFolders:self.toBeDeletedFolders];
+        
+        //End editing mode
+        if (self.tableView.editing)
+            [self editPressed:self.editButton];
+    }
 }
 
 @end

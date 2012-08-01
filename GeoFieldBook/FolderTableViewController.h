@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CoreDataTableViewController.h"
-#import "UISplitViewBarButtonPresenter.h"
+#import "PrototypeFolderTableViewController.h"
 
-@interface FolderTableViewController : CoreDataTableViewController  //Making this inherit the FetchedResultsController from CoreDataTVC
+@interface FolderTableViewController : PrototypeFolderTableViewController 
 
-@property (nonatomic,strong) UIManagedDocument *database;   //The database to fetch folders from
+@property (nonatomic,readonly) NSArray *selectedFolders;
+
+@property (nonatomic) BOOL willFilterByFolder;
+
+- (void)reloadVisibleCells;
 
 @end

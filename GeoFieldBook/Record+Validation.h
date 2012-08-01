@@ -7,10 +7,11 @@
 //
 
 #import "Record.h"
+#import "Record+DictionaryKeys.h"
 
 @interface Record (Validation)
 
 //Return an array of record dictionary keys that correspond to missing information
-+ (NSArray *)validatesMandatoryPresenceOfRecordInfo:(NSDictionary *)recordInfo;
+- (NSArray *)validatesMandatoryPresenceOfRecordInfo:(NSDictionary *)recordInfo;
 
 @end

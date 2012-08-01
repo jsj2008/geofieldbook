@@ -6,11 +6,8 @@
 //  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
-#import "CoreDataTableViewController.h"
+#import "PrototypeFormationTableViewController.h"
 
-@interface FormationTableViewController : CoreDataTableViewController
-
-@property (nonatomic,strong) NSString *formationFolder;  //The name of the folder the formations are in
-@property (nonatomic,strong) UIManagedDocument *database;
+@interface FormationTableViewController : PrototypeFormationTableViewController
 
 @end
