@@ -641,7 +641,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
 - (void)writeRecord:(Record *)record withFileHandler:(NSFileHandle *)fileHandler mediaDirectoryPath:(NSString *)mediaDirPath {    
     //get all the common fields
     NSString *name = [TextInputFilter csvCompliantStringFromString:record.name];
-    NSString *observation = [TextInputFilter csvCompliantStringFromString:record.fieldOservations];
+    NSString *observation = [TextInputFilter csvCompliantStringFromString:record.fieldObservations];
     NSString *longitude = [TextInputFilter csvCompliantStringFromString:record.longitude];
     NSString *latitude = [TextInputFilter csvCompliantStringFromString:record.latitude];
     NSString *dip = [TextInputFilter csvCompliantStringFromString:[NSString stringWithFormat:@"%@", record.dip]];

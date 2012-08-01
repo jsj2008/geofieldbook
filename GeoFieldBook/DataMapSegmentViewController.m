@@ -74,7 +74,7 @@
     [recordDetail showKeyboard];
 }
 
-- (void)cancelRecordViewControllerEditingMode {
+- (void)resetRecordViewController {
     //Cancel the record view controller's edit mode
     RecordViewController *recordDetail=(RecordViewController *)self.detailSideViewController;
     [recordDetail cancelEditingMode];

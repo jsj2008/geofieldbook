@@ -375,6 +375,9 @@
     //Force update the map
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
     [dataMapSegmentVC reloadMapAnnotationViews];
+    
+    //Reload the record vc
+    [[self dataMapSegmentViewController] resetRecordViewController];
 }
 
 - (void)putImportExportButtonBack {
@@ -437,6 +440,9 @@
         //Tell the folder tvc to reload its data
         FolderTableViewController *folderTVC=[self folderTableViewController];
         [folderTVC reloadVisibleCells];
+        
+        //Redraw the map
+        [[self dataMapSegmentViewController] reloadMapAnnotationViews];
     });
 }
 
@@ -1012,7 +1018,7 @@
         if ([buttonTitle isEqualToString:@"Confirm"]) {
             //Cancel editing mode
             DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-            [dataMapSegmentVC cancelRecordViewControllerEditingMode];
+            [dataMapSegmentVC resetRecordViewController];
             
             //Delete the record if it's "fresh" (newly created and has not been modified)
             RecordTableViewController *recordTVC=[self recordTableViewController];

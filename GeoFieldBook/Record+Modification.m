@@ -22,7 +22,7 @@
     self.dip=[numberFormatter numberFromString:[recordInfo objectForKey:RECORD_DIP]];
     self.strike=[numberFormatter numberFromString:[recordInfo objectForKey:RECORD_STRIKE]];
     self.dipDirection=[recordInfo objectForKey:RECORD_DIP_DIRECTION];
-    self.fieldOservations=[recordInfo objectForKey:RECORD_FIELD_OBSERVATION];
+    self.fieldObservations=[recordInfo objectForKey:RECORD_FIELD_OBSERVATION];
     self.date=[recordInfo objectForKey:RECORD_DATE];
     
     //Update the image if it's not NSNULL

@@ -7,8 +7,7 @@
 //
 
 #import "ImportTableViewController.h"
-#import "IEEngine.h"
-#import "ConflictHandler.h"
+
 #import "GeoDatabaseManager.h"
 
 @interface ImportTableViewController() <UIActionSheetDelegate>

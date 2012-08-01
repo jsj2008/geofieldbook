@@ -152,7 +152,7 @@
 
 }
 
-- (void) drawDotWithCenter:(CGPoint) center andRect:(CGRect) rect
+- (void) drawDotWithCenter:(CGPoint)center andRect:(CGRect)rect
 {
     CGFloat width=self.bounds.size.width;
     CGFloat height=self.bounds.size.height;
@@ -163,7 +163,7 @@
     CGContextSetLineWidth(context, 3.0);
     CGContextBeginPath(context);
     
-    CGContextAddArc(context, center.x, center.y, sideLength/6, 2*PI, 0, 1);
+    CGContextAddArc(context, center.x, center.y, 2*sideLength/7, 2*PI, 0, 1);
     CGContextClosePath(context);
     CGContextSetFillColorWithColor(context, self.color.CGColor);
     CGContextFillPath(context);
