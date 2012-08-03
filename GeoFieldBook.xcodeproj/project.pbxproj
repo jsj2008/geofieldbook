@@ -1493,8 +1493,8 @@
 				02A7764015BCA3BE008A22C2 /* IASKSlider.m */,
 				02A7764115BCA3BE008A22C2 /* IASKSwitch.h */,
 				02A7764215BCA3BE008A22C2 /* IASKSwitch.m */,
-				02A7764315BCA3BE008A22C2 /* IASKTextField.h */,
 				02A7764415BCA3BE008A22C2 /* IASKTextField.m */,
+				02A7764315BCA3BE008A22C2 /* IASKTextField.h */,
 			);
 			path = Views;
 			sourceTree = "<group>";

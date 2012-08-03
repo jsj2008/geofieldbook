@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ConflictHandler.h"
+#import "SettingManager.h"
 
 @interface IEEngine : NSObject
 
@@ -27,9 +28,9 @@
 - (void)createCSVFilesFromStudentResponses:(NSArray *)responses;
 
 #define NUMBER_OF_COLUMNS_PER_RECORD_LINE 16
+#define METADATA_HEADER @"Group Information"
 #define IMPORT_MATRIX_FOLDER_NAME @"ExportMatrix.FolderName"
 #define IMPORT_MATRIX_RED_COMP @"Red"
 #define IMPORT_MATRIX_BLUE_COMP @"Blue"
 #define IMPORT_MATRIX_GREEN_COMP @"Green"
-
 @end
