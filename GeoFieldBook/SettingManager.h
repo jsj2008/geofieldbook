@@ -53,4 +53,14 @@
 @property (nonatomic) BOOL dipNumberEnabled;
 @property (nonatomic,strong) NSString *defaultContactFormation;
 
+#pragma mark - Group Settings Group
+
+#define NSUserDefaultsGroupName @"group_name"
+#define NSUserDefaultsGroupID @"group_id"
+
++ (NSString *)generateGroupID;
+
+@property (nonatomic,strong) NSString *groupName;
+@property (nonatomic,strong) NSString *groupID;
+
 @end

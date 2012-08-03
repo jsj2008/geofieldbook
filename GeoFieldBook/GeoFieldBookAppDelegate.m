@@ -9,6 +9,7 @@
 #import "GeoFieldBookAppDelegate.h"
 
 #import "GeoDatabaseManager.h"
+#import "SettingManager.h"
 
 #import "Question+Types.h"
 
@@ -37,6 +38,16 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsToRegister];
 }
 
+- (void)setDefaultGroupInfo {
+    SettingManager *manager=[SettingManager standardSettingManager];
+    
+    if (!manager.groupID)
+        [SettingManager generateGroupID];
+    
+    if (!manager.groupName.length)
+        manager.groupName=@"GeoFieldBook";
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     //Initialize the settings
@@ -44,6 +55,8 @@
     [self registerDefaultsForPListFile:@"Gestures.plist"];
     [self registerDefaultsForPListFile:@"Feedback.plist"];
     [self registerDefaultsForPListFile:@"Dip Strike Symbol.plist"];
+    
+    [self setDefaultGroupInfo];
     
     // Override point for customization after application launch.
     return YES;

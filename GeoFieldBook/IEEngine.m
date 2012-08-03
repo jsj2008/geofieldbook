@@ -23,7 +23,7 @@
 #import "IEEngineNotificationNames.h"
 
 #import "TextInputFilter.h"
-#import "ExportFormatter.h"
+#import "IEFormatter.h"
 #import "ColorManager.h"
 
 #import "Question.h"
@@ -334,7 +334,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     NSMutableArray *tokenArrays = [self tokenArraysFromFile:path].mutableCopy;
         
     //Transpose the array of tokens (expecting the csv file to contains formation columns sorted by formation folders)
-    tokenArrays=[ExportFormatter transposeTwoDimensionalArray:tokenArrays.copy].mutableCopy;
+    tokenArrays=[IEFormatter transposeTwoDimensionalArray:tokenArrays.copy].mutableCopy;
     
     //for each array of tokens 
     NSMutableArray *formationFolders=self.formationFolders.mutableCopy;
@@ -790,7 +790,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         [twoDimensionalArray addObject:entry.copy];
     }
     
-    NSArray *transposedArray=[ExportFormatter transposeTwoDimensionalArray:twoDimensionalArray.copy];
+    NSArray *transposedArray=[IEFormatter transposeTwoDimensionalArray:twoDimensionalArray.copy];
     
     return transposedArray;
 }

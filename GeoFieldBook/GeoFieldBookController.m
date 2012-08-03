@@ -306,14 +306,6 @@
         
     //Formation folder segue
     if ([segue.identifier isEqualToString:@"Show Formation Folders"]) {
-        //Dismiss the master popover if it's visible on the screen
-        if (self.popoverViewController.isPopoverVisible)
-            [self.popoverViewController dismissPopoverAnimated:NO];
-        
-        //Dismiss the old popover if its still visible
-        if (self.formationFolderPopoverController.isPopoverVisible)
-            [self.formationFolderPopoverController dismissPopoverAnimated:YES];
-        
         //Save the popover
         self.formationFolderPopoverController=[(UIStoryboardPopoverSegue *)segue popoverController];
     }

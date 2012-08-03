@@ -15,6 +15,7 @@
 @protocol MainSettingsTableViewControllerDelegate
 
 - (void)mainSettingsTVC:(MainSettingsTableViewController *)sender userDidSelectSettingPaneWithTitle:(NSString *)paneTitle;
+- (void)userDidSelectGroupSettingsInMainSettingsTVC:(MainSettingsTableViewController *)sender; 
 - (void)userDidPressCancel:(MainSettingsTableViewController *)sender;
 
 @end

@@ -210,4 +210,39 @@ static SettingManager *settingManager;
     [self userDefaultsSetObject:defaultContactFormation forKey:NSUserDefaultsContactDefaultFormation];
 }
 
+#pragma mark - Group Settings Group
+
++ (NSString *)generateGroupID {
+    //Create a new group id
+    NSTimeInterval timeInterval=[[NSDate date] timeIntervalSince1970];
+    CFUUIDRef uuidObject=CFUUIDCreate(kCFAllocatorDefault);
+    NSString *uniqueIdentifier1=(__bridge NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuidObject);
+    
+    uuidObject=CFUUIDCreate(kCFAllocatorDefault);
+    NSString *uniqueIdentifier2=(__bridge NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuidObject);
+    
+    NSString *groupID=[NSString stringWithFormat:@"%@%f%@%f",uniqueIdentifier1,timeInterval,uniqueIdentifier2];
+    
+    //Save the id to settings
+    [SettingManager standardSettingManager].groupID=groupID;
+    
+    return groupID;
+}
+
+- (NSString *)groupName {
+    return [self.userDefaults objectForKey:NSUserDefaultsGroupName];
+}
+
+- (void)setGroupName:(NSString *)groupName {
+    [self userDefaultsSetObject:groupName forKey:NSUserDefaultsGroupName];
+}
+
+- (NSString *)groupID {
+    return [self.userDefaults objectForKey:NSUserDefaultsGroupID];
+}
+
+- (void)setGroupID:(NSString *)groupID {
+    [self userDefaultsSetObject:groupID forKey:NSUserDefaultsGroupID];
+}
+
 @end

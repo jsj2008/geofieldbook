@@ -1,5 +1,5 @@
 //
-//  ExportFormatter.h
+//  IEFormatter.h
 //  GeoFieldBook
 //
 //  Created by Kien Hoang on 7/20/12.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ExportFormatter : NSObject
+@interface IEFormatter : NSObject
 
 + (NSArray *)transposeTwoDimensionalArray:(NSArray *)array;
 

@@ -1,14 +1,14 @@
 //
-//  ExportFormatter.m
+//  IEFormatter.m
 //  GeoFieldBook
 //
 //  Created by Kien Hoang on 7/20/12.
 //  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
-#import "ExportFormatter.h"
+#import "IEFormatter.h"
 
-@implementation ExportFormatter
+@implementation IEFormatter
 
 + (int)maximumLengthOfTwoDimensionalArray:(NSArray *)twoDimensionalArray {
     int maxLength=0;

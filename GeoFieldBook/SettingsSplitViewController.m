@@ -10,6 +10,7 @@
 
 #import "MainSettingsTableViewController.h"
 #import "IASKAppSettingsViewController.h"
+#import "GroupSettingsTableViewController.h"
 
 #import "SettingManagerNotificationNames.h"
 
@@ -29,9 +30,13 @@
     return (MainSettingsTableViewController *)masterNav.topViewController;
 }
 
-- (IASKAppSettingsViewController *)rightSideSettingViewController {
+- (UINavigationController *)rightSideNav {
     UINavigationController *detailNav=(UINavigationController *)self.detailViewController;
-    return (IASKAppSettingsViewController *)detailNav.topViewController;
+    return detailNav;
+}
+
+- (IASKAppSettingsViewController *)rightSideSettingViewController {
+    return (IASKAppSettingsViewController *)self.rightSideNav.topViewController;
 }
 
 #pragma mark - View Controller Lifecycle
@@ -66,6 +71,10 @@
 #pragma mark - MainSettingsTableViewControllerDelegate methods
 
 - (void)mainSettingsTVC:(MainSettingsTableViewController *)sender userDidSelectSettingPaneWithTitle:(NSString *)paneTitle {
+    //If the current rhs table is the group settings table, pop
+    if ([self.rightSideSettingViewController isKindOfClass:[GroupSettingsTableViewController class]])
+        [self.rightSideNav popToRootViewControllerAnimated:YES];
+    
     //Pop the left side's navigation controller all the way to root
     UINavigationController *detailNav=(UINavigationController *)self.detailViewController;
     [detailNav popToRootViewControllerAnimated:NO];
@@ -75,6 +84,12 @@
     
     //Set the title
     self.rightSideSettingViewController.navigationItem.title=paneTitle;
+}
+
+- (void)userDidSelectGroupSettingsInMainSettingsTVC:(MainSettingsTableViewController *)sender {
+    //Segue to the group settings table view
+    if (![self.rightSideSettingViewController isKindOfClass:[GroupSettingsTableViewController class]])
+        [self.rightSideSettingViewController performSegueWithIdentifier:@"Group Settings" sender:nil];
 }
 
 - (void)userDidPressCancel:(MainSettingsTableViewController *)sender {
