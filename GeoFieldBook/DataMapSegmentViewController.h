@@ -29,7 +29,7 @@ typedef void (^push_completion_handler_t)(void);
 - (void)setRecordViewControllerDelegate:(id <RecordViewControllerDelegate>)delegate;
 - (void)updateRecordDetailViewWithRecord:(Record *)record;
 - (void)putRecordViewControllerIntoEditingMode;
-- (void)cancelRecordViewControllerEditingMode;
+- (void)resetRecordViewController;
 
 - (void)setMapViewDelegate:(id <RecordMapViewControllerDelegate>)mapDelegate;
 - (void)updateMapWithRecords:(NSArray *)records forceUpdate:(BOOL)willForceUpdate updateRegion:(BOOL)willUpdateRegion;

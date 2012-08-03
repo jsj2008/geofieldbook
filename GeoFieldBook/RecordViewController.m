@@ -934,7 +934,7 @@
     
     //Set the dip direction and field observation
     self.dipDirectionTextField.text=self.record.dipDirection;
-    self.fieldObservationTextArea.text=self.record.fieldOservations;
+    self.fieldObservationTextArea.text=self.record.fieldObservations;
     
     //Set the record type
     self.recordTypeLabel.text=[self.record.class description];

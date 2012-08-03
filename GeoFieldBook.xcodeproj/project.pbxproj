@@ -64,7 +64,6 @@
 		0249E2E815A8EEF500A7532E /* GeoFieldBookControllerSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249E2E715A8EEF500A7532E /* GeoFieldBookControllerSegue.m */; };
 		0249E2EB15A9007B00A7532E /* DataMapSegmentControllerSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249E2EA15A9007B00A7532E /* DataMapSegmentControllerSegue.m */; };
 		026915A415BE83220076E34E /* Question+Seed.m in Sources */ = {isa = PBXBuildFile; fileRef = 026915A315BE83220076E34E /* Question+Seed.m */; };
-		026915A715BE86900076E34E /* Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 026915A615BE86900076E34E /* Record.m */; };
 		026915AA15BE86A80076E34E /* Record+State.m in Sources */ = {isa = PBXBuildFile; fileRef = 026915A915BE86A80076E34E /* Record+State.m */; };
 		02712A4C159D010500510188 /* Bedding.m in Sources */ = {isa = PBXBuildFile; fileRef = 02712A4B159D010500510188 /* Bedding.m */; };
 		02712A50159D011300510188 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 02712A4F159D011300510188 /* Contact.m */; };
@@ -79,6 +78,7 @@
 		027764A515BA480800C9DCEB /* NPConicGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = 027764A415BA480800C9DCEB /* NPConicGradient.m */; };
 		027764B815BA49DC00C9DCEB /* RGB-HSL.m in Sources */ = {isa = PBXBuildFile; fileRef = 027764B715BA49DB00C9DCEB /* RGB-HSL.m */; };
 		027764BB15BA4ADE00C9DCEB /* ColorPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 027764BA15BA4ADE00C9DCEB /* ColorPickerViewController.m */; };
+		02782FD015C9F80400A0A062 /* Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 02782FCF15C9F80400A0A062 /* Record.m */; };
 		02806EE615BA6B94003D09A7 /* Formation+DictionaryKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 02806EE515BA6B94003D09A7 /* Formation+DictionaryKeys.m */; };
 		02806EEC15BA7E97003D09A7 /* CustomFormationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02806EEB15BA7E97003D09A7 /* CustomFormationCell.m */; };
 		02806F0515BB00E5003D09A7 /* green_pin.png in Resources */ = {isa = PBXBuildFile; fileRef = 02806F0315BB00E5003D09A7 /* green_pin.png */; };
@@ -368,8 +368,6 @@
 		026640D415AA3B2800026D88 /* DataMapSegmentControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataMapSegmentControllerDelegate.h; sourceTree = "<group>"; };
 		026915A215BE83220076E34E /* Question+Seed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Question+Seed.h"; sourceTree = "<group>"; };
 		026915A315BE83220076E34E /* Question+Seed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Question+Seed.m"; sourceTree = "<group>"; };
-		026915A515BE86900076E34E /* Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Record.h; sourceTree = "<group>"; };
-		026915A615BE86900076E34E /* Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Record.m; sourceTree = "<group>"; };
 		026915A815BE86A80076E34E /* Record+State.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Record+State.h"; sourceTree = "<group>"; };
 		026915A915BE86A80076E34E /* Record+State.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Record+State.m"; sourceTree = "<group>"; };
 		02712A4A159D010500510188 /* Bedding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bedding.h; sourceTree = "<group>"; };
@@ -398,6 +396,8 @@
 		027764B715BA49DB00C9DCEB /* RGB-HSL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RGB-HSL.m"; sourceTree = "<group>"; };
 		027764B915BA4ADD00C9DCEB /* ColorPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPickerViewController.h; sourceTree = "<group>"; };
 		027764BA15BA4ADE00C9DCEB /* ColorPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorPickerViewController.m; sourceTree = "<group>"; };
+		02782FCE15C9F80400A0A062 /* Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Record.h; sourceTree = "<group>"; };
+		02782FCF15C9F80400A0A062 /* Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Record.m; sourceTree = "<group>"; };
 		02806EE215BA66D5003D09A7 /* ColorPickerViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPickerViewControllerDelegate.h; sourceTree = "<group>"; };
 		02806EE415BA6B94003D09A7 /* Formation+DictionaryKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Formation+DictionaryKeys.h"; sourceTree = "<group>"; };
 		02806EE515BA6B94003D09A7 /* Formation+DictionaryKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Formation+DictionaryKeys.m"; sourceTree = "<group>"; };
@@ -1361,8 +1361,8 @@
 		0298C256159B435B0038E89C /* Record */ = {
 			isa = PBXGroup;
 			children = (
-				026915A515BE86900076E34E /* Record.h */,
-				026915A615BE86900076E34E /* Record.m */,
+				02782FCE15C9F80400A0A062 /* Record.h */,
+				02782FCF15C9F80400A0A062 /* Record.m */,
 				0222DB0215961D5D00699D62 /* Record+Modification.h */,
 				0222DB0315961D5D00699D62 /* Record+Modification.m */,
 				0222DAFE15961D0D00699D62 /* Record+DictionaryKeys.h */,
@@ -1857,7 +1857,6 @@
 				0294C0B215BE56A200E0E2D0 /* UICustomSwitch.m in Sources */,
 				0294C0C815BE5ECA00E0E2D0 /* Question+Types.m in Sources */,
 				026915A415BE83220076E34E /* Question+Seed.m in Sources */,
-				026915A715BE86900076E34E /* Record.m in Sources */,
 				026915AA15BE86A80076E34E /* Record+State.m in Sources */,
 				2147B15E15BEF6BF001600F0 /* ColorManager.m in Sources */,
 				0280FCA715BEEACC009ED484 /* Answer+Creation.m in Sources */,
@@ -1875,6 +1874,7 @@
 				023DF00515C30A2C00591572 /* Contact+Validation.m in Sources */,
 				023DF00815C30A8700591572 /* Fault+Validation.m in Sources */,
 				023DF00B15C30AA500591572 /* JointSet+Validation.m in Sources */,
+				02782FD015C9F80400A0A062 /* Record.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

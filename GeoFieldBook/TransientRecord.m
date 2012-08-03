@@ -45,7 +45,7 @@
         record.strike=self.strike;
         record.dip=self.dip;
         record.dipDirection=self.dipDirection;
-        record.fieldOservations=self.fieldOservations;
+        record.fieldObservations=self.fieldOservations;
         record.latitude=self.latitude;
         record.longitude=self.longitude;
         
