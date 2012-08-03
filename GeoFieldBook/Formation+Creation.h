@@ -8,6 +8,8 @@
 
 #import "Formation.h"
 
+#import "Formation+DictionaryKeys.h"
+
 @interface Formation (Creation)
 
 + (Formation *)formationForInfo:(NSDictionary *)formationInfo 

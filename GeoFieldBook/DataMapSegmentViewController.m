@@ -76,8 +76,10 @@
 
 - (void)resetRecordViewController {
     //Cancel the record view controller's edit mode
-    RecordViewController *recordDetail=(RecordViewController *)self.detailSideViewController;
-    [recordDetail cancelEditingMode];
+    if ([self.detailSideViewController isKindOfClass:[RecordViewController class]]) {
+        RecordViewController *recordDetail=(RecordViewController *)self.detailSideViewController;
+        [recordDetail cancelEditingMode];
+    }
 }
 
 #pragma mark - Record Map View Controller Data Forward Mechanisms
