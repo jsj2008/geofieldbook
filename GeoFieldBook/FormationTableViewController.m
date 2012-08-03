@@ -127,7 +127,7 @@ typedef void (^database_save_t)(void);
     //Get the formation name
     NSString *formationName=[formationInfo objectForKey:GeoFormationName];
     formationName=[TextInputFilter filterDatabaseInputText:formationName];
-    
+        
     //Add the sort number to the formation info dictionary
     NSMutableDictionary *newFormationInfo=formationInfo.mutableCopy;
     [newFormationInfo setObject:[NSNumber numberWithInt:self.fetchedResultsController.fetchedObjects.count+1] forKey:GeoFormationSortNumber];
@@ -326,6 +326,8 @@ typedef void (^database_save_t)(void);
         Formation *formation=[formations objectAtIndex:i];
         formation.formationSortNumber=[NSNumber numberWithInt:i];
     }
+    
+    [self saveChangesToDatabaseWithCompletionHandler:^{}];
 }
 
 - (void)tableView:(UITableView *)tableView 
@@ -355,6 +357,9 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     
     //hide the select buttons
     [self toggleSelectButtons];
+    
+    //Update order
+    [self updateFormationOrder:self.fetchedResultsController.fetchedObjects];
 }
 
 #pragma mark - UIActionSheetDelegate protocol methods

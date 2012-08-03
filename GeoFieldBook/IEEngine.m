@@ -848,7 +848,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         NSString *line;
         for(NSArray *formations in formationsArray) 
         {
-            if([formations count]==2) {
+            if(formations.count==2) {
                 line = [NSString stringWithFormat:@"%@,%@\n", [formations objectAtIndex:0], [formations objectAtIndex:1]];
                 [handler writeData:[line dataUsingEncoding:NSUTF8StringEncoding]];
             }
