@@ -150,7 +150,7 @@
             [unprocessedFolders removeObject:transientFolder];
             NSLog(@"TransientFormationFolderName: %@", transientFolder.folderName);
             Formation_Folder *duplicateFormationFolder=[self queryDatabaseForFormationFolderWithName:transientFolder.folderName];
-            if (duplicateFormationFolder) {
+            if (duplicateFormationFolder) { //formation folder with that name already exists!
                 //Save the duplicate folder name
                 self.duplicateFormationFolderName=duplicateFormationFolder.folderName;
                 
