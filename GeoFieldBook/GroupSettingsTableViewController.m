@@ -10,6 +10,8 @@
 
 #import "SettingManager.h"
 
+#import "IEEngine.h"
+
 @interface GroupSettingsTableViewController()
 
 @property (weak, nonatomic) IBOutlet UITextField *groupNameTextField;
@@ -24,17 +26,31 @@
 @synthesize groupIDLabel = _groupIDLabel;
 @synthesize createGroupCell = _createGroupCell;
 
+- (SettingManager *)settingManager {
+     return [SettingManager standardSettingManager];
+}
+
+- (void)updateMetadataOfFeedbackCSVFile {
+    //Update
+    IEEngine *engine=[[IEEngine alloc] init];
+    NSDictionary *metadata=[NSDictionary dictionaryWithObjectsAndKeys:self.settingManager.groupName,IEEngineFeedbackGroupName,
+                            self.settingManager.groupID,IEEngineFeedbackGroupID, nil];
+    [engine updateFeedbackFileWithInfo:metadata];
+}
+
 #pragma mark - Target-Action Handlers
 
 - (IBAction)groupNameDidChange:(UITextField *)sender {
     //Save the group name to the settings
-    SettingManager *manager=[SettingManager standardSettingManager];
     if (sender.text.length) {
-        manager.groupName=sender.text;
+        self.settingManager.groupName=sender.text;
         sender.placeholder=sender.text;
+        
+        //Update metadata of feedback csv file
+        [self updateMetadataOfFeedbackCSVFile];
     }
     else
-        sender.text=manager.groupName;
+        sender.text=self.settingManager.groupName;
 }
 
 - (void)createNewGroup {
@@ -43,6 +59,9 @@
     
     //Set the label
     self.groupIDLabel.text=groupID;
+    
+    //Update metadata of feedback csv file
+    [self updateMetadataOfFeedbackCSVFile];
 }
 
 #pragma mark - UITableViewDelegate Protocol Methods

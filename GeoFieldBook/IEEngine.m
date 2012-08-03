@@ -299,7 +299,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
 
 /*
  Column Headings:
- "Name, Type, Longitude, Latitude, Date, Time, Strike, Dip, Dip Direction, Observations, Formation, Lower Formation, Upper Formation, Trend, Plunge, Image file name \r\n"
+ "Name, Type, Longitude, Latitude, Date, Time, Strike, Dip, Dip Direction, Observations, Formation, Lower Formation, Upper Formation, Trend, Plunge, Image file name \n"
  */
 -(void)createRecordsFromCSVFiles:(NSArray *)files
 {   
@@ -841,7 +841,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         NSFileHandle *handler = [NSFileHandle fileHandleForWritingAtPath:destinationPath];
         
         //now write the contents - first write the column headings, then the contents
-        NSString *header = [NSString stringWithFormat:@"Formation,Color\r\n"];
+        NSString *header = [NSString stringWithFormat:@"Formation,Color\n"];
         [handler writeData:[header dataUsingEncoding:NSUTF8StringEncoding]];
         
         NSArray *formationsArray = [formationsSeparatedByFolders objectForKey:folder];
@@ -849,7 +849,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         for(NSArray *formations in formationsArray) 
         {
             if([formations count]==2) {
-                line = [NSString stringWithFormat:@"%@,%@\r\n", [formations objectAtIndex:0], [formations objectAtIndex:1]];
+                line = [NSString stringWithFormat:@"%@,%@\n", [formations objectAtIndex:0], [formations objectAtIndex:1]];
                 [handler writeData:[line dataUsingEncoding:NSUTF8StringEncoding]];
             }
         }
@@ -878,7 +878,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     //now write the records to the csv file
     for (NSArray *formations in twoDimensionalFormationArray) {
         NSString *line=[formations componentsJoinedByString:@", "];
-        line=[line stringByAppendingString:@"\r\n"];
+        line=[line stringByAppendingString:@"\n"];
         [handler writeData:[line dataUsingEncoding:NSUTF8StringEncoding]];
     }
     
@@ -886,6 +886,14 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
 }
 
 #pragma mark - Student Response Exporting
+
+- (NSString *)feedbackFilePath {
+    NSFileManager *fileManager=[NSFileManager defaultManager];
+    NSURL *documentDirURL=[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask].lastObject;
+    NSString *feedbackFilePath=[documentDirURL.path stringByAppendingPathComponent:FEEDBACK_FILENAME];
+    
+    return feedbackFilePath;
+}
 
 - (void)createCSVFilesFromStudentResponses:(NSArray *)responses {
     //Create token matrix from responses
@@ -895,36 +903,48 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     
     //Write the token matrix to file
     NSFileManager *fileManager=[NSFileManager defaultManager];
-    NSURL *documentDirURL=[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask].lastObject;
-    NSString *responseFilePath=[documentDirURL.path stringByAppendingPathComponent:@"student_responses.response.csv"];
+    NSString *feedbackFilePath=self.feedbackFilePath;
     
-    //Create the file and add the eader token array to the matrix if the file doesn't exist yet
+    //Create the file and add the the token array to the matrix if the file doesn't exist yet
     BOOL fileNewlyCreated=NO;
-    if (![fileManager fileExistsAtPath:responseFilePath]) {
+    if (![fileManager fileExistsAtPath:feedbackFilePath]) {
         fileNewlyCreated=YES;
         
         //Create the file
-        [fileManager createFileAtPath:responseFilePath contents:nil attributes:nil];
-        
-        NSLog(@"Creating the file!");
+        [fileManager createFileAtPath:feedbackFilePath contents:nil attributes:nil];
+                
+        //write the group information - a.k.a the metadata
+        //metadata format:
+        //Header - Line 0
+        //Group Name - Line 1
+        //Group ID (Unique ID) - Line 2
+        //Separator btw metadata section and response section - Line 3
+        NSString *metadataHeader = [NSArray arrayWithObjects:METADATA_HEADER,@"", nil];
+        NSString *groupName = [NSArray arrayWithObjects:@"Group Name",self.settingManager.groupName, nil]; //get it from the settings manager
+        NSString *groupID = [NSArray arrayWithObjects:@"Group ID",self.settingManager.groupID, nil]; //get it from the manager
+        NSString *separatorLine=[NSArray arrayWithObjects:@"",@"", nil];;
         
         //Add the header token array
         NSArray *headerTokenArray=[NSArray arrayWithObjects:@"Question",@"Response",@"Date",@"Time",@"Latitude",@"Longitude",@"Number of Records", nil];
-        [tokenMatrix insertObject:headerTokenArray atIndex:0];
+        
+        //write the header data
+        NSArray *insertedHeaders=[NSArray arrayWithObjects:metadataHeader,groupName,groupID,separatorLine,headerTokenArray, nil];
+        NSIndexSet *indexes=[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 5)];
+        [tokenMatrix insertObjects:insertedHeaders atIndexes:indexes];
     }
     
-    NSFileHandle *handler = [NSFileHandle fileHandleForWritingAtPath:responseFilePath];
+    NSFileHandle *handler = [NSFileHandle fileHandleForWritingAtPath:feedbackFilePath];
     
     //Append the response data to the file (without overwriting it)
     [handler seekToEndOfFile];
     
     //Write a blank line if the file is not newly created
     if (!fileNewlyCreated)
-        [handler writeData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [handler writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
     
     for (NSArray *tokenArray in tokenMatrix) {
         NSString *line=[tokenArray componentsJoinedByString:@", "];
-        line=[line stringByAppendingString:@"\r\n"];
+        line=[line stringByAppendingString:@"\n"];
         [handler writeData:[line dataUsingEncoding:NSUTF8StringEncoding]];
     }
     
@@ -943,6 +963,49 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     [tokenArray addObject:[NSString stringWithFormat:@"%@ Records",response.numberOfRecords]];
     
     return tokenArray.copy;
+}
+
+#pragma mark - Update Mechanisms
+
+- (void)updateFeedbackFileWithInfo:(NSDictionary *)feedbackInfo {
+    //Open the feedback csv file
+    NSFileManager *fileManager=[NSFileManager defaultManager];
+    NSString *feedbackFilePath=self.feedbackFilePath;
+    
+    //Modify the file's metadata if it exists
+    if ([fileManager fileExistsAtPath:feedbackFilePath]) {
+        //read the contents of the file
+        NSString *content = [NSString stringWithContentsOfFile:feedbackFilePath encoding:NSUTF8StringEncoding error:NULL];
+        
+        //get all lines in the file
+        NSMutableArray *allLines = [content componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]].mutableCopy;
+        
+        //delete the old metadata (First 3 lines)
+        NSIndexSet *indexes=[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 3)];
+        [allLines removeObjectsAtIndexes:indexes];
+                
+        //metadata format:
+        //Header - Line 0
+        //Group Name - Line 1
+        //Group ID (Unique ID) - Line 2
+        NSString *metadataHeader = [NSString stringWithFormat:@"%@,  ",METADATA_HEADER];
+        NSString *groupName = [NSString stringWithFormat:@"Group Name, %@ ",self.settingManager.groupName]; //get it from the settings manager
+        NSString *groupID = [NSString stringWithFormat:@"Group ID, %@ ",self.settingManager.groupID];; //get it from the manager
+                
+        //add the new metadata
+        [allLines insertObjects:[NSArray arrayWithObjects:metadataHeader,groupName,groupID, nil] atIndexes:indexes];
+                
+        //Rewrite the file
+        NSFileHandle *fileHandler=[NSFileHandle fileHandleForUpdatingAtPath:feedbackFilePath];
+        [fileHandler truncateFileAtOffset:0];
+        for (NSString *line in allLines) {
+            NSString *writtenLine=[line stringByAppendingString:@"\n"];
+            [fileHandler writeData:[writtenLine dataUsingEncoding:NSUTF8StringEncoding]];
+        }
+            
+        //Close the file
+        [fileHandler closeFile];
+    }
 }
 
 @end

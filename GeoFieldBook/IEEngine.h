@@ -14,6 +14,13 @@
 
 @property (nonatomic, strong) ConflictHandler *handler;
 
+#pragma mark - CSV File Update Mechanism
+
+#define IEEngineFeedbackGroupName @"GeoFieldBook.IEEngine.Feedback.GroupName"
+#define IEEngineFeedbackGroupID @"GeoFieldBook.IEEngine.Feedback.GroupID"
+
+- (void)updateFeedbackFileWithInfo:(NSDictionary *)feedbackInfo;
+
 #pragma mark - Import
 
 - (void)createRecordsFromCSVFiles:(NSArray *)files; //passes the array of records to the ConflictaHandler
@@ -30,6 +37,8 @@
 #define NUMBER_OF_COLUMNS_PER_RECORD_LINE 16
 
 #define METADATA_HEADER @">>>>>> Metadata <<<<<<<"
+#define FEEDBACK_FILENAME @"student_responses.response.csv"
+
 #define IMPORT_MATRIX_FOLDER_NAME @"ExportMatrix.FolderName"
 #define EXPORT_MATRIX_FOLDER_NAME @"ExportMatrix.FolderName"
 
