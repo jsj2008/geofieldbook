@@ -30,6 +30,8 @@
 #import "Answer.h"
 #import "Answer+DateFormatter.h"
 
+#import "SettingManager.h"
+
 @interface IEEngine()
 
 @property (nonatomic, strong) NSArray *selectedFilePaths;
@@ -57,6 +59,10 @@
 typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike, Dip, dipDirection, Observations, FormationField, LowerFormation, UpperFormation, Trend, Plunge, imageName}columnHeadings;
 
 #pragma mark - Getters
+
+- (SettingManager *)settingManager {
+    return [SettingManager standardSettingManager];
+}
 
 -(NSMutableArray *) projects {
     if(!_records) 
@@ -244,13 +250,10 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     NSMutableArray *tokenArrays = [self tokenArraysFromFile:path].mutableCopy;
     
     //if it has file header(new format), ignore those. Otherwise, just ignore the column headings.
-    NSString *header = METADATA_HEADER;
-    if([[tokenArrays objectAtIndex:0] isEqualToString:header]) {
-        [tokenArrays removeObjectAtIndex:0]; //file header
-        [tokenArrays removeObjectAtIndex:1]; //group name
-        [tokenArrays removeObjectAtIndex:2]; //unique group id
-        [tokenArrays removeObjectAtIndex:3]; //folder name
-        [tokenArrays removeObjectAtIndex:4]; //record column headers       
+    if([[[tokenArrays objectAtIndex:0] objectAtIndex:0] isEqualToString:METADATA_HEADER]) {
+        //Remove the first 5 lines (metadata header, group name, group id, folder name, line separator btw metadata and record section, and the  record section header)
+        NSMutableIndexSet *indexes=[NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 6)];
+        [tokenArrays removeObjectsAtIndexes:indexes]; 
     }else {
         //Remove the first token array which contains the column headings
         [tokenArrays removeObjectAtIndex:0];
@@ -641,16 +644,24 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         //Group Name - Line 1
         //Group ID (Unique ID) - Line 2
         //Folder Name - Line 3
-        //write the group name in the next line, and the group id in the line following it. group id will be a combination of hash and nonhash data consisting of group name, and date.
-        SettingManager *settings = [SettingManager standardSettingManager];
+        //Separator btw metadata section and record section - Line 4
+        NSString *header = [NSString stringWithFormat:@"%@,  \n",METADATA_HEADER];
+        NSString *groupName = [NSString stringWithFormat:@"Group Name, %@ \n",self.settingManager.groupName]; //get it from the settings manager
+        NSString *groupID = [NSString stringWithFormat:@"Group ID, %@ \n",self.settingManager.groupID];; //get it from the manager
+        NSString *folderName=[NSString stringWithFormat:@"Folder Name, %@ \n",newFolder];
+        NSString *separatorLine=@", \n";
         
-        NSString *header = METADATA_HEADER;
-        NSString *groupName = @"tempname"; //get it from the settings manager
-        NSString *uniqueGroupID = @"tempID"; //get it from the manager
         //write the header data
         [handler writeData:[header dataUsingEncoding:NSUTF8StringEncoding]];
         [handler writeData:[groupName dataUsingEncoding:NSUTF8StringEncoding]];
-        [handler writeData:[uniqueGroupID dataUsingEncoding:NSUTF8StringEncoding]];
+        [handler writeData:[groupID dataUsingEncoding:NSUTF8StringEncoding]];
+        [handler writeData:[folderName dataUsingEncoding:NSUTF8StringEncoding]];
+        [handler writeData:[separatorLine dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        //Record section
+        //write the column headings to the csv
+        NSString *titles = [NSString stringWithFormat:@"Name, Type, Longitude, Latitude, Date,Time, Strike, Dip, Dip Direction, Observations, Formation, Lower Formation, Upper Formation, Trend, Plunge, Image file name \n"];
+        [handler writeData:[titles dataUsingEncoding:NSUTF8StringEncoding]];
     }
     
     //now call the method that writes onto the array of records into their respective csv files
@@ -661,15 +672,6 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
 }
 
 - (void)writeRecord:(Record *)record withFileHandler:(NSFileHandle *)fileHandler mediaDirectoryPath:(NSString *)mediaDirPath {  
-    
-    //write the rest of the metadata and the column headings
-    [fileHandler writeData:[record.folder.folderName dataUsingEncoding:NSUTF8StringEncoding]];
-        //write the column headings to the csv
-    NSString *titles = [NSString stringWithFormat:@"Name, Type, Longitude, Latitude, Date,Time, Strike, Dip, Dip Direction, Observations, Formation, Lower Formation, Upper Formation, Trend, Plunge, Image file name \n"];
-    [fileHandler writeData:[titles dataUsingEncoding:NSUTF8StringEncoding]];
-
-    //now start writing the records.
-    
     //now get all the common fields
     NSString *name = [TextInputFilter csvCompliantStringFromString:record.name];
     NSString *observation = [TextInputFilter csvCompliantStringFromString:record.fieldObservations];
