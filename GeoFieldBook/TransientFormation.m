@@ -44,6 +44,10 @@
         formation.formationFolder=[TransientFormation_Folder defaultFolderManagedObjectContext:context];
         formation.colorName=self.colorName;
         
+        //Set the formation's color to default if no color name
+        if (!self.colorName.length)
+            formation.colorName=[SettingManager standardSettingManager].defaultFormationColorName;
+        
         return formation;
     }
     

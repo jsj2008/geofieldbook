@@ -10,6 +10,7 @@
 
 @interface Formation (DictionaryKeys)
 
+#define GeoFormationSortNumber @"GeoFieldBook.Database.FormationSortNumber"
 #define GeoFormationName @"GeoFieldBook.Database.FormationName"
 #define GeoFormationColor @"GeoFieldBook.Database.FormationColor"
 #define GeoFormationColorName @"GeoFieldBook.Database.FormationColorName"

@@ -8,8 +8,6 @@
 
 #import "Formation+Creation.h"
 
-#import "Formation+DictionaryKeys.h"
-
 #import "TextInputFilter.h"
 
 @implementation Formation (Creation)
@@ -47,6 +45,7 @@
     formation.formationName=formationName;
     formation.formationFolder=formationFolder;
     formation.colorName=colorName;
+    formation.formationSortNumber=[formationInfo objectForKey:GeoFormationSortNumber];
     
     return formation;
 }

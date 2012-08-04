@@ -127,9 +127,13 @@ typedef void (^database_save_t)(void);
     //Get the formation name
     NSString *formationName=[formationInfo objectForKey:GeoFormationName];
     formationName=[TextInputFilter filterDatabaseInputText:formationName];
+        
+    //Add the sort number to the formation info dictionary
+    NSMutableDictionary *newFormationInfo=formationInfo.mutableCopy;
+    [newFormationInfo setObject:[NSNumber numberWithInt:self.fetchedResultsController.fetchedObjects.count+1] forKey:GeoFormationSortNumber];
     
     //create a new formation, if that returns nil (folder not found), put up an alert
-    if (![Formation formationForInfo:formationInfo inFormationFolderWithName:self.formationFolder.folderName inManagedObjectContext:self.database.managedObjectContext]) {
+    if (![Formation formationForInfo:newFormationInfo.copy inFormationFolderWithName:self.formationFolder.folderName inManagedObjectContext:self.database.managedObjectContext]) {
         [self putUpDuplicateNameAlertWithName:formationName];
         return NO;
     }
@@ -317,6 +321,15 @@ typedef void (^database_save_t)(void);
     return proposedDestinationIndexPath;
 }
 
+- (void)updateFormationOrder:(NSArray *)formations {
+    for (int i=0;i<formations.count;i++) {
+        Formation *formation=[formations objectAtIndex:i];
+        formation.formationSortNumber=[NSNumber numberWithInt:i];
+    }
+    
+    [self saveChangesToDatabaseWithCompletionHandler:^{}];
+}
+
 - (void)tableView:(UITableView *)tableView 
 moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath 
       toIndexPath:(NSIndexPath *)destinationIndexPath {
@@ -327,10 +340,7 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     Formation *objectToMove=[formations objectAtIndex:sourceIndexPath.row];
     [formations removeObjectAtIndex:sourceIndexPath.row];
     [formations insertObject:objectToMove atIndex:destinationIndexPath.row];
-    for (int i=0;i<[formations count];i++) {
-        Formation *formation=[formations objectAtIndex:i];
-        formation.formationSortNumber=[NSNumber numberWithInt:i];
-    }
+    [self updateFormationOrder:formations];
 }
 
 
@@ -347,6 +357,9 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     
     //hide the select buttons
     [self toggleSelectButtons];
+    
+    //Update order
+    [self updateFormationOrder:self.fetchedResultsController.fetchedObjects];
 }
 
 #pragma mark - UIActionSheetDelegate protocol methods
