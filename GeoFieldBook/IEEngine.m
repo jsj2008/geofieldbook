@@ -479,7 +479,6 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
                              andFormationFolders:nil
                         withValidationMessageLog:self.validationMessageBoard.allMessages];
     } else {
-//        NSLog(@"Formation folder: %@", self.formationFolders);
         [self.handler processTransientFormations:self.formations.copy 
                              andFormationFolders:self.formationFolders 
                         withValidationMessageLog:self.validationMessageBoard.warningMessages];  
