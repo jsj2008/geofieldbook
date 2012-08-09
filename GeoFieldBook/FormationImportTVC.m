@@ -21,7 +21,7 @@
 #pragma mark - Getters and Setters
 
 - (NSString *)csvFileExtension {
-    return @".formation.c.csv";
+    return @".formation.csv";
 }
 
 #pragma mark - View Controller Lifecycle

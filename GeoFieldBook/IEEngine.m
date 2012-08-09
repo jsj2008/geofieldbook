@@ -835,7 +835,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     
     for(NSString *folder in formationsSeparatedByFolders.allKeys ) {
         //first create the file, if a file by that name already exists, overwrite.
-        NSString *destinationPath = [NSString stringWithFormat:@"%@/%@.formation.c.csv", documentsDirectory, folder];
+        NSString *destinationPath = [NSString stringWithFormat:@"%@/%@.formation.csv", documentsDirectory, folder];
         [[NSFileManager defaultManager] createFileAtPath:destinationPath contents:nil attributes:nil];
         NSFileHandle *handler = [NSFileHandle fileHandleForWritingAtPath:destinationPath];
         
