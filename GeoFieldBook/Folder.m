@@ -18,5 +18,6 @@
 @dynamic folderDescription;
 @dynamic formationFolder;
 @dynamic records;
+@dynamic prefixCounter;
 
 @end
