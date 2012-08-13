@@ -12,13 +12,13 @@
 
 - (NSString *)day {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy-MM-dd";
+    dateFormatter.dateFormat = @"MM/dd/yy";
     return [dateFormatter stringFromDate:self.date];
     
 }
 - (NSString *)time {
     NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
-    timeFormatter.dateFormat = @"HH:mm";
+    timeFormatter.dateFormat = @"HH:mm:ss";
     return [timeFormatter stringFromDate:self.date];
 }
 
