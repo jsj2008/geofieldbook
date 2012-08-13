@@ -245,4 +245,22 @@ static SettingManager *settingManager;
     [self userDefaultsSetObject:groupID forKey:NSUserDefaultsGroupID];
 }
 
+#pragma mark - Record Settings Group
+
+-(NSString *)recordPrefix {
+    return [self.userDefaults objectForKey:NSUserDefaultsPrefixText];
+}
+
+-(void)setRecordPrefix:(NSString *)prefix {
+    [self userDefaultsSetObject:prefix forKey:NSUserDefaultsPrefixText];
+}
+
+-(BOOL)recordPrefixEnabled {
+    return [self.userDefaults boolForKey:NSUserDefaultsAutomaticPrefixEnabled];
+}
+
+-(void) setRecordPrefixEnabled:(BOOL) enabled {
+    [self userDefaultsSetBool:enabled forKey:NSUserDefaultsAutomaticPrefixEnabled];
+}
+
 @end
