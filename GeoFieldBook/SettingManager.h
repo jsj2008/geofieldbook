@@ -58,6 +58,15 @@
 #define NSUserDefaultsGroupName @"group_name"
 #define NSUserDefaultsGroupID @"group_id"
 
+
+#pragma mark - Record Settings Group
+#define NSUserDefaultsAutomaticPrefixEnabled @"automatic_record_prefix_enabled"
+#define NSUserDefaultsPrefixText @"record_prefix_text"
+@property (nonatomic, strong) NSString *recordPrefix;
+@property (nonatomic) BOOL recordPrefixEnabled;
+
+
+
 + (NSString *)generateGroupID;
 
 @property (nonatomic,strong) NSString *groupName;

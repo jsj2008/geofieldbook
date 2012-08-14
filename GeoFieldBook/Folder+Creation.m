@@ -36,6 +36,8 @@
         folder=[NSEntityDescription insertNewObjectForEntityForName:@"Folder" inManagedObjectContext:context];
         folder.folderName=folderName;
         folder.folderDescription=folderDescription;
+        //set the prefix counter to one
+        folder.prefixCounter = [[NSNumber alloc] initWithInt:1];
     }
     
     return folder;

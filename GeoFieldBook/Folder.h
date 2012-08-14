@@ -18,6 +18,8 @@
 @property (nonatomic, retain) NSString * folderDescription;
 @property (nonatomic, retain) Formation_Folder *formationFolder;
 @property (nonatomic, retain) NSSet *records;
+@property (nonatomic, retain) NSNumber *prefixCounter;
+
 @end
 
 @interface Folder (CoreDataGeneratedAccessors)

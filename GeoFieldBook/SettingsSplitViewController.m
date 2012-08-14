@@ -71,6 +71,9 @@
 #pragma mark - MainSettingsTableViewControllerDelegate methods
 
 - (void)mainSettingsTVC:(MainSettingsTableViewController *)sender userDidSelectSettingPaneWithTitle:(NSString *)paneTitle {
+    
+    NSLog(@"PaneTitle: %@", paneTitle);
+    
     //If the current rhs table is the group settings table, pop
     if ([self.rightSideSettingViewController isKindOfClass:[GroupSettingsTableViewController class]])
         [self.rightSideNav popToRootViewControllerAnimated:YES];
