@@ -44,15 +44,19 @@
             }
             
             //Set the name of the record
+            record.name = @"";
             record.folder=folder;
             record.image=nil;
             
             //set automatically generated name
-            NSString *prefix = [SettingManager standardSettingManager].recordPrefix;
-            record.name = [NSString stringWithFormat:@"%@-%@",prefix, record.folder.prefixCounter];
-            int i = [record.folder.prefixCounter intValue];
-            i++;
-            record.folder.prefixCounter = [NSNumber numberWithInt:i];
+            SettingManager *manager = [SettingManager standardSettingManager];
+            if(manager.recordPrefixEnabled) {
+                NSString *prefix = manager.recordPrefix;
+                record.name = [NSString stringWithFormat:@"%@-%@",prefix, record.folder.prefixCounter];
+                int i = [record.folder.prefixCounter intValue];
+                i++;
+                record.folder.prefixCounter = [NSNumber numberWithInt:i];
+            }
         }
     }
     

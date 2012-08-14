@@ -918,17 +918,18 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         //Group Name - Line 1
         //Group ID (Unique ID) - Line 2
         //Separator btw metadata section and response section - Line 3
-        NSString *metadataHeader = [NSArray arrayWithObjects:METADATA_HEADER,@"", nil];
-        NSString *groupName = [NSArray arrayWithObjects:@"Group Name",self.settingManager.groupName, nil]; //get it from the settings manager
-        NSString *groupID = [NSArray arrayWithObjects:@"Group ID",self.settingManager.groupID, nil]; //get it from the manager
-        NSString *separatorLine=[NSArray arrayWithObjects:@"",@"", nil];;
+        NSArray *metadataHeader = [NSArray arrayWithObjects:METADATA_HEADER,@"", nil];
+        NSArray *groupName = [NSArray arrayWithObjects:@"Group Name",self.settingManager.groupName, nil]; //get it from the settings manager
+        NSArray *groupID = [NSArray arrayWithObjects:@"Group ID",self.settingManager.groupID, nil]; //get it from the manager
+        NSArray *numFeedback = [NSArray arrayWithObjects:@"# Feedbacks", @"3",nil];
+        NSArray *separatorLine=[NSArray arrayWithObjects:@"",@"", nil];;
         
         //Add the header token array
         NSArray *headerTokenArray=[NSArray arrayWithObjects:@"Question",@"Response",@"Date",@"Time",@"Latitude",@"Longitude",@"Number of Records", nil];
         
         //write the header data
-        NSArray *insertedHeaders=[NSArray arrayWithObjects:metadataHeader,groupName,groupID,separatorLine,headerTokenArray, nil];
-        NSIndexSet *indexes=[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 5)];
+        NSArray *insertedHeaders=[NSArray arrayWithObjects:metadataHeader,groupName,groupID,numFeedback,separatorLine,headerTokenArray, nil];
+        NSIndexSet *indexes=[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 6)];
         [tokenMatrix insertObjects:insertedHeaders atIndexes:indexes];
     }
     
@@ -959,7 +960,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     [tokenArray addObject:response.time];
     [tokenArray addObject:[NSString stringWithFormat:@"%@",response.latitude]];
     [tokenArray addObject:[NSString stringWithFormat:@"%@",response.longitude]];
-    [tokenArray addObject:[NSString stringWithFormat:@"%@ Records",response.numberOfRecords]];
+    [tokenArray addObject:[NSString stringWithFormat:@"%@",response.numberOfRecords]];
     
     return tokenArray.copy;
 }
@@ -980,19 +981,21 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         NSMutableArray *allLines = [content componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]].mutableCopy;
         
         //delete the old metadata (First 3 lines)
-        NSIndexSet *indexes=[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 3)];
+        NSIndexSet *indexes=[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 4)];
         [allLines removeObjectsAtIndexes:indexes];
                 
         //metadata format:
         //Header - Line 0
         //Group Name - Line 1
         //Group ID (Unique ID) - Line 2
+        //Number of feedbacks per feedback record (aka. feedback collection)
         NSString *metadataHeader = [NSString stringWithFormat:@"%@,  ",METADATA_HEADER];
         NSString *groupName = [NSString stringWithFormat:@"Group Name, %@ ",self.settingManager.groupName]; //get it from the settings manager
-        NSString *groupID = [NSString stringWithFormat:@"Group ID, %@ ",self.settingManager.groupID];; //get it from the manager
+        NSString *groupID = [NSString stringWithFormat:@"Group ID, %@ ",self.settingManager.groupID]; //get it from the manager
+        NSString *numFeedback = [NSString stringWithFormat:@"# Feedbacks, 3"];
                 
         //add the new metadata
-        [allLines insertObjects:[NSArray arrayWithObjects:metadataHeader,groupName,groupID, nil] atIndexes:indexes];
+        [allLines insertObjects:[NSArray arrayWithObjects:metadataHeader,groupName,groupID,numFeedback, nil] atIndexes:indexes];
                 
         //Rewrite the file
         NSFileHandle *fileHandler=[NSFileHandle fileHandleForUpdatingAtPath:feedbackFilePath];

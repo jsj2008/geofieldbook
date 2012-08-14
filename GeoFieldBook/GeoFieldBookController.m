@@ -372,57 +372,7 @@
     [[self dataMapSegmentViewController] resetRecordViewController];
 }
 
-- (void)putImportExportButtonBack {
-    //Hide spinner and put up the import button
-    __weak GeoFieldBookController *weakSelf=self;
-    NSMutableArray *toolbarItems=self.toolbar.items.mutableCopy;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        //Hide the spinner
-        [weakSelf.importExportSpinner stopAnimating];
-        int index=[toolbarItems indexOfObject:weakSelf.importExportSpinnerBarButtonItem];
-        [toolbarItems removeObject:weakSelf.importExportSpinnerBarButtonItem];
-        [toolbarItems insertObject:weakSelf.importExportButton atIndex:index];
-        weakSelf.toolbar.items=toolbarItems.copy;
-    });
-}
-
-- (void)importingDidStart:(NSNotification *)notification {
-    //Put up a spinner for the import button
-    __weak GeoFieldBookController *weakSelf=self;
-    NSMutableArray *toolbarItems=self.toolbar.items.mutableCopy;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIActivityIndicatorView *spinner=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        UIBarButtonItem *spinnerBarButtonItem=[[UIBarButtonItem alloc] initWithCustomView:spinner];
-        [spinner startAnimating];
-        int index=[toolbarItems indexOfObject:weakSelf.importExportButton];
-        [toolbarItems removeObject:weakSelf.importExportButton];
-        [toolbarItems insertObject:spinnerBarButtonItem atIndex:index];
-        weakSelf.toolbar.items=toolbarItems.copy;
-        
-        weakSelf.importExportSpinner=spinner;
-        weakSelf.importExportSpinnerBarButtonItem=spinnerBarButtonItem; 
-    });
-}
-
-- (void)recordImportingDidStart:(NSNotification *)notification {
-    [self importingDidStart:notification];
-    UINavigationController *modelNav=(UINavigationController *)self.popoverViewController.contentViewController;
-    [modelNav popToRootViewControllerAnimated:NO];
-}
-
-- (void)formationImportingDidStart:(NSNotification *)notification {
-    [self importingDidStart:notification];
-}
-
-- (void)importingWasCanceled:(NSNotification *)notification {
-    //Put the import export button back
-    [self putImportExportButtonBack];
-}
-
 - (void)importingDidEnd:(NSNotification *)notification {
-    //Hide spinner and put up the import button
-    [self putImportExportButtonBack];
-    
     //Show done alert in the main queue (UI stuff)
     dispatch_async(dispatch_get_main_queue(), ^{
         //Put up an alert
@@ -443,14 +393,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         UIAlertView *doneAlert=[[UIAlertView alloc] initWithTitle:@"Exporting Finished" message:@"" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
         [doneAlert show];
-    });
-}
-
-- (void)handleValidationErrors:(NSNotification *)notification {
-    //Put up an alert in the main thread
-    dispatch_async(dispatch_get_main_queue(), ^{
-        //Put the import export button back again
-        [self putImportExportButtonBack];
     });
 }
 
@@ -496,25 +438,8 @@
                                name:GeoNotificationConflictHandlerImportingDidEnd 
                              object:nil];
     [notificationCenter addObserver:self 
-                           selector:@selector(importingWasCanceled:) 
-                               name:GeoNotificationConflictHandlerImportingWasCanceled
-                             object:nil];
-    
-    [notificationCenter addObserver:self 
-                           selector:@selector(recordImportingDidStart:) 
-                               name:GeoNotificationIEEngineRecordImportingDidStart
-                             object:nil];
-    [notificationCenter addObserver:self 
-                           selector:@selector(formationImportingDidStart:) 
-                               name:GeoNotificationIEEngineFormationImportingDidStart
-                             object:nil];
-    [notificationCenter addObserver:self 
                            selector:@selector(exportingDidEnd:) 
                                name:GeoNotificationIEEngineExportingDidEnd
-                             object:nil];
-    [notificationCenter addObserver:self 
-                           selector:@selector(handleValidationErrors:) 
-                               name:GeoNotificationConflictHandlerValidationErrorsOccur 
                              object:nil];
     [notificationCenter addObserver:self 
                            selector:@selector(longPressGestureSettingDidChange:) 

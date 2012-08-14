@@ -29,7 +29,8 @@
     id imageData = [recordInfo objectForKey:RECORD_IMAGE_DATA];
     if ([imageData isKindOfClass:[NSData class]]) {
         //Delete the old image
-        [self.managedObjectContext deleteObject:self.image];
+        if (self.image)
+            [self.managedObjectContext deleteObject:self.image];
         
         //Set the new image
         self.image = [Image imageWithBinaryData:imageData inManagedObjectContext:self.managedObjectContext];    

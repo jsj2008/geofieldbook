@@ -1190,11 +1190,11 @@
 				024097A2159D373F00855D33 /* Custom Views */,
 				029877FC1595954D000D71E7 /* Images */,
 				2128E73D15A2378000B277F9 /* MKAnnotation */,
-				020EBB5C15941F8300EECC08 /* View Controller Prototypes */,
 				0288944E15B49E6A0062E6DA /* Custom Animations */,
 				029877F015955CB2000D71E7 /* Protocols */,
 				020EBB961594255700EECC08 /* Library */,
 				0294E0D1159362D20025219F /* Database */,
+				020EBB5C15941F8300EECC08 /* View Controller Prototypes */,
 				02AE26F315BE508700FE59C7 /* Vendor */,
 				0294E09C159361060025219F /* Supporting Files */,
 			);
