@@ -28,6 +28,7 @@
     Formation *formation=[self.formation saveFormationToManagedObjectContext:context];
     fault.formation=formation;
     fault.formationName=formation.formationName;
+    fault.folder.formationFolder=formation.formationFolder;
     
     //Set plunge and trend
     fault.trend=self.trend;

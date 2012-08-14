@@ -23,9 +23,12 @@
     
     //Populate formation
     Bedding *record=(Bedding *)self.nsManagedRecord;
+    
+    //Set the formation if the formation is not empty
     Formation *formation=[self.formation saveFormationToManagedObjectContext:context];
     record.formation=formation;
     record.formationName=formation.formationName;
+    record.folder.formationFolder=formation.formationFolder;
     
     //Call completion handler
     completionHandler(self.nsManagedRecord);

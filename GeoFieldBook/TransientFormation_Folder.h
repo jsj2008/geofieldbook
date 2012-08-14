@@ -19,7 +19,6 @@
 
 - (Formation_Folder *)saveFormationFolderToManagedObjectContext:(NSManagedObjectContext *)context 
                                                      completion:(completion_handler_t)completionHandler;
-+ (Formation_Folder *)defaultFolderManagedObjectContext:(NSManagedObjectContext *)context;
 
 @property (nonatomic,strong) Formation_Folder *managedFormationFolder;
 

@@ -26,6 +26,8 @@
 #import "IEFormatter.h"
 #import "ColorManager.h"
 
+#import "Folder.h"
+#import "Formation_Folder.h"
 #import "Question.h"
 #import "Answer.h"
 #import "Answer+DateFormatter.h"
@@ -146,7 +148,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
 
 #pragma mark - Record Importing
 
-- (TransientRecord *)recordForTokenArray:(NSArray *)tokenArray withFolderName:(NSString *)folderName {
+- (TransientRecord *)recordForTokenArray:(NSArray *)tokenArray withFolderName:(NSString *)folderName andFormationFolderName:(NSString *)formationFolderName {
     //Initialize the transient record
     NSString *typeToken=[tokenArray objectAtIndex:1];
     TransientRecord *transientRecord=[TransientRecord recordWithType:typeToken];
@@ -196,33 +198,53 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     //Set the folder
     transientRecord.folder=[self.foldersByFolderNames objectForKey:folderName];
     
+    //Get the formation folder
+    TransientFormation_Folder *formationFolder=[[TransientFormation_Folder alloc] init];
+    formationFolder.folderName=formationFolderName;
+    
     //identify the record type and populate record specific fields
     if([typeToken isEqualToString:@"Contact"]) {
         TransientContact *contact=(TransientContact *)transientRecord;
+        NSString *lowerFormationName=[TextInputFilter filterDatabaseInputText:[tokenArray objectAtIndex:LowerFormation]];
+        NSString *upperFormationName=[TextInputFilter filterDatabaseInputText:[tokenArray objectAtIndex:UpperFormation]];
         
         //Set lower formation
-        TransientFormation *lowerFormation=[[TransientFormation alloc] init];
-        lowerFormation.formationName=[tokenArray objectAtIndex:LowerFormation];
-        [contact setLowerFormation:lowerFormation];
+        if (lowerFormationName.length) {
+            TransientFormation *lowerFormation=[[TransientFormation alloc] init];
+            lowerFormation.formationName=lowerFormationName;
+            lowerFormation.formationFolder=formationFolder;
+            contact.lowerFormation=lowerFormation;
+        }
         
         //Set upper formation
-        TransientFormation *upperFormation=[[TransientFormation alloc] init];
-        upperFormation.formationName=[tokenArray objectAtIndex:UpperFormation];
-        [contact setUpperFormation:upperFormation];
+        if (upperFormationName.length) {
+            TransientFormation *upperFormation=[[TransientFormation alloc] init];
+            upperFormation.formationName=upperFormationName;
+            upperFormation.formationFolder=formationFolder;
+            contact.upperFormation=upperFormation;
+        }
     } else if ([typeToken isEqualToString:@"Bedding"]) {
         TransientBedding *bedding=(TransientBedding *)transientRecord;
+        NSString *formationName=[tokenArray objectAtIndex:FormationField];
         
-        //Set formation
-        TransientFormation *formation=[[TransientFormation alloc] init];
-        formation.formationName=[tokenArray objectAtIndex:FormationField];
-        [bedding setFormation:formation];
+        //Setup the formation
+        if (formationName.length) {
+            TransientFormation *formation=[[TransientFormation alloc] init];
+            formation.formationName=formationName;
+            formation.formationFolder=formationFolder;
+            bedding.formation=formation;
+        }
     } else if([typeToken isEqualToString:@"Joint Set"]) {
         TransientJointSet *jointSet=(TransientJointSet *)transientRecord;
+        NSString *formationName=[tokenArray objectAtIndex:FormationField];
         
-        //Set formation
-        TransientFormation *formation=[[TransientFormation alloc] init];
-        formation.formationName=[tokenArray objectAtIndex:FormationField];
-        [jointSet setFormation:formation];
+        //Setup the formation
+        if (formationName.length) {
+            TransientFormation *formation=[[TransientFormation alloc] init];
+            formation.formationName=formationName;
+            formation.formationFolder=formationFolder;
+            jointSet.formation=formation;
+        }
     } else if([typeToken isEqualToString:@"Fault"]) {        
         //Set the plunge and trend (need to populate name in case validaiton error occurs)
         TransientFault *transientFault=(TransientFault *)transientRecord;
@@ -233,9 +255,13 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
             [self.validationMessageBoard addErrorWithMessage:errorMessage];
         
         //Set formation
-        TransientFormation *formation=[[TransientFormation alloc] init];
-        formation.formationName=[tokenArray objectAtIndex:FormationField];
-        [(TransientFault *)transientRecord setFormation:formation];
+        NSString *formationName=[tokenArray objectAtIndex:FormationField];
+        if (formationName.length) {
+            TransientFormation *formation=[[TransientFormation alloc] init];
+            formation.formationName=formationName;
+            formation.formationFolder=formationFolder;
+            transientFault.formation=formation;
+        }
     } else if([typeToken isEqualToString:@"Other"]) {
         //Nothing to populate
     }
@@ -250,9 +276,23 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     NSMutableArray *tokenArrays = [self tokenArraysFromFile:path].mutableCopy;
     
     //if it has file header(new format), ignore those. Otherwise, just ignore the column headings.
+    //Obtain the formation folder name
+    NSString *formationFolder=DEFAULT_FORMATION_FOLDER_NAME;
+    BOOL containsFormationFolderHeader=NO;
     if([[[tokenArrays objectAtIndex:0] objectAtIndex:0] isEqualToString:METADATA_HEADER]) {
-        //Remove the first 5 lines (metadata header, group name, group id, folder name, line separator btw metadata and record section, and the  record section header)
-        NSMutableIndexSet *indexes=[NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 6)];
+        //Get the formation folder name if there is one
+        for (int i=0;i<7;i++) {
+            if ([[[tokenArrays objectAtIndex:i] objectAtIndex:0] isEqualToString:FORMATION_FOLDER_HEADER]) {
+                formationFolder=[[tokenArrays objectAtIndex:i] objectAtIndex:1];
+                containsFormationFolderHeader=YES;
+                break;
+            }
+        }
+        
+        //Remove the first 7 lines if there is a formation folder header and 6 lines otherwise 
+        //(metadata header, group name, group id, folder name, line separator btw metadata and record section, formation folder header, and the record section header)
+        int numRemovedLines=containsFormationFolderHeader ? 7 : 6;
+        NSMutableIndexSet *indexes=[NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, numRemovedLines)];
         [tokenArrays removeObjectsAtIndexes:indexes]; 
     }else {
         //Remove the first token array which contains the column headings
@@ -272,7 +312,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         else {
             //Create a transient record from the token array
             NSString *folderName=[[path.lastPathComponent componentsSeparatedByString:@"."] objectAtIndex:0];
-            TransientRecord *record=[self recordForTokenArray:tokenArray withFolderName:folderName];
+            TransientRecord *record=[self recordForTokenArray:tokenArray withFolderName:folderName andFormationFolderName:formationFolder];
             
             //add the record to the array of records
             [transientRecords addObject:record];
@@ -595,7 +635,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     
     //get the names of the folders from the array of records so you could create them
     for(Record *record in records)
-        [folders addObject:record.folder.folderName];
+        [folders addObject:record.folder];
         
     //Get the document directory path
     NSFileManager *fileManager=[NSFileManager defaultManager];
@@ -607,12 +647,14 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     NSMutableDictionary *mediaDirectories = [NSMutableDictionary dictionary];
     
     //for each project name, create a project folder in the documents directory with the same name. if the folder already exists, empty it. also create a media folder with the same name inside the directory
-    for(NSString *newFolder in folders.allObjects) {
+    for(Folder *folder in folders.allObjects) {
         //first create the paths
-        NSString *dataDirectory = [documentDirPath stringByAppendingPathComponent:newFolder];
+        NSString *folderName=folder.folderName;
+        NSString *formationFolderName=folder.formationFolder ? folder.formationFolder.folderName : @"";
+        NSString *dataDirectory = [documentDirPath stringByAppendingPathComponent:folderName];
         NSString *mediaDirectory = [dataDirectory stringByAppendingPathComponent:@"media"];
-        [mediaDirectories setObject:mediaDirectory forKey:newFolder]; 
-        NSString *csvFileName=[NSString stringWithFormat:@"%@.record.csv",newFolder];
+        [mediaDirectories setObject:mediaDirectory forKey:folderName]; 
+        NSString *csvFileName=[NSString stringWithFormat:@"%@.record.csv",folderName];
         NSString *dataFile = [dataDirectory stringByAppendingPathComponent:csvFileName];
         
         //then create the directories...
@@ -632,7 +674,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         if(![fileManager fileExistsAtPath:dataFile])
             [fileManager createFileAtPath: dataFile contents:nil attributes:nil];
         NSFileHandle *handler = [NSFileHandle fileHandleForWritingAtPath:dataFile];
-        [fileHandlers setObject:handler forKey:newFolder];
+        [fileHandlers setObject:handler forKey:folderName];
         
         //clear all contents of the file
         [handler truncateFileAtOffset:0]; 
@@ -647,14 +689,16 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         NSString *header = [NSString stringWithFormat:@"%@,  \n",METADATA_HEADER];
         NSString *groupName = [NSString stringWithFormat:@"Group Name, %@ \n",self.settingManager.groupName]; //get it from the settings manager
         NSString *groupID = [NSString stringWithFormat:@"Group ID, %@ \n",self.settingManager.groupID];; //get it from the manager
-        NSString *folderName=[NSString stringWithFormat:@"Folder Name, %@ \n",newFolder];
+        NSString *folderNameLine=[NSString stringWithFormat:@"Folder Name, %@ \n",folderName];
+        NSString *formationFolderNameLine=[NSString stringWithFormat:@"%@, %@ \n",FORMATION_FOLDER_HEADER,formationFolderName];
         NSString *separatorLine=@", \n";
         
         //write the header data
         [handler writeData:[header dataUsingEncoding:NSUTF8StringEncoding]];
         [handler writeData:[groupName dataUsingEncoding:NSUTF8StringEncoding]];
         [handler writeData:[groupID dataUsingEncoding:NSUTF8StringEncoding]];
-        [handler writeData:[folderName dataUsingEncoding:NSUTF8StringEncoding]];
+        [handler writeData:[folderNameLine dataUsingEncoding:NSUTF8StringEncoding]];
+        [handler writeData:[formationFolderNameLine dataUsingEncoding:NSUTF8StringEncoding]];
         [handler writeData:[separatorLine dataUsingEncoding:NSUTF8StringEncoding]];
         
         //Record section

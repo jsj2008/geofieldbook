@@ -30,6 +30,7 @@
     record.upperFormation=upperFormation;
     record.lowerFormationName=lowerFormation.formationName;
     record.upperFormationName=upperFormation.formationName;
+    record.folder.formationFolder=lowerFormation.formationFolder;
  
     //Call completion handler
     completionHandler(self.nsManagedRecord);
