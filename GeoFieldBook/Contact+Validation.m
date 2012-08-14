@@ -14,12 +14,12 @@
     //Create an array to hold the keys that correspond to missing or invalid mandatory information
     NSMutableArray *invalidInformationKeys=[super validatesMandatoryPresenceOfRecordInfo:recordInfo].mutableCopy;
     
-    //Validates the presence of location, date, and dip direction information
-    NSMutableArray *mandatoryFields=[NSMutableArray arrayWithObjects:RECORD_DIP_DIRECTION, nil];
-    for (NSString *field in mandatoryFields) {
-        if (![[recordInfo objectForKey:field] length])
-            [invalidInformationKeys addObject:field];
-    }
+    //Validates dip direction, if there is strike or dip, but there is no dip direction => Validations fail
+    NSString *strike=[recordInfo objectForKey:RECORD_STRIKE];
+    NSString *dip=[recordInfo objectForKey:RECORD_DIP];
+    NSString *dipDirection=[recordInfo objectForKey:RECORD_DIP_DIRECTION];
+    if ((strike.length || dip.length) && !dipDirection.length)
+        [invalidInformationKeys addObject:RECORD_DIP_DIRECTION];
     
     return invalidInformationKeys.copy;
 }
