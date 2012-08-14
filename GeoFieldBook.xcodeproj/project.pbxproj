@@ -61,6 +61,7 @@
 		0249DAE815DAB64400DBA75B /* Fault.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAE715DAB64400DBA75B /* Fault.m */; };
 		0249DAEB15DAB65200DBA75B /* JointSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAEA15DAB65200DBA75B /* JointSet.m */; };
 		0249DAEE15DAB79400DBA75B /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAED15DAB79400DBA75B /* Contact.m */; };
+		0249DAFC15DAC91300DBA75B /* SelectFormationFolderTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */; };
 		0249E2AD15A6A16100A7532E /* import_export.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2AC15A6A16100A7532E /* import_export.png */; };
 		0249E2AF15A6A2D100A7532E /* gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2AE15A6A2D100A7532E /* gear2.png */; };
 		0249E2B115A6A32300A7532E /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2B015A6A32300A7532E /* gear.png */; };
@@ -363,6 +364,9 @@
 		0249DAEA15DAB65200DBA75B /* JointSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JointSet.m; sourceTree = "<group>"; };
 		0249DAEC15DAB79400DBA75B /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
 		0249DAED15DAB79400DBA75B /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
+		0249DAFA15DAC91300DBA75B /* SelectFormationFolderTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectFormationFolderTVC.h; sourceTree = "<group>"; };
+		0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectFormationFolderTVC.m; sourceTree = "<group>"; };
+		0249DAFD15DAC9D900DBA75B /* SelectFormationFolderTVCDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectFormationFolderTVCDelegate.h; sourceTree = "<group>"; };
 		0249E2AC15A6A16100A7532E /* import_export.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = import_export.png; sourceTree = "<group>"; };
 		0249E2AE15A6A2D100A7532E /* gear2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear2.png; sourceTree = "<group>"; };
 		0249E2B015A6A32300A7532E /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear.png; sourceTree = "<group>"; };
@@ -901,6 +905,8 @@
 				0238587515996B5C00A0DB98 /* FormationTableViewController.m */,
 				0238587715996F4900A0DB98 /* FormationViewController.h */,
 				0238587815996F4900A0DB98 /* FormationViewController.m */,
+				0249DAFA15DAC91300DBA75B /* SelectFormationFolderTVC.h */,
+				0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */,
 			);
 			name = "Formation Group";
 			sourceTree = "<group>";
@@ -1278,6 +1284,7 @@
 				212DD18215B73531000203AB /* ExportFormationTableViewControllerDelegate.h */,
 				028732F215B25D6A0001BBC2 /* CSVTableViewControllerDelegate.h */,
 				028732F915B2805F0001BBC2 /* FolderSelectTableViewControllerDelegate.h */,
+				0249DAFD15DAC9D900DBA75B /* SelectFormationFolderTVCDelegate.h */,
 				0288944415B382400062E6DA /* UIDoubleTableViewControllerChildren.h */,
 				02A7766A15BCCC8A008A22C2 /* CustomSplitViewControllerChildren.h */,
 				02806EE215BA66D5003D09A7 /* ColorPickerViewControllerDelegate.h */,
@@ -1885,6 +1892,7 @@
 				0249DAE815DAB64400DBA75B /* Fault.m in Sources */,
 				0249DAEB15DAB65200DBA75B /* JointSet.m in Sources */,
 				0249DAEE15DAB79400DBA75B /* Contact.m in Sources */,
+				0249DAFC15DAC91300DBA75B /* SelectFormationFolderTVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
