@@ -72,12 +72,12 @@
     
     if ([record isKindOfClass:[Contact class]]) {
         Contact *contact=(Contact *)record;
-        self.upperFormation.text=contact.upperFormation.formationName;
-        self.lowerFormation.text=contact.lowerFormation.formationName;
+        self.upperFormation.text=contact.upperFormationName;
+        self.lowerFormation.text=contact.lowerFormationName;
     } else if ([record isKindOfClass:[Other class]]) {
         self.formation.text=@"N/A";
     } else {
-        self.formation.text=[(Formation *)[(id)record formation] formationName];
+        self.formation.text=[(id)record formationName];
     }
 }
 

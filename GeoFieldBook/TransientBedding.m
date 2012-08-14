@@ -22,7 +22,10 @@
     [super saveToManagedObjectContext:context completion:completionHandler];
     
     //Populate formation
-    [(Bedding *)self.nsManagedRecord setFormation:[self.formation saveFormationToManagedObjectContext:context]];
+    Bedding *record=(Bedding *)self.nsManagedRecord;
+    Formation *formation=[self.formation saveFormationToManagedObjectContext:context];
+    record.formation=formation;
+    record.formationName=formation.formationName;
     
     //Call completion handler
     completionHandler(self.nsManagedRecord);

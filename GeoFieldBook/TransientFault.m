@@ -10,9 +10,9 @@
 
 @implementation TransientFault
 
-@synthesize plunge;
-@synthesize trend;
-@synthesize formation;
+@synthesize plunge=_plunge;
+@synthesize trend=_trend;
+@synthesize formation=_formation;
 
 - (void)saveToManagedObjectContext:(NSManagedObjectContext *)context 
                         completion:(completion_handler_t)completionHandler
@@ -25,7 +25,9 @@
     
     //Populate formation
     Fault *fault=(Fault *)self.nsManagedRecord;
-    [fault setFormation:[self.formation saveFormationToManagedObjectContext:context]];
+    Formation *formation=[self.formation saveFormationToManagedObjectContext:context];
+    fault.formation=formation;
+    fault.formationName=formation.formationName;
     
     //Set plunge and trend
     fault.trend=self.trend;

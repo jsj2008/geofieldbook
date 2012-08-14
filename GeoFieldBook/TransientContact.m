@@ -22,10 +22,15 @@
     //Call super to populate the common record info
     [super saveToManagedObjectContext:context completion:completionHandler];
     
-    //Populate formation
-    [(Contact *)self.nsManagedRecord setLowerFormation:[self.lowerFormation saveFormationToManagedObjectContext:context]];
-    [(Contact *)self.nsManagedRecord setUpperFormation:[self.upperFormation saveFormationToManagedObjectContext:context]];
-    
+    //Populate formations
+    Contact *record=(Contact *)self.nsManagedRecord;
+    Formation *lowerFormation=[self.lowerFormation saveFormationToManagedObjectContext:context];
+    Formation *upperFormation=[self.upperFormation saveFormationToManagedObjectContext:context];
+    record.lowerFormation=lowerFormation;
+    record.upperFormation=upperFormation;
+    record.lowerFormationName=lowerFormation.formationName;
+    record.upperFormationName=upperFormation.formationName;
+ 
     //Call completion handler
     completionHandler(self.nsManagedRecord);
 }

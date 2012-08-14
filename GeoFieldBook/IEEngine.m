@@ -697,13 +697,10 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     NSString *plunge=@"";
     NSString *trend=@"";
     if([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[JointSet class]] || [record isKindOfClass:[Fault class]]) {
-        Formation *recordFormation=[(id)record formation];
-        formation = recordFormation ? recordFormation.formationName : @"";
+        formation=[(id)record formationName];
     } else if([record isKindOfClass:[Contact class]]) {
-        Formation *recordLowerFormation=[(Contact *)record lowerFormation];
-        Formation *recordUpperFormation=[(Contact *)record upperFormation];
-        lowerFormation = recordLowerFormation ? recordLowerFormation.formationName : @"";
-        upperFormation = recordUpperFormation ? recordUpperFormation.formationName : @"";
+        lowerFormation=[(Contact *)record lowerFormationName];
+        upperFormation=[(Contact *)record upperFormationName];
     } else if([record isKindOfClass:[Fault class]]) {
         Fault *fault=(Fault *)record;
         plunge = [NSString stringWithFormat:@"%@", fault.plunge];

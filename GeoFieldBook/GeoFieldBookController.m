@@ -527,7 +527,7 @@
     settingButtonCustomView.showsTouchWhenHighlighted=YES;
     self.settingButton.customView=settingButtonCustomView;
     
-    //[self.toolbar setBackgroundImage:[UIImage imageNamed:@"stone-textures.jpeg"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    //[self.toolbar setBackgroundImage:[UIImage imageNamed:@"nav_bar.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     
     //Setup gesture recognizers
     [self setupGestureRecognizers];

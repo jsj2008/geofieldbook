@@ -2,7 +2,7 @@
 //  Contact.h
 //  GeoFieldBook
 //
-//  Created by Kien Hoang on 6/28/12.
+//  Created by Kien Hoang on 8/14/12.
 //  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
@@ -14,6 +14,8 @@
 
 @interface Contact : Record
 
+@property (nonatomic, retain) NSString * upperFormationName;
+@property (nonatomic, retain) NSString * lowerFormationName;
 @property (nonatomic, retain) Formation *lowerFormation;
 @property (nonatomic, retain) Formation *upperFormation;
 

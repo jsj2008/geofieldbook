@@ -2,7 +2,7 @@
 //  Bedding.m
 //  GeoFieldBook
 //
-//  Created by Kien Hoang on 6/28/12.
+//  Created by Kien Hoang on 8/14/12.
 //  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
@@ -12,6 +12,7 @@
 
 @implementation Bedding
 
+@dynamic formationName;
 @dynamic formation;
 
 @end

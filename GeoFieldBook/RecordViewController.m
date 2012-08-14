@@ -227,6 +227,7 @@
     [self dictionary:recordDictionary setObject:self.dipTextField.text forKey:RECORD_DIP];
     [self dictionary:recordDictionary setObject:self.dipDirectionTextField.text forKey:RECORD_DIP_DIRECTION];
     [self dictionary:recordDictionary setObject:self.formationTextField.text forKey:RECORD_FORMATION];
+    [self dictionary:recordDictionary setObject:self.record.folder.formationFolder.folderName forKey:RECORD_FORMATION_FOLDER];
     [self dictionary:recordDictionary setObject:self.fieldObservationTextArea.text forKey:RECORD_FIELD_OBSERVATION];
     
     //Specific update for specific of records
@@ -979,7 +980,7 @@
     //Show the formation label and formation textfield set the textfield's value
     self.formationLabel.hidden=NO;
     self.formationTextField.hidden=NO;
-    self.formationTextField.text=bedding.formation ? bedding.formation.formationName : @"";
+    self.formationTextField.text=bedding.formationName;
 }
 
 - (void)formSetupForContactType {
@@ -989,8 +990,8 @@
     
     //Setup the two lower and upper formation fields
     Contact *contact=(Contact *)self.record;
-    self.lowerFormationTextField.text=contact.lowerFormation ? contact.lowerFormation.formationName : @"";
-    self.upperFormationTextField.text=contact.upperFormation ? contact.upperFormation.formationName : @"";
+    self.lowerFormationTextField.text=contact.lowerFormationName;
+    self.upperFormationTextField.text=contact.upperFormationName;
 }
 
 - (void)formSetupForJointSetType {
@@ -1000,7 +1001,7 @@
     
     //Set the formation text field
     JointSet *jointSet=(JointSet *)self.record;
-    self.formationTextField.text=jointSet.formation ? jointSet.formation.formationName : @"";
+    self.formationTextField.text=jointSet.formationName;
 }
 
 - (void)formSetupForFaultType {
@@ -1016,7 +1017,7 @@
     self.trendTextField.text=fault.trend ? [NSString stringWithFormat:@"%@",fault.trend] : @"";
     
     //Set the formation text field
-    self.formationTextField.text=fault.formation ? fault.formation.formationName : @"";    
+    self.formationTextField.text=fault.formationName;    
 }
 
 - (void)formSetupForOtherType {

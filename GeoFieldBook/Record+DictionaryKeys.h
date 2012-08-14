@@ -18,6 +18,7 @@
 #define RECORD_TIME @"GeoFieldBook_Record_Time"
 #define RECORD_STRIKE @"GeoFieldBook_Record_Strike"
 #define RECORD_FORMATION @"GeoFieldBook_Record_Formation"
+#define RECORD_FORMATION_FOLDER @"GeoFieldBook_Record_Formation_Folder"
 #define RECORD_UPPER_FORMATION @"GeoFieldBook_Record_Upper_Formation"
 #define RECORD_LOWER_FORMATION @"GeoFieldBook_Record_Lower_Formation"
 #define RECORD_TREND @"GeoFieldBook_Record_Trend"

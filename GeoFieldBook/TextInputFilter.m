@@ -64,6 +64,9 @@
     if(csvCompliantString.length>1) 
         csvCompliantString=[csvCompliantString stringByReplacingOccurrencesOfString:@"\"\"" withString:@"\""]; 
     
+    //Trim leading and trailing spaces and new lines
+    csvCompliantString=[csvCompliantString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
     return csvCompliantString;
 }
 
