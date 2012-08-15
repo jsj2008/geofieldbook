@@ -12,6 +12,8 @@
 #import "MKGeoRecordAnnotation.h"
 #import "DipStrikeSymbol.h"
 
+#import "JointSetSymbol.h"
+
 #import "Formation.h"
 #import "Bedding.h"
 #import "Contact.h"

@@ -196,6 +196,7 @@
 		2132A5DA159CD62200009CB9 /* Image+Creation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2132A5D9159CD62200009CB9 /* Image+Creation.m */; };
 		2141DC17159C9AE1002518F9 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		2147B15E15BEF6BF001600F0 /* ColorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2147B15D15BEF6BF001600F0 /* ColorManager.m */; };
+		2159610815DAA6C100478C86 /* JointSetSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 2159610715DAA6C000478C86 /* JointSetSymbol.m */; };
 		218BF61C15C078FA00963CB6 /* Contact+Formation.m in Sources */ = {isa = PBXBuildFile; fileRef = 218BF61B15C078FA00963CB6 /* Contact+Formation.m */; };
 		218F8FD215B9AA220008710A /* MKCustomAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 218F8FD115B9AA220008710A /* MKCustomAnnotationView.m */; };
 		218F8FD515B9AA490008710A /* DipStrikeSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 218F8FD415B9AA490008710A /* DipStrikeSymbol.m */; };
@@ -594,6 +595,8 @@
 		2141DC18159CA275002518F9 /* libcommonCrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcommonCrypto.dylib; path = usr/lib/system/libcommonCrypto.dylib; sourceTree = SDKROOT; };
 		2147B15C15BEF6BF001600F0 /* ColorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorManager.h; sourceTree = "<group>"; };
 		2147B15D15BEF6BF001600F0 /* ColorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorManager.m; sourceTree = "<group>"; };
+		2159610615DAA6C000478C86 /* JointSetSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JointSetSymbol.h; sourceTree = "<group>"; };
+		2159610715DAA6C000478C86 /* JointSetSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JointSetSymbol.m; sourceTree = "<group>"; };
 		218BF61A15C078FA00963CB6 /* Contact+Formation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Contact+Formation.h"; path = "../Contact+Formation.h"; sourceTree = "<group>"; };
 		218BF61B15C078FA00963CB6 /* Contact+Formation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Contact+Formation.m"; path = "../Contact+Formation.m"; sourceTree = "<group>"; };
 		218F8FD015B9AA220008710A /* MKCustomAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKCustomAnnotationView.h; sourceTree = "<group>"; };
@@ -1566,6 +1569,8 @@
 		217C9F9C15B9A3A800C3AABC /* Dip Strike Symbol */ = {
 			isa = PBXGroup;
 			children = (
+				2159610615DAA6C000478C86 /* JointSetSymbol.h */,
+				2159610715DAA6C000478C86 /* JointSetSymbol.m */,
 				218F8FD315B9AA490008710A /* DipStrikeSymbol.h */,
 				218F8FD415B9AA490008710A /* DipStrikeSymbol.m */,
 				218F8FD015B9AA220008710A /* MKCustomAnnotationView.h */,
@@ -1881,6 +1886,7 @@
 				023DF00B15C30AA500591572 /* JointSet+Validation.m in Sources */,
 				02782FD015C9F80400A0A062 /* Record.m in Sources */,
 				029A2D6715CC23FF000853D9 /* GroupSettingsTableViewController.m in Sources */,
+				2159610815DAA6C100478C86 /* JointSetSymbol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
