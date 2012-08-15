@@ -376,7 +376,7 @@
     //Show done alert in the main queue (UI stuff)
     dispatch_async(dispatch_get_main_queue(), ^{
         //Put up an alert
-        UIAlertView *doneAlert=[[UIAlertView alloc] initWithTitle:@"Finished Importing" message:nil delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+        UIAlertView *doneAlert=[[UIAlertView alloc] initWithTitle:@"Finished Importing" message:nil delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
         [doneAlert show];
         
         //Push the folder-record nav to root (folder tvc)
@@ -395,7 +395,7 @@
 - (void)exportingDidEnd:(NSNotification *)notification {
     //Put up alert in the main queue (UI stuff)
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *doneAlert=[[UIAlertView alloc] initWithTitle:@"Exporting Finished" message:@"" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+        UIAlertView *doneAlert=[[UIAlertView alloc] initWithTitle:@"Exporting Finished" message:@"" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
         [doneAlert show];
     });
 }
@@ -941,14 +941,16 @@
             DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
             [dataMapSegmentVC resetRecordViewController];
             
-            //Delete the record if it's "fresh" (newly created and has not been modified)
+            //Delete the record if it's "fresh" (newly created and has not been modified) and push the initial view on screen
             RecordTableViewController *recordTVC=[self recordTableViewController];
             Record *record=recordTVC.chosenRecord;
-            if (record.recordState==RecordStateNew)
+            if (record.recordState==RecordStateNew) {
+                //Delete the record
                 [record.managedObjectContext deleteObject:record];
             
-            //Push the initial view on screen
-            [self pushInitialViewControllerOnScreen];
+                //Push the initial view on screen
+                [self pushInitialViewControllerOnScreen];
+            }
         }
     }
 }
