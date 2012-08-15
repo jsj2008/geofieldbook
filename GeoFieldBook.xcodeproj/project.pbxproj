@@ -62,7 +62,6 @@
 		0249DAEB15DAB65200DBA75B /* JointSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAEA15DAB65200DBA75B /* JointSet.m */; };
 		0249DAEE15DAB79400DBA75B /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAED15DAB79400DBA75B /* Contact.m */; };
 		0249DAFC15DAC91300DBA75B /* SelectFormationFolderTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */; };
-		0249DB0015DB13AB00DBA75B /* JointSetSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */; };
 		0249DB0315DB1B2200DBA75B /* FaultSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DB0215DB1B2200DBA75B /* FaultSymbol.m */; };
 		0249DB0615DB45C100DBA75B /* DotSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DB0515DB45B900DBA75B /* DotSymbol.m */; };
 		0249DB0915DB482800DBA75B /* OtherSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DB0815DB482800DBA75B /* OtherSymbol.m */; };
@@ -202,6 +201,7 @@
 		2132A5DA159CD62200009CB9 /* Image+Creation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2132A5D9159CD62200009CB9 /* Image+Creation.m */; };
 		2141DC17159C9AE1002518F9 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		2147B15E15BEF6BF001600F0 /* ColorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2147B15D15BEF6BF001600F0 /* ColorManager.m */; };
+		2159612115DBF5C500478C86 /* JointSetSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 2159612015DBF5C500478C86 /* JointSetSymbol.m */; };
 		218BF61C15C078FA00963CB6 /* Contact+Formation.m in Sources */ = {isa = PBXBuildFile; fileRef = 218BF61B15C078FA00963CB6 /* Contact+Formation.m */; };
 		218F8FD215B9AA220008710A /* MKCustomAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 218F8FD115B9AA220008710A /* MKCustomAnnotationView.m */; };
 		218F8FD515B9AA490008710A /* DipStrikeSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 218F8FD415B9AA490008710A /* DipStrikeSymbol.m */; };
@@ -371,8 +371,6 @@
 		0249DAFA15DAC91300DBA75B /* SelectFormationFolderTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectFormationFolderTVC.h; sourceTree = "<group>"; };
 		0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectFormationFolderTVC.m; sourceTree = "<group>"; };
 		0249DAFD15DAC9D900DBA75B /* SelectFormationFolderTVCDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectFormationFolderTVCDelegate.h; sourceTree = "<group>"; };
-		0249DAFE15DB13AB00DBA75B /* JointSetSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JointSetSymbol.h; sourceTree = "<group>"; };
-		0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JointSetSymbol.m; sourceTree = "<group>"; };
 		0249DB0115DB1B2100DBA75B /* FaultSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaultSymbol.h; sourceTree = "<group>"; };
 		0249DB0215DB1B2200DBA75B /* FaultSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaultSymbol.m; sourceTree = "<group>"; };
 		0249DB0415DB45B700DBA75B /* DotSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DotSymbol.h; sourceTree = "<group>"; };
@@ -612,6 +610,8 @@
 		2141DC18159CA275002518F9 /* libcommonCrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcommonCrypto.dylib; path = usr/lib/system/libcommonCrypto.dylib; sourceTree = SDKROOT; };
 		2147B15C15BEF6BF001600F0 /* ColorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorManager.h; sourceTree = "<group>"; };
 		2147B15D15BEF6BF001600F0 /* ColorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorManager.m; sourceTree = "<group>"; };
+		2159611F15DBF5C400478C86 /* JointSetSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JointSetSymbol.h; sourceTree = "<group>"; };
+		2159612015DBF5C500478C86 /* JointSetSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JointSetSymbol.m; sourceTree = "<group>"; };
 		218BF61A15C078FA00963CB6 /* Contact+Formation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Contact+Formation.h"; path = "../Contact+Formation.h"; sourceTree = "<group>"; };
 		218BF61B15C078FA00963CB6 /* Contact+Formation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Contact+Formation.m"; path = "../Contact+Formation.m"; sourceTree = "<group>"; };
 		218F8FD015B9AA220008710A /* MKCustomAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKCustomAnnotationView.h; sourceTree = "<group>"; };
@@ -1590,8 +1590,8 @@
 			children = (
 				218F8FD315B9AA490008710A /* DipStrikeSymbol.h */,
 				218F8FD415B9AA490008710A /* DipStrikeSymbol.m */,
-				0249DAFE15DB13AB00DBA75B /* JointSetSymbol.h */,
-				0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */,
+				2159611F15DBF5C400478C86 /* JointSetSymbol.h */,
+				2159612015DBF5C500478C86 /* JointSetSymbol.m */,
 				0249DB0115DB1B2100DBA75B /* FaultSymbol.h */,
 				0249DB0215DB1B2200DBA75B /* FaultSymbol.m */,
 				0249DB0415DB45B700DBA75B /* DotSymbol.h */,
@@ -1913,10 +1913,10 @@
 				0249DAEB15DAB65200DBA75B /* JointSet.m in Sources */,
 				0249DAEE15DAB79400DBA75B /* Contact.m in Sources */,
 				0249DAFC15DAC91300DBA75B /* SelectFormationFolderTVC.m in Sources */,
-				0249DB0015DB13AB00DBA75B /* JointSetSymbol.m in Sources */,
 				0249DB0315DB1B2200DBA75B /* FaultSymbol.m in Sources */,
 				0249DB0615DB45C100DBA75B /* DotSymbol.m in Sources */,
 				0249DB0915DB482800DBA75B /* OtherSymbol.m in Sources */,
+				2159612115DBF5C500478C86 /* JointSetSymbol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

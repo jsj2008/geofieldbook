@@ -17,6 +17,8 @@
 #import "OtherSymbol.h"
 #import "DotSymbol.h"
 
+#import "JointSetSymbol.h"
+
 #import "Formation.h"
 
 #import "Bedding.h"
