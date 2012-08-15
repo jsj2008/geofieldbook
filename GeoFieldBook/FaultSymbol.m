@@ -90,6 +90,31 @@
     UIGraphicsPopContext();
 }
 
+- (void)drawArrowHeadForRadius:(CGFloat)radius andCenter:(CGPoint)center andDipEndPoint:(CGPoint)dipEndPoint inContext:(CGContextRef)context {
+    CGPoint arrowA1 = CGPointMake(radius*.35 * sin([self toRadians:(self.strike+70)]) + center.x, -radius*.35 * cos([self toRadians:(self.strike+70)]) +center.y);
+    CGPoint arrowA2 = CGPointMake(radius*.35 * sin([self toRadians:(self.strike+110)]) + center.x, -radius*.35 * cos([self toRadians:(self.strike+110)]) +center.y);
+    CGPoint arrowB1 = CGPointMake(radius*.35 * sin([self toRadians:(self.strike-70)]) + center.x, -radius*.35 * cos([self toRadians:(self.strike-70)]) +center.y);
+    CGPoint arrowB2 = CGPointMake(radius*.35 * sin([self toRadians:(self.strike-110)]) + center.x, -radius*.35 * cos([self toRadians:(self.strike-110)]) +center.y);
+    
+    CGPoint closer = [self closestPointTo:dipEndPoint among:arrowA1 or:arrowB1];
+    
+    if(closer.x==arrowA1.x && closer.y==arrowA1.y) {
+        CGContextMoveToPoint   (context, dipEndPoint.x, dipEndPoint.y);  // top left
+        CGContextAddLineToPoint(context, arrowA1.x, arrowA1.y);  // mid right
+        CGContextAddLineToPoint(context, arrowA2.x, arrowA2.y);  // bottom left
+        
+        [self.color setFill];
+        CGContextFillPath(context);
+    }else {
+        CGContextMoveToPoint   (context, dipEndPoint.x, dipEndPoint.y);  
+        CGContextAddLineToPoint(context, arrowB1.x, arrowB1.y);  // mid right
+        CGContextAddLineToPoint(context, arrowB2.x, arrowB2.y);  
+        
+        [self.color setFill];
+        CGContextFillPath(context);
+    }
+}
+
 - (CGPoint) closestPointTo:(CGPoint) givenDipPoint among:(CGPoint) dipPoint1 or:(CGPoint) dipPoint2
 {
     float givenDipToDipPoint1 = sqrtf(powf(dipPoint1.x-givenDipPoint.x, 2.0) + powf(dipPoint1.y-givenDipPoint.y, 2.0));
@@ -134,8 +159,8 @@
     if (strikePlus90 > 2*M_PI)
         strikePlus90 -= 2*M_PI;
     
-    CGPoint dipPoint1 = CGPointMake((.7) * radius * sin(strikePlus90) + center.x, -(.7) * radius * cos(strikePlus90) + center.y);
-    CGPoint dipPoint2 = CGPointMake(-(.7) * radius * sin(strikePlus90) + center.x, (.7) * radius * cos(strikePlus90) + center.y);
+    CGPoint dipPoint1 = CGPointMake((.55) * radius * sin(strikePlus90) + center.x, -(.55) * radius * cos(strikePlus90) + center.y);
+    CGPoint dipPoint2 = CGPointMake(-(.55) * radius * sin(strikePlus90) + center.x, (.55) * radius * cos(strikePlus90) + center.y);
     CGPoint givenDipPoint = CGPointMake(radius * sin(dipAngle) + center.x, -radius * cos(dipAngle) + center.y);
     
     CGPoint dipEndPoint = [self closestPointTo:givenDipPoint among:dipPoint1 or:dipPoint2];
@@ -145,57 +170,19 @@
     [self drawDipWithContext:context from:center to:dipEndPoint withColor:self.color];
     
     //draw the arrowhead/triangle
-    CGPoint arrowA1 = CGPointMake(radius*.35 * sin([self toRadians:(self.strike+70)]) + center.x, -radius*.35 * cos([self toRadians:(self.strike+70)]) +center.y);
-    CGPoint arrowA2 = CGPointMake(radius*.35 * sin([self toRadians:(self.strike+110)]) + center.x, -radius*.35 * cos([self toRadians:(self.strike+110)]) +center.y);
-    CGPoint arrowB1 = CGPointMake(radius*.35 * sin([self toRadians:(self.strike-70)]) + center.x, -radius*.35 * cos([self toRadians:(self.strike-70)]) +center.y);
-    CGPoint arrowB2 = CGPointMake(radius*.35 * sin([self toRadians:(self.strike-110)]) + center.x, -radius*.35 * cos([self toRadians:(self.strike-110)]) +center.y);
-    
-    CGPoint closer = [self closestPointTo:dipEndPoint among:arrowA1 or:arrowB1];
-    
-    if(closer.x==arrowA1.x && closer.y==arrowA1.y) {
-        CGContextMoveToPoint   (context, dipEndPoint.x, dipEndPoint.y);  // top left
-        CGContextAddLineToPoint(context, arrowA1.x, arrowA1.y);  // mid right
-        CGContextAddLineToPoint(context, arrowA2.x, arrowA2.y);  // bottom left
-        
-        [self.color setFill];
-        CGContextFillPath(context);
-    }else {
-        CGContextMoveToPoint   (context, dipEndPoint.x, dipEndPoint.y);  
-        CGContextAddLineToPoint(context, arrowB1.x, arrowB1.y);  // mid right
-        CGContextAddLineToPoint(context, arrowB2.x, arrowB2.y);  
-        
-        [self.color setFill];
-        CGContextFillPath(context);
-    }
+    [self drawArrowHeadForRadius:radius andCenter:center andDipEndPoint:dipEndPoint inContext:context];
     
     //Write the numerical representation of the dip
-    //only if the switch is on in settings and there is a dip
-    CGPoint dipNumberPosition1 = CGPointMake(radius*.30 * sin([self toRadians:(self.strike)]) + center.x, -radius*.30 * cos([self toRadians:(self.strike)]) +center.y);
-    CGPoint dipNumberPosition2 = CGPointMake(radius*.30 * sin([self toRadians:(self.strike+180)]) + center.x, -radius*.30 * cos([self toRadians:(self.strike+180)]) +center.y);
-    
-    CGPoint dipNumberPosition = [self closestPointTo:dipEndPoint among:dipNumberPosition1 or:dipNumberPosition2];
-    NSString *dipString = [NSString stringWithFormat:@"%d", (int)self.dip];
-    [self.color set];
-    [dipString drawAtPoint:dipNumberPosition withFont:[UIFont fontWithName:@"Helvetica-Bold" size:9.0]];
-    
-    //    if (self.dip >=0){
-    //        CGFloat height = self.bounds.size.height;
-    //        CGFloat width = self.bounds.size.width;
-    ////        NSString *dipString = [NSString stringWithFormat:@"%d", (int)self.dip];
-    //        CGFloat dipLocationX = dipEndPoint.x >= center.x ? center.x+width/3 : width/3;
-    //        CGFloat dipLocationY = dipEndPoint.y >= center.y ? center.y+height/8 : -height/8;
-    //        CGPoint dipLocation = CGPointMake(dipLocationX, dipLocationY);
-    //        [self.color set];
-    //        [dipString drawAtPoint:dipLocation withFont:[UIFont fontWithName:@"Helvetica-Bold" size:9.0]];
-    //    }
-}
-
-
--(void)drawStrikeLineWithContext:(CGContextRef)context fromPoint:(CGPoint)point1 toPoint:(CGPoint)point2 withColor:(UIColor *)color {
-    CGContextMoveToPoint(context, point1.x, point1.y);
-    CGContextAddLineToPoint(context, point2.x, point2.y);
-    [color setStroke];
-    CGContextStrokePath(context);
+    if (self.dip >=0){
+        CGFloat height = self.bounds.size.height;
+        CGFloat width = self.bounds.size.width;
+        NSString *dipString = [NSString stringWithFormat:@"%d", (int)self.dip];
+        CGFloat dipLocationX = dipEndPoint.x >= center.x ? center.x+width/6 : 0;
+        CGFloat dipLocationY = dipEndPoint.y >= center.y ? center.y+height/5 : -height/9;
+        CGPoint dipLocation = CGPointMake(dipLocationX, dipLocationY);
+        [self.color set];
+        [dipString drawAtPoint:dipLocation withFont:[UIFont fontWithName:@"Helvetica-Bold" size:9.0]];
+    }
 }
 
 - (void)drawRect:(CGRect)rect 
