@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 
 @interface JointSetSymbol : UIView
+
 @property (nonatomic) float strike;
 @property (nonatomic) float dip;
 @property (nonatomic, strong) NSString *dipDirection;

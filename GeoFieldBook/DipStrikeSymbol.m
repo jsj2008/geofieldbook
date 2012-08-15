@@ -55,11 +55,9 @@
     return _dipDirection;
 }
 
-#define PI 3.14159
-
 - (float) toRadians:(float) degrees
 {
-    return degrees * PI / 180;
+    return degrees * M_PI / 180;
 }
 
 - (void) drawStrikeWithContext:(CGContextRef) context point:(CGPoint) point1 andPoint:(CGPoint) point2 withColor:(UIColor *) color
@@ -126,9 +124,9 @@
     float dipAngle = [[dipDirectionConversions objectAtIndex:[possibleDips indexOfObject:dipdirection]] floatValue];
     dipAngle = [self toRadians:dipAngle];
     
-    float strikePlus90 = strike + (PI / 2);
-    if (strikePlus90 > 2*PI)
-        strikePlus90 -= 2*PI;
+    float strikePlus90 = strike + (M_PI / 2);
+    if (strikePlus90 > 2*M_PI)
+        strikePlus90 -= 2*M_PI;
     
     CGPoint dipPoint1 = CGPointMake((.33) * radius * sin(strikePlus90) + center.x, -(.33) * radius * cos(strikePlus90) + center.y);
     CGPoint dipPoint2 = CGPointMake(-(.33) * radius * sin(strikePlus90) + center.x, (.33) * radius * cos(strikePlus90) + center.y);

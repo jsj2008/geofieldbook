@@ -40,8 +40,7 @@
     if (annotation.record) {
         //Setup the dip strike symbol
         SettingManager *settingManager=[SettingManager standardSettingManager];
-        JointSetSymbol *symbol = [[JointSetSymbol alloc] initWithFrame:CGRectMake(0, 0, 30, 30)]; 
-//        DipStrikeSymbol *symbol=[[DipStrikeSymbol alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+        DipStrikeSymbol *symbol=[[DipStrikeSymbol alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
         Record *record=annotation.record;
         
         //Set dip, strike, dip direciton values
