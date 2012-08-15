@@ -62,6 +62,8 @@
 		0249DAEB15DAB65200DBA75B /* JointSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAEA15DAB65200DBA75B /* JointSet.m */; };
 		0249DAEE15DAB79400DBA75B /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAED15DAB79400DBA75B /* Contact.m */; };
 		0249DAFC15DAC91300DBA75B /* SelectFormationFolderTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */; };
+		0249DB0015DB13AB00DBA75B /* JointSetSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */; };
+		0249DB0315DB1B2200DBA75B /* FaultSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DB0215DB1B2200DBA75B /* FaultSymbol.m */; };
 		0249E2AD15A6A16100A7532E /* import_export.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2AC15A6A16100A7532E /* import_export.png */; };
 		0249E2AF15A6A2D100A7532E /* gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2AE15A6A2D100A7532E /* gear2.png */; };
 		0249E2B115A6A32300A7532E /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2B015A6A32300A7532E /* gear.png */; };
@@ -367,6 +369,10 @@
 		0249DAFA15DAC91300DBA75B /* SelectFormationFolderTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectFormationFolderTVC.h; sourceTree = "<group>"; };
 		0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectFormationFolderTVC.m; sourceTree = "<group>"; };
 		0249DAFD15DAC9D900DBA75B /* SelectFormationFolderTVCDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectFormationFolderTVCDelegate.h; sourceTree = "<group>"; };
+		0249DAFE15DB13AB00DBA75B /* JointSetSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JointSetSymbol.h; sourceTree = "<group>"; };
+		0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JointSetSymbol.m; sourceTree = "<group>"; };
+		0249DB0115DB1B2100DBA75B /* FaultSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaultSymbol.h; sourceTree = "<group>"; };
+		0249DB0215DB1B2200DBA75B /* FaultSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaultSymbol.m; sourceTree = "<group>"; };
 		0249E2AC15A6A16100A7532E /* import_export.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = import_export.png; sourceTree = "<group>"; };
 		0249E2AE15A6A2D100A7532E /* gear2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear2.png; sourceTree = "<group>"; };
 		0249E2B015A6A32300A7532E /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear.png; sourceTree = "<group>"; };
@@ -853,7 +859,7 @@
 			isa = PBXGroup;
 			children = (
 				0277645A15BA06C200C9DCEB /* Table Cells */,
-				217C9F9C15B9A3A800C3AABC /* Dip Strike Symbol */,
+				217C9F9C15B9A3A800C3AABC /* Map Symbols */,
 				0294C0AD15BE560D00E0E2D0 /* Misc */,
 			);
 			name = "Custom Views";
@@ -1573,15 +1579,19 @@
 			name = Image;
 			sourceTree = "<group>";
 		};
-		217C9F9C15B9A3A800C3AABC /* Dip Strike Symbol */ = {
+		217C9F9C15B9A3A800C3AABC /* Map Symbols */ = {
 			isa = PBXGroup;
 			children = (
 				218F8FD315B9AA490008710A /* DipStrikeSymbol.h */,
 				218F8FD415B9AA490008710A /* DipStrikeSymbol.m */,
+				0249DAFE15DB13AB00DBA75B /* JointSetSymbol.h */,
+				0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */,
+				0249DB0115DB1B2100DBA75B /* FaultSymbol.h */,
+				0249DB0215DB1B2200DBA75B /* FaultSymbol.m */,
 				218F8FD015B9AA220008710A /* MKCustomAnnotationView.h */,
 				218F8FD115B9AA220008710A /* MKCustomAnnotationView.m */,
 			);
-			name = "Dip Strike Symbol";
+			name = "Map Symbols";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1893,6 +1903,8 @@
 				0249DAEB15DAB65200DBA75B /* JointSet.m in Sources */,
 				0249DAEE15DAB79400DBA75B /* Contact.m in Sources */,
 				0249DAFC15DAC91300DBA75B /* SelectFormationFolderTVC.m in Sources */,
+				0249DB0015DB13AB00DBA75B /* JointSetSymbol.m in Sources */,
+				0249DB0315DB1B2200DBA75B /* FaultSymbol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

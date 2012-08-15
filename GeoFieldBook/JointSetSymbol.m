@@ -1,15 +1,15 @@
 //
-//  DipStrikeSymbol.m
-//  Test
+//  JointSetSymbol.m
+//  GeoFieldBook
 //
-//  Created by excel2011 on 7/17/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Created by Kien Hoang on 8/14/12.
+//  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
-#import "DipStrikeSymbol.h"
+#import "JointSetSymbol.h"
 #import "Record+DipDirectionValues.h"
 
-@implementation DipStrikeSymbol
+@implementation JointSetSymbol
 
 @synthesize strike=_strike;
 @synthesize dip=_dip;
@@ -64,18 +64,23 @@
 
 - (void) drawStrikeWithContext:(CGContextRef) context point:(CGPoint) point1 andPoint:(CGPoint) point2 withColor:(UIColor *) color
 {
+    UIGraphicsPushContext(context);
     CGContextMoveToPoint(context, point1.x, point1.y);
     CGContextAddLineToPoint(context, point2.x, point2.y);
     [color setStroke];
     CGContextStrokePath(context);
+    
+    UIGraphicsPopContext();
 }
 
 - (void) drawDipWithContext:(CGContextRef) context from:(CGPoint) center to:(CGPoint) point withColor:(UIColor *) color
 {
+    UIGraphicsPushContext(context);
     CGContextMoveToPoint(context, center.x, center.y);
     CGContextAddLineToPoint(context, point.x, point.y);
     [color setStroke];
     CGContextStrokePath(context);
+    UIGraphicsPopContext();
 }
 
 - (CGPoint) closestPointTo:(CGPoint) givenDipPoint among:(CGPoint) dipPoint1 or:(CGPoint) dipPoint2
@@ -86,28 +91,27 @@
     return givenDipToDipPoint1 > givenDipToDipPoint2 ? dipPoint2 : dipPoint1;
 }
 
-- (void) drawDipStrikeSymbolWithCenter:(CGPoint) center andRadius:(float) radius
+- (void)drawJointSetSymbolWithCenter:(CGPoint)center andRadius:(float)radius
 {
     //STRIKE
     //information about the view being drawn in   
     /*CGPoint center;
-    CGFloat width=self.bounds.size.width;
-    CGFloat height=self.bounds.size.height;
-    center.x=self.bounds.origin.x+width/2;
-    center.y=self.bounds.origin.y+height/2;
-    float radius = sqrtf(width*width+height*height)/2;*/
+     CGFloat width=self.bounds.size.width;
+     CGFloat height=self.bounds.size.height;
+     center.x=self.bounds.origin.x+width/2;
+     center.y=self.bounds.origin.y+height/2;
+     float radius = sqrtf(width*width+height*height)/2;*/
     
     float strike=[self toRadians:self.strike];
     CGPoint point1 = CGPointMake(radius * sin(strike) + center.x, -radius * cos(strike) + center.y);
     CGPoint point2 = CGPointMake(-radius * sin(strike) + center.x, radius * cos(strike) + center.y);
     
-    //Draw the strike line
+    //Begin drawing
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(context, 3.0);
     CGContextBeginPath(context);
     
-    
-    
+    //Draw the strike line
+    CGContextSetLineWidth(context,2.0);
     [self drawStrikeWithContext:context point:point1 andPoint:point2 withColor:self.color];
     
     //DIP
@@ -137,10 +141,12 @@
     CGPoint dipEndPoint = [self closestPointTo:givenDipPoint among:dipPoint1 or:dipPoint2];
     
     //Draw the dip line
+    CGContextSetLineWidth(context,12.0);
     [self drawDipWithContext:context from:center to:dipEndPoint withColor:self.color];
     
     //Write the numerical representation of the dip
     //only if the switch is on in settings and there is a dip
+    CGContextSetLineWidth(context,3.0);
     if (self.dip >=0) {
         CGFloat height = self.bounds.size.height;
         CGFloat width = self.bounds.size.width;
@@ -151,7 +157,7 @@
         [self.color set];
         [dipString drawAtPoint:dipLocation withFont:[UIFont fontWithName:@"Helvetica-Bold" size:9.5]];
     }
-
+    
 }
 
 - (void) drawDotWithCenter:(CGPoint)center andRect:(CGRect)rect
@@ -185,7 +191,7 @@
     float radius = sqrtf(width*width+height*height)/2;
     
     if (self.strike && self.dipDirection && self.dip) {
-        [self drawDipStrikeSymbolWithCenter:center andRadius:radius];
+        [self drawJointSetSymbolWithCenter:center andRadius:radius];
     }
     else {
         [self drawDotWithCenter:center andRect:rect];

@@ -238,14 +238,14 @@
     Record *record=annotation.record;
     
     //If the record is of type bedding or contact return a MKCustomAnnotationView
-    if ([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[Contact class]])
+    if ([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[Contact class]] || [record isKindOfClass:[JointSet class]] || [record isKindOfClass:[Fault class]])
         return [[MKCustomAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:RECORD_ANNOTATION_VIEW_REUSE_IDENTIFIER];
-
+    
     return [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:RECORD_ANNOTATION_VIEW_REUSE_IDENTIFIER];;
 }
 
 - (BOOL)annotationView:(MKAnnotationView *)annotationView isCorrectKindOfAnnotationViewFor:(Record *)record {
-    if ([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[Contact class]])
+    if ([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[Contact class]] || [record isKindOfClass:[JointSet class]] || [record isKindOfClass:[Fault class]])
         return [annotationView isKindOfClass:[MKCustomAnnotationView class]];
     else
         return [annotationView isKindOfClass:[MKPinAnnotationView class]];
