@@ -14,6 +14,8 @@
 #import "DipStrikeSymbol.h"
 #import "JointSetSymbol.h"
 #import "FaultSymbol.h"
+#import "OtherSymbol.h"
+#import "DotSymbol.h"
 
 #import "Formation.h"
 

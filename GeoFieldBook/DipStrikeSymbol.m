@@ -154,23 +154,6 @@
 
 }
 
-- (void) drawDotWithCenter:(CGPoint)center andRect:(CGRect)rect
-{
-    CGFloat width=self.bounds.size.width;
-    CGFloat height=self.bounds.size.height;
-    CGFloat sideLength = width < height ? width : height;
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextClearRect(context, rect);
-    CGContextSetLineWidth(context, 3.0);
-    CGContextBeginPath(context);
-    
-    CGContextAddArc(context, center.x, center.y, 2*sideLength/7, 2*PI, 0, 1);
-    CGContextClosePath(context);
-    CGContextSetFillColorWithColor(context, self.color.CGColor);
-    CGContextFillPath(context);
-}
-
 - (void)drawRect:(CGRect)rect 
 {
     //CONVERT TO RADIANS
@@ -184,12 +167,7 @@
     center.y=self.bounds.origin.y+height/2;
     float radius = sqrtf(width*width+height*height)/2;
     
-    if (self.strike && self.dipDirection && self.dip) {
-        [self drawDipStrikeSymbolWithCenter:center andRadius:radius];
-    }
-    else {
-        [self drawDotWithCenter:center andRect:rect];
-    }
+    [self drawDipStrikeSymbolWithCenter:center andRadius:radius];
 }
 
 @end

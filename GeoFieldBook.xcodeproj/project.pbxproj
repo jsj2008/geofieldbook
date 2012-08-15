@@ -64,6 +64,8 @@
 		0249DAFC15DAC91300DBA75B /* SelectFormationFolderTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */; };
 		0249DB0015DB13AB00DBA75B /* JointSetSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */; };
 		0249DB0315DB1B2200DBA75B /* FaultSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DB0215DB1B2200DBA75B /* FaultSymbol.m */; };
+		0249DB0615DB45C100DBA75B /* DotSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DB0515DB45B900DBA75B /* DotSymbol.m */; };
+		0249DB0915DB482800DBA75B /* OtherSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0249DB0815DB482800DBA75B /* OtherSymbol.m */; };
 		0249E2AD15A6A16100A7532E /* import_export.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2AC15A6A16100A7532E /* import_export.png */; };
 		0249E2AF15A6A2D100A7532E /* gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2AE15A6A2D100A7532E /* gear2.png */; };
 		0249E2B115A6A32300A7532E /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 0249E2B015A6A32300A7532E /* gear.png */; };
@@ -373,6 +375,10 @@
 		0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JointSetSymbol.m; sourceTree = "<group>"; };
 		0249DB0115DB1B2100DBA75B /* FaultSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaultSymbol.h; sourceTree = "<group>"; };
 		0249DB0215DB1B2200DBA75B /* FaultSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaultSymbol.m; sourceTree = "<group>"; };
+		0249DB0415DB45B700DBA75B /* DotSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DotSymbol.h; sourceTree = "<group>"; };
+		0249DB0515DB45B900DBA75B /* DotSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DotSymbol.m; sourceTree = "<group>"; };
+		0249DB0715DB482800DBA75B /* OtherSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherSymbol.h; sourceTree = "<group>"; };
+		0249DB0815DB482800DBA75B /* OtherSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherSymbol.m; sourceTree = "<group>"; };
 		0249E2AC15A6A16100A7532E /* import_export.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = import_export.png; sourceTree = "<group>"; };
 		0249E2AE15A6A2D100A7532E /* gear2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear2.png; sourceTree = "<group>"; };
 		0249E2B015A6A32300A7532E /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gear.png; sourceTree = "<group>"; };
@@ -1588,6 +1594,10 @@
 				0249DAFF15DB13AB00DBA75B /* JointSetSymbol.m */,
 				0249DB0115DB1B2100DBA75B /* FaultSymbol.h */,
 				0249DB0215DB1B2200DBA75B /* FaultSymbol.m */,
+				0249DB0415DB45B700DBA75B /* DotSymbol.h */,
+				0249DB0515DB45B900DBA75B /* DotSymbol.m */,
+				0249DB0715DB482800DBA75B /* OtherSymbol.h */,
+				0249DB0815DB482800DBA75B /* OtherSymbol.m */,
 				218F8FD015B9AA220008710A /* MKCustomAnnotationView.h */,
 				218F8FD115B9AA220008710A /* MKCustomAnnotationView.m */,
 			);
@@ -1905,6 +1915,8 @@
 				0249DAFC15DAC91300DBA75B /* SelectFormationFolderTVC.m in Sources */,
 				0249DB0015DB13AB00DBA75B /* JointSetSymbol.m in Sources */,
 				0249DB0315DB1B2200DBA75B /* FaultSymbol.m in Sources */,
+				0249DB0615DB45C100DBA75B /* DotSymbol.m in Sources */,
+				0249DB0915DB482800DBA75B /* OtherSymbol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
