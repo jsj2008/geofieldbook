@@ -628,8 +628,9 @@
     //Post a notification
     [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
     
-    //Reload the table
-    [self.tableView reloadData];
+    //Press edit to end editing mode
+    [self editPressed:self.editButton];
+    [self editPressed:self.editButton];
     
     //Dismiss the modal
     [self dismissModalViewControllerAnimated:YES];

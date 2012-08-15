@@ -379,6 +379,10 @@
         UIAlertView *doneAlert=[[UIAlertView alloc] initWithTitle:@"Finished Importing" message:nil delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
         [doneAlert show];
         
+        //Push the folder-record nav to root (folder tvc)
+        UINavigationController *folderNav=(UINavigationController *)self.popoverViewController.contentViewController;
+        [folderNav popToRootViewControllerAnimated:YES];
+        
         //Tell the folder tvc to reload its data
         FolderTableViewController *folderTVC=[self folderTableViewController];
         [folderTVC reloadVisibleCells];
@@ -527,7 +531,7 @@
     settingButtonCustomView.showsTouchWhenHighlighted=YES;
     self.settingButton.customView=settingButtonCustomView;
     
-    //[self.toolbar setBackgroundImage:[UIImage imageNamed:@"stone-textures.jpeg"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    //[self.toolbar setBackgroundImage:[UIImage imageNamed:@"nav_bar.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     
     //Setup gesture recognizers
     [self setupGestureRecognizers];

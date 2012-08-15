@@ -1,18 +1,15 @@
 //
-//  Bedding.m
+//  DotSymbol.h
 //  GeoFieldBook
 //
 //  Created by Kien Hoang on 8/14/12.
 //  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
-#import "Bedding.h"
-#import "Formation.h"
+#import <UIKit/UIKit.h>
 
+@interface DotSymbol : UIView
 
-@implementation Bedding
-
-@dynamic formationName;
-@dynamic formation;
+@property (nonatomic, strong) UIColor *color;
 
 @end

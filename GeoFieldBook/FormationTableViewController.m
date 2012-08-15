@@ -17,21 +17,22 @@
 
 #import "ModelGroupNotificationNames.h"
 
+#import "SelectFormationFolderTVC.h"
+
 #import "TextInputFilter.h"
 
-@interface FormationTableViewController() <FormationViewControllerDelegate,NSFetchedResultsControllerDelegate,UIActionSheetDelegate>
+@interface FormationTableViewController() <FormationViewControllerDelegate,NSFetchedResultsControllerDelegate,UIActionSheetDelegate,SelectFormationFolderTVCDelegate>
 
 @property (nonatomic) BOOL formationsWereReordered;
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *addButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *moveButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *editButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *selectAllButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *selectNone;
 
-@property (strong, nonatomic) UIBarButtonItem *hiddenButton;
-
-@property (strong, nonatomic) NSArray *toBeDeletedFormations;
+@property (strong, nonatomic) NSArray *selectedFormations;
 
 @end
 
@@ -39,33 +40,39 @@
 
 @synthesize addButton = _addButton;
 @synthesize deleteButton = _deleteButton;
+@synthesize moveButton = _moveButton;
 @synthesize editButton = _editButton;
-@synthesize hiddenButton=_hiddenButton;
 @synthesize selectAllButton = _selectAllButton;
 @synthesize selectNone = _selectNone;
 
 @synthesize formationsWereReordered=_formationsWereReordered;
 
-@synthesize toBeDeletedFormations=_toBeDeletedFormations;
+@synthesize selectedFormations=_selectedFormations;
 
 #pragma mark - Getters and Setters
 
 - (NSArray *)toBeDeletedFormations {
-    if (!_toBeDeletedFormations)
-        _toBeDeletedFormations=[NSArray array];
+    if (!_selectedFormations)
+        _selectedFormations=[NSArray array];
     
-    return _toBeDeletedFormations;
+    return _selectedFormations;
 }
 
-- (void)setToBeDeletedFormations:(NSArray *)toBeDeletedFormations {
-    _toBeDeletedFormations=toBeDeletedFormations;
+- (void)setSelectedFormations:(NSArray *)selectedFormations {
+    _selectedFormations=selectedFormations;
     
     //Update the title of the delete button
     int numFormations=self.toBeDeletedFormations.count;
     self.deleteButton.title=numFormations ? [NSString stringWithFormat:@"Delete (%d)",numFormations] : @"Delete";
     
-    //Enable the delete button
+    //Enable the delete button if appropriate
     self.deleteButton.enabled=numFormations>0;
+    
+    //Update the title of the move button
+    self.moveButton.title=numFormations ? [NSString stringWithFormat:@"Move (%d)",numFormations] : @"Move";
+    
+    //Enable the move button if appropriate
+    self.moveButton.enabled=numFormations>0;
 }
 
 #pragma mark - Prepare for segues
@@ -83,6 +90,11 @@
             [segue.destinationViewController setFormation:selectedFormation];
             [segue.destinationViewController setFormationColorName: selectedFormation.colorName];
         }
+    }
+    
+    else if ([segue.identifier isEqualToString:@"Move Formations"]) {
+        UINavigationController *navigationController=(UINavigationController *)segue.destinationViewController;
+        [(SelectFormationFolderTVC *)navigationController.topViewController setDelegate:self];      
     }
 }
 
@@ -200,15 +212,29 @@ typedef void (^database_save_t)(void);
     //Change the style of the action button
     self.editButton.style=editing ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered;
     
-    //Show/Hide add/delete button
-    UIBarButtonItem *hiddenButton=self.hiddenButton;
-    self.hiddenButton=editing ? self.addButton : self.deleteButton;
+    //Show/Hide add/delete/move buttons
     NSMutableArray *toolbarItems=[self.toolbarItems mutableCopy];
-    if (editing)
+    if (editing) {
+        //Hide the add button
         [toolbarItems removeObject:self.addButton];
-    else
+        
+        //Show the delete button
+        if (![toolbarItems containsObject:self.deleteButton])
+            [toolbarItems insertObject:self.deleteButton atIndex:1];
+        
+        //Show the move button
+        if (![toolbarItems containsObject:self.moveButton])
+            [toolbarItems insertObject:self.moveButton atIndex:1];
+    }
+    else {
+        //Hide the delete and move buttons
         [toolbarItems removeObject:self.deleteButton];
-    [toolbarItems insertObject:hiddenButton atIndex:1];
+        [toolbarItems removeObject:self.moveButton];
+        
+        //Show the add button
+        if (![toolbarItems containsObject:self.addButton])
+            [toolbarItems insertObject:self.addButton atIndex:1];
+    }
     self.toolbarItems=[toolbarItems copy];
     
     //Reset the title of the delete button and disable it
@@ -227,7 +253,7 @@ typedef void (^database_save_t)(void);
     [self setupButtonsForEditingMode:self.tableView.editing];
     
     //Reset the array of to be deleted records
-    self.toBeDeletedFormations=nil;
+    self.selectedFormations=nil;
 }
 
 - (IBAction)deletePressed:(UIBarButtonItem *)sender {
@@ -242,7 +268,7 @@ typedef void (^database_save_t)(void);
 
 - (IBAction)selectAll:(UIBarButtonItem *)sender {
     //Select all the csv files
-    self.toBeDeletedFormations=self.fetchedResultsController.fetchedObjects;
+    self.selectedFormations=self.fetchedResultsController.fetchedObjects;
     
     //Select all the rows
     for (UITableViewCell *cell in self.tableView.visibleCells)
@@ -251,7 +277,7 @@ typedef void (^database_save_t)(void);
 
 - (IBAction)selectNone:(UIBarButtonItem *)sender {
     //Empty the selected csv files
-    self.toBeDeletedFormations=[NSArray array];
+    self.selectedFormations=[NSArray array];
     
     //Deselect all the rows
     for (UITableViewCell *cell in self.tableView.visibleCells)
@@ -293,9 +319,9 @@ typedef void (^database_save_t)(void);
     if (self.tableView.editing) {
         //Add the selected formation to the delete list
         Formation *formation=[self.fetchedResultsController objectAtIndexPath:indexPath];
-        NSMutableArray *toBeDeletedFormations=[self.toBeDeletedFormations mutableCopy];
-        [toBeDeletedFormations addObject:formation];
-        self.toBeDeletedFormations=[toBeDeletedFormations copy];
+        NSMutableArray *selectedFormations=self.toBeDeletedFormations.mutableCopy;
+        [selectedFormations addObject:formation];
+        self.selectedFormations=selectedFormations.copy;
     }
 }
 
@@ -304,9 +330,9 @@ typedef void (^database_save_t)(void);
     if (self.tableView.editing) {
         //Remove the selected formation from the delete list
         Formation *formation=[self.fetchedResultsController objectAtIndexPath:indexPath];
-        NSMutableArray *toBeDeletedFormations=[self.toBeDeletedFormations mutableCopy];
-        [toBeDeletedFormations removeObject:formation];
-        self.toBeDeletedFormations=[toBeDeletedFormations copy];
+        NSMutableArray *selectedFormations=self.toBeDeletedFormations.mutableCopy;
+        [selectedFormations removeObject:formation];
+        self.selectedFormations=selectedFormations.copy;
     }
 }
 
@@ -349,15 +375,9 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    //Hide the delete button
-    self.hiddenButton=self.deleteButton;
-    NSMutableArray *toolbarItems=[self.toolbarItems mutableCopy];
-    [toolbarItems removeObject:self.deleteButton];
-    self.toolbarItems=[toolbarItems copy];
-    
-    //hide the select buttons
-    [self toggleSelectButtons];
-    
+    //Setup buttons
+    [self setupButtonsForEditingMode:self.tableView.editing];
+        
     //Update order
     [self updateFormationOrder:self.fetchedResultsController.fetchedObjects];
 }
@@ -376,6 +396,32 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
         if (self.tableView.editing)
             [self editPressed:self.editButton];
     }
+}
+
+#pragma mark - SelectFormationFolderTVCDelegate Protocol Methods
+
+- (void)formationFolderSelectTVC:(SelectFormationFolderTVC *)sender userDidSelectFormationFolder:(Formation_Folder *)formationFolder {
+    //Move the selected folders to the destination folder
+    for (Formation *formation in self.selectedFormations) {
+        //Change the folder of the formation
+        formation.formationFolder=formationFolder;        
+        
+        //Remove all records from the formation
+        [formation removeBeddings:formation.beddings];
+        [formation removeFaults:formation.faults];
+        [formation removeJoinSets:formation.joinSets];
+        [formation removeLowerContacts:formation.lowerContacts];
+        [formation removeUpperContacts:formation.upperContacts];
+    }
+    
+    //Post a notification
+    [self postNotificationWithName:GeoNotificationModelGroupFormationDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+    
+    //Press edit to end editing mode
+    [self editPressed:self.editButton];
+    
+    //Dismiss the modal
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 @end

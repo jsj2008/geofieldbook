@@ -233,24 +233,6 @@
 
 #pragma mark - MKMapViewDelegate methods
 
-- (MKAnnotationView *)viewForAnnotation:(MKGeoRecordAnnotation *)annotation {
-    //Get the record of the annotation
-    Record *record=annotation.record;
-    
-    //If the record is of type bedding or contact return a MKCustomAnnotationView
-    if ([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[Contact class]])
-        return [[MKCustomAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:RECORD_ANNOTATION_VIEW_REUSE_IDENTIFIER];
-
-    return [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:RECORD_ANNOTATION_VIEW_REUSE_IDENTIFIER];;
-}
-
-- (BOOL)annotationView:(MKAnnotationView *)annotationView isCorrectKindOfAnnotationViewFor:(Record *)record {
-    if ([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[Contact class]])
-        return [annotationView isKindOfClass:[MKCustomAnnotationView class]];
-    else
-        return [annotationView isKindOfClass:[MKPinAnnotationView class]];
-}
-
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
     if ([annotation isKindOfClass:[MKUserLocation class]])
         return nil;
@@ -260,9 +242,8 @@
         
     //Else if it's a single annotation
     if ([annotation isKindOfClass:[MKGeoRecordAnnotation class]]) {
-        Record *record=[(MKGeoRecordAnnotation *)annotation record];
-        if (!annotationView || ![self annotationView:annotationView isCorrectKindOfAnnotationViewFor:record]) {
-            annotationView=[self viewForAnnotation:annotation];
+        if (!annotationView) {
+            annotationView=[[MKCustomAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:RECORD_ANNOTATION_VIEW_REUSE_IDENTIFIER];
             annotationView.canShowCallout=YES;
             
             //Set up the left view of the callout (where the image of the record is showed)

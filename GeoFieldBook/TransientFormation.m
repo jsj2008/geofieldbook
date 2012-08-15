@@ -26,32 +26,22 @@
 
 @synthesize managedFormation=_managedFormation;
 
-- (Formation *)saveFormationToManagedObjectContext:(NSManagedObjectContext *)context {
-    if (self.formationName.length && ![self.formationName isEqualToString:@"(null)"]) {
-        //Query for the formation with the same name before saving
-        NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Formation"];
-        request.predicate=[NSPredicate predicateWithFormat:@"formationName=%@",self.formationName];
-        request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"formationName" ascending:YES]];
-        NSArray *results=[context executeFetchRequest:request error:NULL];
-        
-        if (results.count)
-            return results.lastObject;
-        
-        //Save formation
-        Formation *formation=[NSEntityDescription insertNewObjectForEntityForName:@"Formation" inManagedObjectContext:context];
-        formation.formationName=self.formationName;
-        formation.formationSortNumber=self.formationSortNumber;
-        formation.formationFolder=[TransientFormation_Folder defaultFolderManagedObjectContext:context];
-        formation.colorName=self.colorName;
-        
-        //Set the formation's color to default if no color name
-        if (!self.colorName.length)
-            formation.colorName=[SettingManager standardSettingManager].defaultFormationColorName;
-        
-        return formation;
-    }
+- (Formation *)saveFormationToManagedObjectContext:(NSManagedObjectContext *)context
+{
+    //Make sure the formation folder is saved
+    [self.formationFolder saveFormationFolderToManagedObjectContext:context completion:^(NSManagedObject *folder){}];
     
-    return nil;
+    //Query to see if the formation folder is already in the database
+    NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Formation"];
+    request.predicate=[NSPredicate predicateWithFormat:@"formationName=%@ && formationFolder.folderName=%@",self.formationName,self.formationFolder.folderName];
+    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"formationName" ascending:YES]];
+    NSArray *results=[context executeFetchRequest:request error:NULL];
+    if (results.count)
+        return results.lastObject;
+    
+    //Save to database otherwise
+    [self saveToManagedObjectContext:context completion:^(NSManagedObject *formation){}];
+    return self.managedFormation;
 }
 
 - (void)saveToManagedObjectContext:(NSManagedObjectContext *)context completion:(completion_handler_t)completionHandler

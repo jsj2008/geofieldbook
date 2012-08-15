@@ -2,7 +2,7 @@
 //  Bedding.h
 //  GeoFieldBook
 //
-//  Created by Kien Hoang on 6/28/12.
+//  Created by Kien Hoang on 8/14/12.
 //  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
@@ -14,6 +14,7 @@
 
 @interface Bedding : Record
 
+@property (nonatomic, retain) NSString * formationName;
 @property (nonatomic, retain) Formation *formation;
 
 @end

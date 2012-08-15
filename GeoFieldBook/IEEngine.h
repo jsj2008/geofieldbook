@@ -37,6 +37,7 @@
 #define NUMBER_OF_COLUMNS_PER_RECORD_LINE 16
 
 #define METADATA_HEADER @">>>>>> Metadata <<<<<<<"
+#define FORMATION_FOLDER_HEADER @"Formation Folder"
 #define FEEDBACK_FILENAME @"student_responses.response.csv"
 
 #define IMPORT_MATRIX_FOLDER_NAME @"ExportMatrix.FolderName"

@@ -24,7 +24,11 @@
     [super saveToManagedObjectContext:context completion:completionHandler];
     
     //Populate formation
-    [(JointSet *)self.nsManagedRecord setFormation:[self.formation saveFormationToManagedObjectContext:context]];
+    JointSet *record=(JointSet *)self.nsManagedRecord;
+    Formation *formation=[self.formation saveFormationToManagedObjectContext:context];
+    record.formation=formation;
+    record.formationName=formation.formationName;
+    record.folder.formationFolder=formation.formationFolder;
     
     //Call completion handler
     completionHandler(self.nsManagedRecord);

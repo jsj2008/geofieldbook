@@ -13,6 +13,8 @@
 #import "Formation_Folder.h"
 #import "Formation_Folder+Modification.h"
 
+#import "ModelGroupNotificationNames.h"
+
 #import "GeoDatabaseManager.h"
 #import "TextInputFilter.h"
 
@@ -99,12 +101,25 @@
     [duplicationAlert show];
 }
 
-#pragma mark - Formation Folder Creation/Update/Deletion
+#pragma mark - Notification Manipulators
 
-- (void)saveChangesToDatabase {
+- (void)postNotificationWithName:(NSString *)name andUserInfo:(NSDictionary *)userInfo {
+    //Post the notification
+    NSNotificationCenter *center=[NSNotificationCenter defaultCenter];
+    [center postNotificationName:name object:self userInfo:userInfo];    
+}
+
+#pragma mark - Formation Folder Manipulation
+
+typedef void (^database_save_t)(void);
+
+- (void)saveChangesToDatabaseWithCompletionHandler:(database_save_t)completionHandler {
     //Save changes to database
     [self.database saveToURL:self.database.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success){
-        if (!success) {
+        if (success) {
+            //Call completion handler
+            completionHandler();
+        } else {
             //handle errors
             [self putUpDatabaseErrorAlertWithMessage:@"Failed to save changes to database. Please try to submit them again."];
         }
@@ -140,7 +155,7 @@
     
     //Else, save
     else
-        [self saveChangesToDatabase];
+        [self saveChangesToDatabaseWithCompletionHandler:^{}];
     
     return YES;
 }
@@ -152,7 +167,10 @@
     }
     
     //Save
-    [self saveChangesToDatabase];
+    [self saveChangesToDatabaseWithCompletionHandler:^{
+        //Broadcast changes
+        [self postNotificationWithName:GeoNotificationModelGroupFormationDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+    }];
 }
 
 #pragma mark - Target-Action Handlers

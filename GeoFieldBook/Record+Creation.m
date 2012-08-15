@@ -28,7 +28,7 @@
         NSArray *results=[context executeFetchRequest:folderRequest error:NULL];
         
         //If there is a folder with that name, proceed
-        Folder *folder=[results lastObject];
+        Folder *folder=results.lastObject;
         if (folder) {
             //Handle different record types
             if ([recordType isEqualToString:@"Contact"]) {
