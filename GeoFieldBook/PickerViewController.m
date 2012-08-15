@@ -107,7 +107,7 @@
         [self handleUserSelection];
     
     //If the previous selection is not blank, select the corresponding component rows
-    if ([self.previousSelection length])
+    if (self.previousSelection.length)
         [self handlePreviousSelection:self.previousSelection];    
 }
 

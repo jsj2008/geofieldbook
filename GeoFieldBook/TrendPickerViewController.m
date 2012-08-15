@@ -16,6 +16,23 @@
 
 @synthesize delegate=_delegate;
 
+@synthesize previousSelection=_previousSelection;
+
+#pragma mark - Getters and Setters
+
+- (void)setPreviousSelection:(NSString *)previousSelection {
+    if (previousSelection) {
+        //Add 0 to the previous selection if it has length < 3
+        if (previousSelection.length<3) {
+            int length=previousSelection.length;
+            for (int i=0;i<3-length;i++)
+                previousSelection=[@"0" stringByAppendingString:previousSelection];
+        }
+                
+        _previousSelection=previousSelection;
+    }
+}
+
 #pragma mark - Picker View State Initialization
 
 - (NSArray *)trendComponentMatrix {
@@ -36,8 +53,12 @@
 - (void)handleUserSelection {
     [super handleUserSelection];
     
+    //Format the number
+    NSNumberFormatter *numberFormatter=[[NSNumberFormatter alloc] init];
+    NSString *userSelection=[NSString stringWithFormat:@"%@",[numberFormatter numberFromString:self.userSelection]];
+    
     //Notify the delegate of user's selection
-    [self.delegate trendPickerViewController:self userDidSelectTrendValue:[self userSelection]];
+    [self.delegate trendPickerViewController:self userDidSelectTrendValue:userSelection];
 }
 
 #pragma mark - UIPickerViewDelegate methods
