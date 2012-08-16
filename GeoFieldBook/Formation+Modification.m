@@ -37,7 +37,7 @@
         NSArray *results=[self.managedObjectContext executeFetchRequest:request error:NULL];
         
         //if there is one result, return NO
-        if ([results count])
+        if (results.count)
             return NO;
     }
     

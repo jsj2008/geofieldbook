@@ -15,8 +15,4 @@
 
 @property (weak, nonatomic) id <ColorPickerViewControllerDelegate> delegate;
 
-@property (nonatomic,strong) UIColor *selectedColor;
-
-@property (nonatomic,strong) NSString *colorName;
-
 @end

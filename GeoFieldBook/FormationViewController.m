@@ -140,7 +140,6 @@
         //Set the color picker vc's delegate to self
         ColorPickerViewController *colorPickerVC=(ColorPickerViewController *)segue.destinationViewController;
         colorPickerVC.delegate=self;
-        colorPickerVC.selectedColor=self.colorPatch.backgroundColor;
     }
 }
 

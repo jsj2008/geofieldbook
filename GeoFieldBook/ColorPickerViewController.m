@@ -51,10 +51,6 @@
 @synthesize blackPatch = _blackPatch;
 @synthesize whitePatch = _whitePatch;
 
-@synthesize selectedColor=_selectedColor;
-@synthesize colorName=_colorName;
-
-
 @synthesize delegate=_delegate;
 
 #pragma mark - Getters and Setters
@@ -78,19 +74,6 @@
             self.blackPatch,
             self.whitePatch,nil];
 }
-
-- (void)setSelectedColor:(UIColor *)selectedColor {
-    if (![_selectedColor isEqual:selectedColor]) {
-        _selectedColor=selectedColor;
-    }
-}
-
--(void)setColorName:(NSString *)colorName {
-    if(![_colorName isEqualToString:colorName])
-       _colorName = colorName;
-}
-
-
 
 #pragma mark - View Controller Lifecycle
 
@@ -117,20 +100,12 @@
 
 #pragma mark - Color Patches
 
-- (void)updateSelectedColor:(UIColor *)color andName:(NSString *)colorName{
-    //Notify the delegate
-    [self.delegate colorPicker:self userDidSelectColor:colorName];
-    
-    //Save the selected color
-    self.selectedColor=color;
-}
-
 - (IBAction)colorPatchPressed:(UIButton *)colorPatch {
     //Get the color represented by the color patch
-    UIColor *selectedColor=colorPatch.backgroundColor;
-    self.colorName = colorPatch.titleLabel.text;
-    //Update
-    [self updateSelectedColor:selectedColor andName:self.colorName];
+    NSString *color = colorPatch.titleLabel.text;
+    
+    //Notify the delegate
+    [self.delegate colorPicker:self userDidSelectColor:color];
 }
 
 - (void)viewDidUnload {

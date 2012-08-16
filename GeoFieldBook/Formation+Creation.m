@@ -32,12 +32,12 @@
     //Else get the formation folder
     Formation_Folder *formationFolder=results.lastObject;
     
-    //Query for a formation with the specified name, if it exists, return nil
+    //Query for a formation with the specified name, if it exists, return nil to signify an error
     request=[[NSFetchRequest alloc] initWithEntityName:@"Formation"];
     request.predicate=[NSPredicate predicateWithFormat:@"formationName=%@ && formationFolder.folderName=%@",formationName,folderName];
     request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"formationName" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
     results=[context executeFetchRequest:request error:NULL];
-    if ([results count] || !results)
+    if (results.count)
         return nil;
     
     //Create a new formation
