@@ -19,8 +19,7 @@
 #import "DataMapSegmentViewController.h"
 #import "RecordViewController.h"
 
-#import "RecordViewControllerDelegate.h"
-#import "DataMapSegmentControllerDelegate.h"
+#import "SettingsSplitViewController.h"
 
 #import "ModelGroupNotificationNames.h"
 #import "IEEngineNotificationNames.h"
@@ -34,7 +33,7 @@
 #import "GeoDatabaseManager.h"
 #import "SettingManager.h"
 
-@interface GeoFieldBookController() <UINavigationControllerDelegate,DataMapSegmentControllerDelegate,RecordViewControllerDelegate,UIAlertViewDelegate,RecordMapViewControllerDelegate,UIActionSheetDelegate>
+@interface GeoFieldBookController() <UINavigationControllerDelegate,DataMapSegmentControllerDelegate,RecordViewControllerDelegate,UIAlertViewDelegate,RecordMapViewControllerDelegate,UIActionSheetDelegate,SettingsSplitViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *formationButton;
@@ -309,6 +308,11 @@
         //Save the popover
         self.formationFolderPopoverController=[(UIStoryboardPopoverSegue *)segue popoverController];
     }
+    
+    //Settings segue
+    if ([segue.identifier isEqualToString:@"Settings"]) {
+        [segue.destinationViewController setDelegate:self];
+    }
 }
 
 #pragma mark - KVO/NSNotification Managers
@@ -368,8 +372,11 @@
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
     [dataMapSegmentVC reloadMapAnnotationViews];
     
-    //Reload the record vc
-    [[self dataMapSegmentViewController] resetRecordViewController];
+    //Reload the record vc if the currently chosen record is not fresh
+    RecordTableViewController *recordTVC=[self recordTableViewController];
+    Record *record=recordTVC.chosenRecord;
+    if (!record.recordState==RecordStateNew)
+        [[self dataMapSegmentViewController] resetRecordViewController];
 }
 
 - (void)importingDidEnd:(NSNotification *)notification {
@@ -827,7 +834,7 @@
 
 - (void)userDidCancelEditingMode:(RecordViewController *)sender {
     //Remove the cancel button
-    [self removeButtonWithTitle:@"Cancel"];    
+    [self removeButtonWithTitle:@"Cancel"]; 
 }
 
 - (void)userWantsToCancelEditingMode:(RecordViewController *)sender {
@@ -916,6 +923,15 @@
         recordTVC.selectedRecordTypes=selectedRecordTypes;
 }
 
+#pragma mark - SettingsSplitViewControllerDelegate Protocol Methods
+
+- (NSString *)currentFolderTitleForSettingsViewController:(SettingsSplitViewController *)sender {
+    if (self.recordTableViewController)
+        return self.recordTableViewController.folder.folderName;
+    
+    return nil;
+}
+
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -950,6 +966,16 @@
             
                 //Push the initial view on screen
                 [self pushInitialViewControllerOnScreen];
+                
+                //Decrement the prefix counter of the folder if record prefix is enabled
+                SettingManager *settingManager=[SettingManager standardSettingManager];
+                NSString *folderName=record.folder.folderName;
+                if ([settingManager recordPrefixEnabledForFolderWithName:folderName]) {
+                    NSNumber *currentCounter=[settingManager prefixCounterForFolderWithName:folderName];
+                    int newCounterValue=currentCounter.intValue > 0 ? currentCounter.intValue-1 : 0;
+                    NSNumber *newCounter=[NSNumber numberWithInt:newCounterValue];
+                    [settingManager setPrefixCounter:newCounter forFolderWithName:folderName];
+                }
             }
         }
     }

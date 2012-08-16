@@ -117,9 +117,9 @@
 
 #pragma mark - Color Patches
 
-- (void)updateSelectedColor:(UIColor *)color andName:(NSString *) colorName{
+- (void)updateSelectedColor:(UIColor *)color andName:(NSString *)colorName{
     //Notify the delegate
-    [self.delegate colorPicker:self userDidSelectColor:color withName:(NSString *)colorName];
+    [self.delegate colorPicker:self userDidSelectColor:colorName];
     
     //Save the selected color
     self.selectedColor=color;
@@ -131,9 +131,6 @@
     self.colorName = colorPatch.titleLabel.text;
     //Update
     [self updateSelectedColor:selectedColor andName:self.colorName];
-    
-    //NSLog(@"Color Description: %@ Name: %@ ", [selectedColor description], self.colorName);
-    
 }
 
 - (void)viewDidUnload {
@@ -155,7 +152,5 @@
     [self setWhitePatch:nil];
     [super viewDidUnload];
 }
-
-
 
 @end

@@ -8,6 +8,10 @@
 
 #import "CustomSplitViewController.h"
 
+#import "SettingsSplitViewControllerDelegate.h"
+
 @interface SettingsSplitViewController : CustomSplitViewController
+
+@property (nonatomic,weak) id <SettingsSplitViewControllerDelegate> delegate;
 
 @end

@@ -18,4 +18,6 @@
 #define CustomSplitViewControllerMasterSegueIdentifier @"masterViewController"
 #define CustomSplitViewControllerDetailSegueIdentifier @"detailViewController"
 
+- (void)replaceDetailSideWithViewController:(UIViewController *)newDetailVC;
+
 @end

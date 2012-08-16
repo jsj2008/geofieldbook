@@ -12,6 +12,6 @@
 
 @protocol ColorPickerViewControllerDelegate <NSObject>
 
-- (void)colorPicker:(ColorPickerViewController *)colorPicker userDidSelectColor:(UIColor *)color withName:(NSString *)colorName;
+- (void)colorPicker:(ColorPickerViewController *)colorPicker userDidSelectColor:(NSString *)color;
 
 @end

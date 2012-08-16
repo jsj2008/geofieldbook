@@ -39,7 +39,7 @@
     [masterViewController didMoveToParentViewController:self];
 }
 
-- (void)prepareDetailSideForViewController:(UITableViewController *)viewController {    
+- (void)prepareDetailSideForViewController:(UIViewController *)viewController {    
     //Connect to the master tvc
     self.detailViewController=viewController;
     if ([viewController conformsToProtocol:@protocol(CustomSplitViewControllerChildren)])
@@ -59,6 +59,12 @@
         [self prepareMasterSideForViewController:segue.destinationViewController];
     else if ([segue.identifier isEqualToString:CustomSplitViewControllerDetailSegueIdentifier])
         [self prepareDetailSideForViewController:segue.destinationViewController];
+}
+
+#pragma mark - View Controller Manipulation
+
+- (void)replaceDetailSideWithViewController:(UIViewController *)newDetailVC {
+    [self prepareDetailSideForViewController:newDetailVC];
 }
 
 #pragma mark - View Controller Lifecycle

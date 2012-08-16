@@ -351,10 +351,6 @@
             Folder *folder=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
             [segue.destinationViewController setTitle:folder.folderName];
             [segue.destinationViewController setFolder:folder];
-            
-            //set up the automatic record prefix in settings manager
-            SettingManager *manager = [SettingManager standardSettingManager];
-            manager.recordPrefix = folder.folderName;
         }
         
         //If the sender is a record

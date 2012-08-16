@@ -20,6 +20,11 @@
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UIButton *colorPatch;
 
+@property (nonatomic,strong) NSString *formationName;
+@property (nonatomic,strong) NSString *formationColor;
+
+@property (nonatomic,readonly) ColorManager *colorManager;
+
 @end
 
 @implementation FormationViewController
@@ -30,9 +35,9 @@
 @synthesize delegate=_delegate;
 
 @synthesize formation=_formation;
+
 @synthesize formationName=_formationName;
 @synthesize formationColor=_formationColor;
-@synthesize formationColorName=_formationColorName;
 
 - (void)dismissKeyboard:(UITapGestureRecognizer *)tapGesture {
     //dismiss the keyboard
@@ -41,19 +46,23 @@
 
 #pragma mark - Getters and Setters
 
-- (UIColor *)formationColor {
+- (ColorManager *)colorManager {
+    return [ColorManager standardColorManager];
+}
+
+- (NSString *)formationColor {
     if (!_formationColor)
-        self.formationColor=[SettingManager standardSettingManager].defaultFormationColor;
-    
+        _formationColor=[SettingManager standardSettingManager].defaultFormationColor;
+        
     return _formationColor;
 }
 
-- (void)setFormationColor:(UIColor *)formationColor {
-    if (![_formationColor isEqual:formationColor]) {
+- (void)setFormationColor:(NSString *)formationColor {
+    if (![_formationColor isEqualToString:formationColor]) {
         _formationColor=formationColor;
         
         //Update the color patch
-        self.colorPatch.backgroundColor=formationColor;
+        self.colorPatch.backgroundColor=[[ColorManager standardColorManager] colorWithName:formationColor];
     }
 }
 
@@ -64,19 +73,14 @@
     self.formationName=self.formation.formationName;
     
     //Update the color
-    UIColor *formationColor=[[ColorManager standardColorManager] colorWithName:formation.colorName];
-    self.formationColor=formationColor;
+    self.formationColor=formation.colorName;
 }
 
 #pragma mark - Data Collectors
 
 - (NSDictionary *)formationInfoFromForm {
-    //Create a dictionary with all the information user provided
-    SettingManager *settings = [SettingManager standardSettingManager];
-    
-    if(!self.formationColorName) self.formationColorName = settings.defaultFormationColorName; //the previously saved color name is gone when the view is pushed from the navigateion stack
-    
-    NSDictionary *formationInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.formationName,GeoFormationName,self.formationColor,GeoFormationColor, self.formationColorName, GeoFormationColorName, nil];
+    //Create a dictionary with all the information user provided        
+    NSDictionary *formationInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.formationName,GeoFormationName,self.formationColor,GeoFormationColor, nil];
     return formationInfo;
 }
 
@@ -136,8 +140,7 @@
         //Set the color picker vc's delegate to self
         ColorPickerViewController *colorPickerVC=(ColorPickerViewController *)segue.destinationViewController;
         colorPickerVC.delegate=self;
-        colorPickerVC.selectedColor=self.formationColor;
-        
+        colorPickerVC.selectedColor=self.colorPatch.backgroundColor;
     }
 }
 
@@ -169,7 +172,7 @@
     self.colorPatch.layer.borderWidth=1.0f;
     
     //Give the color patch the formation color
-    self.colorPatch.backgroundColor=self.formationColor;
+    self.colorPatch.backgroundColor=[self.colorManager colorWithName:self.formationColor];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -185,10 +188,9 @@
 
 #pragma mark - ColorPickerViewControllerDelegate Protocol methods
 
-- (void)colorPicker:(ColorPickerViewController *)colorPicker userDidSelectColor:(UIColor *)color withName:(NSString *)colorName {
+- (void)colorPicker:(ColorPickerViewController *)colorPicker userDidSelectColor:(NSString *)color {
     //Save the selected color
     self.formationColor=color;
-    self.formationColorName=colorName;
 }
 
 @end

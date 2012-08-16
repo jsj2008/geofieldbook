@@ -13,9 +13,19 @@
 
 #import "Question+Types.h"
 
+@interface GeoFieldBookAppDelegate()
+    
+@property (nonatomic,readonly) SettingManager *settingManager;
+
+@end
+
 @implementation GeoFieldBookAppDelegate
 
 @synthesize window = _window;
+
+- (SettingManager *)settingManager {
+    return [SettingManager standardSettingManager];
+}
 
 - (void)registerDefaultsForPListFile:(NSString *)plistFileName {
     NSString *settingsBundle = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"];
@@ -39,22 +49,20 @@
 }
 
 - (void)setDefaultGroupInfo {
-    SettingManager *manager=[SettingManager standardSettingManager];
-    
-    if (!manager.groupID)
+    if (!self.settingManager.groupID)
         [SettingManager generateGroupID];
     
-    if (!manager.groupName.length)
-        manager.groupName=@"GeoFieldBook";
+    if (!self.settingManager.groupName.length)
+        self.settingManager.groupName=@"GeoFieldBook";
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     //Initialize the settings
-    [self registerDefaultsForPListFile:@"Color.plist"];
     [self registerDefaultsForPListFile:@"Gestures.plist"];
+    [self registerDefaultsForPListFile:@"Symbols.plist"];
     [self registerDefaultsForPListFile:@"Feedback.plist"];
-    [self registerDefaultsForPListFile:@"Dip Strike Symbol.plist"];
+    [self registerDefaultsForPListFile:@"Record Settings.plist"];
     
     [self setDefaultGroupInfo];
     

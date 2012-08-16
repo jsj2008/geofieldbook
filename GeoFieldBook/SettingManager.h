@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
 #import "SettingManagerNotificationNames.h"
 
@@ -21,9 +22,8 @@
 #define NSUserDefaultsDefaultSymbolColor @"color_default_symbol_color"
 
 @property (nonatomic) BOOL formationColorEnabled;
-@property (nonatomic,strong) UIColor *defaultFormationColor;
+@property (nonatomic,strong) NSString *defaultFormationColor;
 @property (nonatomic,strong) UIColor *defaultSymbolColor;
-@property (nonatomic, strong) NSString *defaultFormationColorName;
 
 #pragma mark - Gestures Group
 
@@ -65,9 +65,13 @@
 
 #pragma mark - Record Settings Group
 
-#define NSUserDefaultsAutomaticPrefixEnabled @"automatic_record_prefix_enabled"
-#define NSUserDefaultsPrefixText @"record_prefix_text"
-@property (nonatomic, strong) NSString *recordPrefix;
-@property (nonatomic) BOOL recordPrefixEnabled;
+- (BOOL)recordPrefixEnabledForFolderWithName:(NSString *)folderName;
+- (void)setPrefixEnabled:(BOOL)enabled forFolderWithName:(NSString *)folderName;
+
+- (NSString *)prefixForFolderWithName:(NSString *)folderName;
+- (void)setPrefix:(NSString *)prefix forFolderWithName:(NSString *)folderName;
+
+- (NSNumber *)prefixCounterForFolderWithName:(NSString *)folderName;
+- (void)setPrefixCounter:(NSNumber *)prefixCounter forFolderWithName:(NSString *)folderName;
 
 @end

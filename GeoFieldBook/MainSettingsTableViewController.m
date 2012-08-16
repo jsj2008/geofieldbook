@@ -47,12 +47,7 @@
     NSString *selectedRowTitle=[tableView cellForRowAtIndexPath:indexPath].textLabel.text;
     
     //If user selected any but "Group Settings", notify delegate
-    if (![selectedRowTitle isEqualToString:@"Group Settings"])
-        [self.delegate mainSettingsTVC:self userDidSelectSettingPaneWithTitle:selectedRowTitle];
-    
-    //Else segue the right handside table
-    else
-        [self.delegate userDidSelectGroupSettingsInMainSettingsTVC:self];
+    [self.delegate mainSettingsTVC:self userDidSelectSettingPaneWithTitle:selectedRowTitle];
 }
 
 @end

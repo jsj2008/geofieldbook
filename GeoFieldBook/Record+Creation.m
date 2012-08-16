@@ -50,12 +50,17 @@
             
             //set automatically generated name
             SettingManager *manager = [SettingManager standardSettingManager];
-            if(manager.recordPrefixEnabled) {
-                NSString *prefix = manager.recordPrefix;
-                record.name = [NSString stringWithFormat:@"%@-%@",prefix, record.folder.prefixCounter];
-                int i = [record.folder.prefixCounter intValue];
-                i++;
-                record.folder.prefixCounter = [NSNumber numberWithInt:i];
+            NSString *folderName=record.folder.folderName;
+            if ([manager recordPrefixEnabledForFolderWithName:folderName]) {
+                //Set the name of the record
+                NSString *prefix = [manager prefixForFolderWithName:folderName];
+                NSNumber *prefixCounter=[manager prefixCounterForFolderWithName:folderName];
+                NSString *counter=[NSString stringWithFormat:@"%@",prefixCounter];
+                record.name = prefix.length ? [NSString stringWithFormat:@"%@-%@",prefix,counter] : counter;
+                
+                //Update the prefix counter
+                prefixCounter=[NSNumber numberWithInt:prefixCounter.intValue+1];
+                [manager setPrefixCounter:prefixCounter forFolderWithName:folderName];
             }
         }
     }

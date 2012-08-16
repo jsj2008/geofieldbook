@@ -9,8 +9,10 @@
 #import "SettingsSplitViewController.h"
 
 #import "MainSettingsTableViewController.h"
+
 #import "IASKAppSettingsViewController.h"
 #import "GroupSettingsTableViewController.h"
+#import "RecordSettingsTVC.h"
 
 #import "SettingManagerNotificationNames.h"
 
@@ -22,6 +24,8 @@
 @end
 
 @implementation SettingsSplitViewController 
+
+@synthesize delegate=_delegate;
 
 #pragma mark - Getters and Setters
 
@@ -35,8 +39,8 @@
     return detailNav;
 }
 
-- (IASKAppSettingsViewController *)rightSideSettingViewController {
-    return (IASKAppSettingsViewController *)self.rightSideNav.topViewController;
+- (UIViewController *)rightSideSettingViewController {
+    return self.rightSideNav.topViewController;
 }
 
 #pragma mark - View Controller Lifecycle
@@ -71,22 +75,40 @@
 #pragma mark - MainSettingsTableViewControllerDelegate methods
 
 - (void)mainSettingsTVC:(MainSettingsTableViewController *)sender userDidSelectSettingPaneWithTitle:(NSString *)paneTitle {
+    NSSet *generalPanes=[NSSet setWithObjects:@"Color",@"Symbols",@"Feedback",@"Gestures", nil];
+    //If the pane title is one of the general pane titles, make sure the general settings vc is on screen, and pass it the pane title
+    if ([generalPanes containsObject:paneTitle]) {
+        //Push the general settings vc on screen
+        if (![self.rightSideSettingViewController isKindOfClass:[IASKAppSettingsViewController class]]) {
+            IASKAppSettingsViewController *generalSettingsVC=[self.storyboard instantiateViewControllerWithIdentifier:@"General Settings"];
+            [self replaceDetailSideWithViewController:generalSettingsVC];
+        }
+        
+        //Set the .plist file to be loaded of the left side settings tvc to the pane title
+         self.rightSideSettingViewController.file=paneTitle;
+        
+        //Set the title
+        self.rightSideSettingViewController.navigationItem.title=paneTitle;
+    }
     
-    NSLog(@"PaneTitle: %@", paneTitle);
+    //Else if the pane title is Group Settings, make sure it's on screen
+    else if ([paneTitle isEqualToString:@"Group Settings"]) {
+        if (![self.rightSideSettingViewController isKindOfClass:[GroupSettingsTableViewController class]]) {
+            GroupSettingsTableViewController *groupSettingsVC=[self.storyboard instantiateViewControllerWithIdentifier:@"Group Settings"];
+            [self replaceDetailSideWithViewController:groupSettingsVC];
+        }
+    }
     
-    //If the current rhs table is the group settings table, pop
-    if ([self.rightSideSettingViewController isKindOfClass:[GroupSettingsTableViewController class]])
-        [self.rightSideNav popToRootViewControllerAnimated:YES];
-    
-    //Pop the left side's navigation controller all the way to root
-    UINavigationController *detailNav=(UINavigationController *)self.detailViewController;
-    [detailNav popToRootViewControllerAnimated:NO];
-    
-    //Set the .plist file to be loaded of the left side settings tvc to the pane title
-    self.rightSideSettingViewController.file=paneTitle;
-    
-    //Set the title
-    self.rightSideSettingViewController.navigationItem.title=paneTitle;
+    //Else if the pane title is Record Settings
+    else if ([paneTitle isEqualToString:@"Record Settings"]) {
+        //Push the record settings tvc on screen
+        if (![self.rightSideSettingViewController isKindOfClass:[RecordSettingsTVC class]]) {
+            UIViewController *recordSettingsNav=[self.storyboard instantiateViewControllerWithIdentifier:@"Record Settings"];
+            [self replaceDetailSideWithViewController:recordSettingsNav];
+            RecordSettingsTVC *recordSettingsTVC=(RecordSettingsTVC *)self.rightSideSettingViewController;
+            recordSettingsTVC.currentFolder=[self.delegate currentFolderTitleForSettingsViewController:self];
+        }
+    }
 }
 
 - (void)userDidSelectGroupSettingsInMainSettingsTVC:(MainSettingsTableViewController *)sender {

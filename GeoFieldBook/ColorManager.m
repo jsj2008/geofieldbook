@@ -77,7 +77,7 @@ static ColorManager *standardColorManager;
 {
     //Return the color
     SettingManager *settingManager=[SettingManager standardSettingManager];
-    UIColor *color = settingManager.defaultFormationColor;
+    UIColor *color = [self.colorDictionary objectForKey:settingManager.defaultFormationColor];
     if([self.colorNames containsObject:colorName])
         color = [self.colorDictionary objectForKey:colorName];
   

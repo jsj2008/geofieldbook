@@ -26,7 +26,6 @@
 		02191ECA15ACA8DD00A5EB2B /* ImportTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02191EC915ACA8DD00A5EB2B /* ImportTableViewController.m */; };
 		0221BDE1159A58EA0058C792 /* FormationFolderPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0221BDE0159A58EA0058C792 /* FormationFolderPickerViewController.m */; };
 		0221BDE5159A88170058C792 /* Folder+DictionaryKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 0221BDE4159A88170058C792 /* Folder+DictionaryKeys.m */; };
-		0221BDEB159A8CFC0058C792 /* Folder.m in Sources */ = {isa = PBXBuildFile; fileRef = 0221BDEA159A8CFA0058C792 /* Folder.m */; };
 		0222DB0015961D0D00699D62 /* Record+DictionaryKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 0222DAFF15961D0D00699D62 /* Record+DictionaryKeys.m */; };
 		0222DB0415961D5D00699D62 /* Record+Modification.m in Sources */ = {isa = PBXBuildFile; fileRef = 0222DB0315961D5D00699D62 /* Record+Modification.m */; };
 		0222DB0715961ED900699D62 /* Bedding+Modification.m in Sources */ = {isa = PBXBuildFile; fileRef = 0222DB0615961ED900699D62 /* Bedding+Modification.m */; };
@@ -84,6 +83,8 @@
 		027764A515BA480800C9DCEB /* NPConicGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = 027764A415BA480800C9DCEB /* NPConicGradient.m */; };
 		027764B815BA49DC00C9DCEB /* RGB-HSL.m in Sources */ = {isa = PBXBuildFile; fileRef = 027764B715BA49DB00C9DCEB /* RGB-HSL.m */; };
 		027764BB15BA4ADE00C9DCEB /* ColorPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 027764BA15BA4ADE00C9DCEB /* ColorPickerViewController.m */; };
+		027AA69E15DC551400C97157 /* RecordSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA69D15DC551400C97157 /* RecordSettingsTVC.m */; };
+		027AA6A415DC777800C97157 /* Folder.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA6A315DC777800C97157 /* Folder.m */; };
 		02806EE615BA6B94003D09A7 /* Formation+DictionaryKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 02806EE515BA6B94003D09A7 /* Formation+DictionaryKeys.m */; };
 		02806EEC15BA7E97003D09A7 /* CustomFormationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02806EEB15BA7E97003D09A7 /* CustomFormationCell.m */; };
 		02806F0515BB00E5003D09A7 /* green_pin.png in Resources */ = {isa = PBXBuildFile; fileRef = 02806F0315BB00E5003D09A7 /* green_pin.png */; };
@@ -298,8 +299,6 @@
 		0221BDE0159A58EA0058C792 /* FormationFolderPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FormationFolderPickerViewController.m; sourceTree = "<group>"; };
 		0221BDE3159A88170058C792 /* Folder+DictionaryKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Folder+DictionaryKeys.h"; sourceTree = "<group>"; };
 		0221BDE4159A88170058C792 /* Folder+DictionaryKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Folder+DictionaryKeys.m"; sourceTree = "<group>"; };
-		0221BDE9159A8CFA0058C792 /* Folder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Folder.h; sourceTree = "<group>"; };
-		0221BDEA159A8CFA0058C792 /* Folder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Folder.m; sourceTree = "<group>"; };
 		0222DAFE15961D0D00699D62 /* Record+DictionaryKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Record+DictionaryKeys.h"; sourceTree = "<group>"; };
 		0222DAFF15961D0D00699D62 /* Record+DictionaryKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Record+DictionaryKeys.m"; sourceTree = "<group>"; };
 		0222DB0215961D5D00699D62 /* Record+Modification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Record+Modification.h"; sourceTree = "<group>"; };
@@ -416,6 +415,11 @@
 		027764B715BA49DB00C9DCEB /* RGB-HSL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RGB-HSL.m"; sourceTree = "<group>"; };
 		027764B915BA4ADD00C9DCEB /* ColorPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPickerViewController.h; sourceTree = "<group>"; };
 		027764BA15BA4ADE00C9DCEB /* ColorPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorPickerViewController.m; sourceTree = "<group>"; };
+		027AA69A15DC53E500C97157 /* SettingsSplitViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsSplitViewControllerDelegate.h; sourceTree = "<group>"; };
+		027AA69C15DC551400C97157 /* RecordSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordSettingsTVC.h; sourceTree = "<group>"; };
+		027AA69D15DC551400C97157 /* RecordSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordSettingsTVC.m; sourceTree = "<group>"; };
+		027AA6A215DC777800C97157 /* Folder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Folder.h; sourceTree = "<group>"; };
+		027AA6A315DC777800C97157 /* Folder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Folder.m; sourceTree = "<group>"; };
 		02806EE215BA66D5003D09A7 /* ColorPickerViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPickerViewControllerDelegate.h; sourceTree = "<group>"; };
 		02806EE415BA6B94003D09A7 /* Formation+DictionaryKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Formation+DictionaryKeys.h"; sourceTree = "<group>"; };
 		02806EE515BA6B94003D09A7 /* Formation+DictionaryKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Formation+DictionaryKeys.m"; sourceTree = "<group>"; };
@@ -1005,6 +1009,32 @@
 			name = ColorPickerView;
 			sourceTree = "<group>";
 		};
+		027AA69415DC46D700C97157 /* General Settings */ = {
+			isa = PBXGroup;
+			children = (
+				02A7762415BCA3BE008A22C2 /* InAppSettingsKit */,
+			);
+			name = "General Settings";
+			sourceTree = "<group>";
+		};
+		027AA69515DC46E700C97157 /* Group Settings */ = {
+			isa = PBXGroup;
+			children = (
+				029A2D6515CC23FF000853D9 /* GroupSettingsTableViewController.h */,
+				029A2D6615CC23FF000853D9 /* GroupSettingsTableViewController.m */,
+			);
+			name = "Group Settings";
+			sourceTree = "<group>";
+		};
+		027AA69B15DC550200C97157 /* Record Settings */ = {
+			isa = PBXGroup;
+			children = (
+				027AA69C15DC551400C97157 /* RecordSettingsTVC.h */,
+				027AA69D15DC551400C97157 /* RecordSettingsTVC.m */,
+			);
+			name = "Record Settings";
+			sourceTree = "<group>";
+		};
 		028732FA15B28F630001BBC2 /* Import */ = {
 			isa = PBXGroup;
 			children = (
@@ -1300,6 +1330,7 @@
 				0288944415B382400062E6DA /* UIDoubleTableViewControllerChildren.h */,
 				02A7766A15BCCC8A008A22C2 /* CustomSplitViewControllerChildren.h */,
 				02806EE215BA66D5003D09A7 /* ColorPickerViewControllerDelegate.h */,
+				027AA69A15DC53E500C97157 /* SettingsSplitViewControllerDelegate.h */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -1371,8 +1402,8 @@
 		0298C255159B43480038E89C /* Folder */ = {
 			isa = PBXGroup;
 			children = (
-				0221BDE9159A8CFA0058C792 /* Folder.h */,
-				0221BDEA159A8CFA0058C792 /* Folder.m */,
+				027AA6A215DC777800C97157 /* Folder.h */,
+				027AA6A315DC777800C97157 /* Folder.m */,
 				020EBBA21594355800EECC08 /* Folder+Creation.h */,
 				020EBBA31594355800EECC08 /* Folder+Creation.m */,
 				0238586E15995DB300A0DB98 /* Folder+Modification.h */,
@@ -1455,13 +1486,13 @@
 			isa = PBXGroup;
 			children = (
 				02A7767315BD28BA008A22C2 /* Settings.bundle */,
-				02A7762415BCA3BE008A22C2 /* InAppSettingsKit */,
 				02A7766215BCC26F008A22C2 /* SettingsSplitViewController.h */,
 				02A7766315BCC26F008A22C2 /* SettingsSplitViewController.m */,
+				027AA69415DC46D700C97157 /* General Settings */,
+				027AA69515DC46E700C97157 /* Group Settings */,
+				027AA69B15DC550200C97157 /* Record Settings */,
 				02A7765C15BCAE2C008A22C2 /* MainSettingsTableViewController.h */,
 				02A7765D15BCAE2D008A22C2 /* MainSettingsTableViewController.m */,
-				029A2D6515CC23FF000853D9 /* GroupSettingsTableViewController.h */,
-				029A2D6615CC23FF000853D9 /* GroupSettingsTableViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -1800,7 +1831,6 @@
 				0238587F1599747400A0DB98 /* Formation+Modification.m in Sources */,
 				0221BDE1159A58EA0058C792 /* FormationFolderPickerViewController.m in Sources */,
 				0221BDE5159A88170058C792 /* Folder+DictionaryKeys.m in Sources */,
-				0221BDEB159A8CFC0058C792 /* Folder.m in Sources */,
 				0298C25C159B43F30038E89C /* Record+Validation.m in Sources */,
 				0298C25F159B45650038E89C /* Record+NameEncoding.m in Sources */,
 				21B1FEF0159B58C200868F62 /* CustomRecordCell.m in Sources */,
@@ -1917,6 +1947,8 @@
 				0249DB0615DB45C100DBA75B /* DotSymbol.m in Sources */,
 				0249DB0915DB482800DBA75B /* OtherSymbol.m in Sources */,
 				2159612115DBF5C500478C86 /* JointSetSymbol.m in Sources */,
+				027AA69E15DC551400C97157 /* RecordSettingsTVC.m in Sources */,
+				027AA6A415DC777800C97157 /* Folder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,10 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CoreLocation/CoreLocation.h>
 
 @interface GroupSettingsTableViewController : UITableViewController
-
-#define RANDOM_STRING_DEFAULT_LENGTH 30
 
 @end

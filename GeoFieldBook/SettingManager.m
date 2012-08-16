@@ -8,15 +8,17 @@
 
 #import "SettingManager.h"
 
+#import "GeoDatabaseManager.h"
+#import "Folder.h"
+
 @interface SettingManager()
 
 @property (nonatomic,readonly) NSUserDefaults *userDefaults;
+@property (nonatomic,readonly) UIManagedDocument *database;
 
 @end
 
 @implementation SettingManager
-
-@synthesize defaultFormationColorName=_defaultFormationColorName;
 
 static SettingManager *settingManager;
 
@@ -47,6 +49,10 @@ static SettingManager *settingManager;
 
 - (NSUserDefaults *)userDefaults {
     return [NSUserDefaults standardUserDefaults];
+}
+
+- (UIManagedDocument *)database {
+    return [GeoDatabaseManager standardDatabaseManager].geoFieldBookDatabase;
 }
 
 - (void)userDefaultsSetObject:(id)object forKey:(NSString *)key {
@@ -102,16 +108,7 @@ static SettingManager *settingManager;
 }
 
 - (UIColor *)defaultFormationColor {
-    UIColor *defaultFormationColor=nil;
-    NSString *defaultFormationColorPreference=[self.userDefaults objectForKey:NSUserDefaultsDefaultFormationColor];
-    if ([defaultFormationColorPreference isEqualToString:@"Red"])
-        defaultFormationColor=[UIColor redColor];
-    else if ([defaultFormationColorPreference isEqualToString:@"Blue"])
-        defaultFormationColor=[UIColor blueColor];
-    else if ([defaultFormationColorPreference isEqualToString:@"Green"])
-        defaultFormationColor=[UIColor greenColor];
-    
-    return defaultFormationColor;
+    return [self.userDefaults objectForKey:NSUserDefaultsDefaultFormationColor];
 }
 
 - (void)setDefaultFormationColor:(NSString *)defaultFormationColor {
@@ -247,20 +244,54 @@ static SettingManager *settingManager;
 
 #pragma mark - Record Settings Group
 
--(NSString *)recordPrefix {
-    return [self.userDefaults objectForKey:NSUserDefaultsPrefixText];
+typedef void (^save_handler_t)(void);
+
+- (void)saveToDatabaseWithCompletionHandler:(save_handler_t)completionHandler {
+    [self.database saveToURL:self.database.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success){
+        if (success)
+            completionHandler();
+    }];
 }
 
--(void)setRecordPrefix:(NSString *)prefix {
-    [self userDefaultsSetObject:prefix forKey:NSUserDefaultsPrefixText];
+- (Folder *)folderWithName:(NSString *)folderName {
+    //Query for the folder with the given name
+    NSFetchRequest *request=[NSFetchRequest fetchRequestWithEntityName:@"Folder"];
+    request.predicate=[NSPredicate predicateWithFormat:@"folderName=%@",folderName];
+    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"folderName" ascending:YES]];
+    NSArray *results=[self.database.managedObjectContext executeFetchRequest:request error:NULL];
+    return results.lastObject;
 }
 
--(BOOL)recordPrefixEnabled {
-    return [self.userDefaults boolForKey:NSUserDefaultsAutomaticPrefixEnabled];
+- (BOOL)recordPrefixEnabledForFolderWithName:(NSString *)folderName {
+    return [self folderWithName:folderName].prefixEnabled.boolValue;
 }
 
--(void) setRecordPrefixEnabled:(BOOL) enabled {
-    [self userDefaultsSetBool:enabled forKey:NSUserDefaultsAutomaticPrefixEnabled];
+- (void)setPrefixEnabled:(BOOL)enabled forFolderWithName:(NSString *)folderName {
+    Folder *folder=[self folderWithName:folderName];
+    folder.prefixEnabled=[NSNumber numberWithBool:enabled];
+    [self saveToDatabaseWithCompletionHandler:^{}];
+}
+
+- (NSString *)prefixForFolderWithName:(NSString *)folderName {
+    NSString *prefix=[self folderWithName:folderName].prefixText;
+    return prefix ? prefix : folderName;
+}
+
+- (void)setPrefix:(NSString *)prefix forFolderWithName:(NSString *)folderName {
+    Folder *folder=[self folderWithName:folderName];
+    folder.prefixText=prefix;
+    [self saveToDatabaseWithCompletionHandler:^{}];
+}
+
+- (NSNumber *)prefixCounterForFolderWithName:(NSString *)folderName {
+    NSNumber *prefixCounter=[self folderWithName:folderName].prefixCounter;
+    return prefixCounter ? prefixCounter : [NSNumber numberWithInt:1];
+}
+
+- (void)setPrefixCounter:(NSNumber *)prefixCounter forFolderWithName:(NSString *)folderName {
+    Folder *folder=[self folderWithName:folderName];
+    folder.prefixCounter=prefixCounter;
+    [self saveToDatabaseWithCompletionHandler:^{}];
 }
 
 @end
