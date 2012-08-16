@@ -145,7 +145,7 @@
     
     //fetch the formations in the new formation folder
     NSFetchRequest *formationRequest = [[NSFetchRequest alloc] initWithEntityName:@"Formation"];
-    formationRequest.predicate = [NSPredicate predicateWithFormat:@"folderName=%@",formationFolderName];
+    formationRequest.predicate = [NSPredicate predicateWithFormat:@"formationFolder.folderName=%@",formationFolderName];
     NSArray *formations = [self.database.managedObjectContext executeFetchRequest:formationRequest error:NULL];
     
     //now reassign the formations to those of the new list if the formation names in the records match those in the list
