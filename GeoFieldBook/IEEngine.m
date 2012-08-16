@@ -382,45 +382,6 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
 
 #pragma mark - Reading of Formation files
 
-- (void)constructFormationsFromCSVFilePath:(NSString *)path {
-    //this is an array lines, which is an array of tokens
-    NSMutableArray *tokenArrays = [self tokenArraysFromFile:path].mutableCopy;
-        
-    //Transpose the array of tokens (expecting the csv file to contains formation columns sorted by formation folders)
-    tokenArrays=[IEFormatter transposeTwoDimensionalArray:tokenArrays.copy].mutableCopy;
-    
-    //for each array of tokens 
-    NSMutableArray *formationFolders=self.formationFolders.mutableCopy;
-    for (int index=0;index<tokenArrays.count;index++) {
-        //Create one formation for each line
-        NSMutableArray *tokenArray=[[tokenArrays objectAtIndex:index] mutableCopy];
-        NSString *folder = [tokenArray objectAtIndex:0];
-        [tokenArray removeObjectAtIndex:0];
-        TransientFormation_Folder *newFormationFolder = [[TransientFormation_Folder alloc] init];
-        newFormationFolder.folderName = [TextInputFilter filterDatabaseInputText:folder];
-        
-        //Save the newly created transient formation folder
-        [formationFolders addObject:newFormationFolder];
-        
-        //Keep track of the sort number (formations will be sorted by the order they are in the csv file)
-        int sortNumber=1;
-        
-        //for each token(formation) in such an array of line record(formation folder)
-        for (NSString *formation in tokenArray) {
-            //if the formation name is not empty
-            NSString *formationName=[TextInputFilter filterDatabaseInputText:formation];
-            if (formationName.length) {
-                TransientFormation *newFormation = [[TransientFormation alloc] init];
-                newFormation.formationFolder = newFormationFolder;
-                newFormation.formationName = formationName;
-                newFormation.formationSortNumber=[NSNumber numberWithInt:sortNumber++];
-                [self.formations addObject:newFormation];
-            }
-        }
-    }    
-    self.formationFolders=formationFolders.copy;
-}
-
 -(void) constructFormationsWithColorsfromCSVFilePath:(NSString *) path withFolderName:(NSString *) fileName;
 {
     
@@ -458,35 +419,6 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     self.formationFolders = formationFolders.copy;
 }
 
-- (void)createFormationsFromCSVFiles:(NSArray *) files
-{
-    //Post a notification
-    [self postNotificationWithName:GeoNotificationIEEngineFormationImportingDidStart withUserInfo:[NSDictionary dictionary]];
-    
-    //get the complete file paths for the selected files that exist
-    self.selectedFilePaths=[self getSelectedFilePaths:files];
-    
-    //read each of those files line by line and create the formation objects and add it to self.formations array.
-    for(NSString *path in self.selectedFilePaths) {
-        //Construct formations from the file path
-        [self constructFormationsFromCSVFilePath:path];
-    }
-    
-       
-    //If there is any error message, pass nil to the handler as well as the error log
-       
-    if (self.validationMessageBoard.errorCount){        
-        [self.handler processTransientFormations:nil 
-                             andFormationFolders:nil
-                        withValidationMessageLog:self.validationMessageBoard.allMessages];
-    
-    } else {
-        [self.handler processTransientFormations:self.formations.copy 
-                             andFormationFolders:self.formationFolders 
-                        withValidationMessageLog:self.validationMessageBoard.warningMessages];
-    }
-}
-
 /* The format of this file would be two columns of data in a file for each formation folder. The first column is the formation type and the second would be the color associated with that formation type. If the color column is empty, the color would be default when the annotations are drawn.
  For example:
  
@@ -522,8 +454,6 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
                         withValidationMessageLog:self.validationMessageBoard.warningMessages];  
     }
 }
-
-
 
 #pragma mark - CSV File Parsing
 
@@ -819,31 +749,6 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     }
     
     [self writeFormationFilesWithColor:formationsByFolders];
-    
-    //Post a notification when done so that the spinner stops
-    [self postNotificationWithName:GeoNotificationIEEngineExportingDidEnd withUserInfo:[NSDictionary dictionary]];
-}
-
-- (void)createCSVFilesFromFormations:(NSArray *)formations 
-{
-    //a multiset type data structure. Key-foldername; Value-array of formations for that folder
-    NSMutableDictionary *formationsByFolders = [NSMutableDictionary dictionary]; 
-    for(Formation *formation in formations) {
-        //if the folder name has already been encountered, add to it
-        if([formationsByFolders.allKeys containsObject:formation.formationFolder.folderName]) { 
-            NSMutableArray *formationArray = [formationsByFolders objectForKey:formation.formationFolder.folderName];
-            [formationArray addObject:formation.formationName];
-            [formationsByFolders setObject:formationArray forKey:formation.formationFolder.folderName];
-        } else {
-            //otherwise create a new array and add to the dictionary with the foldername as the key to that array
-            NSMutableArray *formationArray = [NSMutableArray arrayWithObject:formation.formationName];
-            [formationsByFolders setObject:formationArray forKey:formation.formationFolder.folderName];
-        }
-    }
-    
-    //now write the csv files with the transposed 2d array created from the dictionary
-    NSArray *transposed2DArray=[self transposedFormationArrayFromDictionary:formationsByFolders];
-    [self writeFormations:transposed2DArray];  
     
     //Post a notification when done so that the spinner stops
     [self postNotificationWithName:GeoNotificationIEEngineExportingDidEnd withUserInfo:[NSDictionary dictionary]];
