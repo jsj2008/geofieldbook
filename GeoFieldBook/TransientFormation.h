@@ -17,8 +17,7 @@
 @property (nonatomic, strong) NSString * formationName;
 @property (nonatomic, strong) NSNumber * formationSortNumber;
 @property (nonatomic, strong) TransientFormation_Folder *formationFolder;
-@property (nonatomic, strong) UIColor *formationColor;
-@property (nonatomic, strong) NSString *colorName;
+@property (nonatomic, strong) NSString *color;
 
 - (Formation *)saveFormationToManagedObjectContext:(NSManagedObjectContext *)context;
 

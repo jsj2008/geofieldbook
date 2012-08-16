@@ -444,7 +444,6 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
     for (int line = 0; line<tokenArrays.count; line++) {
         NSMutableArray *tokenArray = [tokenArrays objectAtIndex:line];
         NSString *formationName = [TextInputFilter filterDatabaseInputText:[tokenArray objectAtIndex:0]];
-        ColorManager *colorManager=[ColorManager standardColorManager];
         
         //if formation name is not empty, then create the transient object
         if (formationName.length) {
@@ -452,8 +451,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
             newFormation.formationFolder = newTransientFormationFolder;
             newFormation.formationName = formationName;
             newFormation.formationSortNumber=[NSNumber numberWithInt:sortNumber++];
-            newFormation.formationColor = [colorManager colorWithName:[TextInputFilter filterDatabaseInputText:[tokenArray objectAtIndex:1]]];
-            newFormation.colorName = [tokenArray objectAtIndex:1];
+            newFormation.color = [tokenArray objectAtIndex:1];
             [self.formations addObject:newFormation];
         }       
     }
@@ -807,14 +805,14 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         //check if the foldername key is already present, if so add the new formation to the value for the key (array of formations), otherwise create a new array and add it to the dictionary.
         if([formationsByFolders.allKeys containsObject:formation.formationFolder.folderName]) {
             //new formation to add
-            NSArray *newFormation = [NSArray arrayWithObjects:[ TextInputFilter csvCompliantStringFromString:formation.formationName], [TextInputFilter csvCompliantStringFromString:formation.colorName], nil];
+            NSArray *newFormation = [NSArray arrayWithObjects:[ TextInputFilter csvCompliantStringFromString:formation.formationName], [TextInputFilter csvCompliantStringFromString:formation.color], nil];
             //get the existing value
             NSMutableArray *formationArray =[formationsByFolders objectForKey:formation.formationFolder.folderName];
             [formationsByFolders removeObjectForKey:formation.formationFolder.folderName];
             [formationArray addObject:newFormation];
             [formationsByFolders setObject:formationArray forKey:formation.formationFolder.folderName];
         } else {
-            NSArray *newFormation = [NSArray arrayWithObjects: [TextInputFilter csvCompliantStringFromString:formation.formationName], [TextInputFilter csvCompliantStringFromString:formation.colorName], nil];
+            NSArray *newFormation = [NSArray arrayWithObjects: [TextInputFilter csvCompliantStringFromString:formation.formationName], [TextInputFilter csvCompliantStringFromString:formation.color], nil];
             NSMutableArray *formationArray = [NSMutableArray arrayWithObject:newFormation];
             [formationsByFolders setObject:formationArray forKey:formation.formationFolder.folderName];
         }

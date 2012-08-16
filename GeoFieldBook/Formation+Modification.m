@@ -19,16 +19,11 @@
     //Get the formation name and color from the info dictionary
     NSString *formationName=[formationInfo objectForKey:GeoFormationName];
     formationName=[TextInputFilter filterDatabaseInputText:formationName];
-    UIColor *formationColor=[formationInfo objectForKey:GeoFormationColor];
-    NSString *colorName=[formationInfo objectForKey:GeoFormationColorName];
+    NSString *color=[formationInfo objectForKey:GeoFormationColor];
 
     //if the name is nil, return NO
     if (!formationName)
         return NO;
-    
-    //If the color is nil, set it to black (default color)
-    if (!formationColor)
-        formationColor=[UIColor blackColor];
     
     //Filter formation name
     formationName=[TextInputFilter filterDatabaseInputText:formationName];
@@ -48,8 +43,8 @@
     
     //Update the formation name
     self.formationName=formationName;
-    self.colorName=colorName;
-    
+    self.color=color;
+        
     return YES;
 }
 

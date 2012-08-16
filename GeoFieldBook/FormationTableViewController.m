@@ -302,7 +302,7 @@ typedef void (^database_save_t)(void);
     //Modify the formation with the specified original name and if that returns YES (success), dismiss the modal
     if ([self modifyFormation:formation withNewInfo:formationInfo]) {
         //Dismiss the modal
-        [self dismissModalViewControllerAnimated:YES];
+        [self dismissModalViewControllerAnimated:YES];        
     }
 }
 

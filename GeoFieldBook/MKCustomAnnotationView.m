@@ -58,7 +58,7 @@
         if (settingManager.formationColorEnabled && [(id)record formation]) {
             if (![record isKindOfClass:[Other class]]) {
                 Formation *formation=[(id)record formation];
-                color=[[ColorManager standardColorManager] colorWithName:formation.colorName];
+                color=[[ColorManager standardColorManager] colorWithName:formation.color];
             }
         }
         
@@ -96,7 +96,7 @@
         if (settingManager.formationColorEnabled && [(id)record formation]) {
             if (![record isKindOfClass:[Other class]]) {
                 Formation *formation=[(id)record formation];
-                color=[[ColorManager standardColorManager] colorWithName:formation.colorName];
+                color=[[ColorManager standardColorManager] colorWithName:formation.color];
             }
         }
         
@@ -134,7 +134,7 @@
         if (settingManager.formationColorEnabled && [(id)record formation]) {
             if (![record isKindOfClass:[Other class]]) {
                 Formation *formation=[(id)record formation];
-                color=[[ColorManager standardColorManager] colorWithName:formation.colorName];
+                color=[[ColorManager standardColorManager] colorWithName:formation.color];
             }
         }
         
@@ -181,7 +181,7 @@
         if (settingManager.formationColorEnabled && [(id)record formation]) {
             if (![record isKindOfClass:[Other class]]) {
                 Formation *formation=[(id)record formation];
-                color=[[ColorManager standardColorManager] colorWithName:formation.colorName];
+                color=[[ColorManager standardColorManager] colorWithName:formation.color];
             }
         }
         

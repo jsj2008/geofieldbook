@@ -50,7 +50,6 @@
 		0238587C1599732000A0DB98 /* Formation+Creation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0238587B1599731F00A0DB98 /* Formation+Creation.m */; };
 		0238587F1599747400A0DB98 /* Formation+Modification.m in Sources */ = {isa = PBXBuildFile; fileRef = 0238587E1599747300A0DB98 /* Formation+Modification.m */; };
 		023DEFFC15C1C1EB00591572 /* Answer+DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 023DEFFB15C1C1EB00591572 /* Answer+DateFormatter.m */; };
-		023DEFFF15C2FE8800591572 /* Formation.m in Sources */ = {isa = PBXBuildFile; fileRef = 023DEFFE15C2FE8800591572 /* Formation.m */; };
 		023DF00215C309AD00591572 /* Bedding+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 023DF00115C309AD00591572 /* Bedding+Validation.m */; };
 		023DF00515C30A2C00591572 /* Contact+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 023DF00415C30A2C00591572 /* Contact+Validation.m */; };
 		023DF00815C30A8700591572 /* Fault+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 023DF00715C30A8700591572 /* Fault+Validation.m */; };
@@ -138,6 +137,7 @@
 		0298969415A408B200E51C27 /* DataMapSegmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298969315A408B100E51C27 /* DataMapSegmentViewController.m */; };
 		0298C25C159B43F30038E89C /* Record+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298C25B159B43F30038E89C /* Record+Validation.m */; };
 		0298C25F159B45650038E89C /* Record+NameEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298C25E159B45650038E89C /* Record+NameEncoding.m */; };
+		0298E97A15DDA0A60067364D /* Formation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298E97915DDA0A60067364D /* Formation.m */; };
 		029A2D6715CC23FF000853D9 /* GroupSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 029A2D6615CC23FF000853D9 /* GroupSettingsTableViewController.m */; };
 		02A7764515BCA3BE008A22C2 /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A7762715BCA3BE008A22C2 /* IASKAppSettingsViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		02A7764615BCA3BE008A22C2 /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A7762915BCA3BE008A22C2 /* IASKAppSettingsWebViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -352,8 +352,6 @@
 		0238E56615B06F9500A2CA6C /* ImportTableViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImportTableViewControllerDelegate.h; sourceTree = "<group>"; };
 		023DEFFA15C1C1EB00591572 /* Answer+DateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Answer+DateFormatter.h"; sourceTree = "<group>"; };
 		023DEFFB15C1C1EB00591572 /* Answer+DateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Answer+DateFormatter.m"; sourceTree = "<group>"; };
-		023DEFFD15C2FE8800591572 /* Formation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Formation.h; sourceTree = "<group>"; };
-		023DEFFE15C2FE8800591572 /* Formation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Formation.m; sourceTree = "<group>"; };
 		023DF00015C309AD00591572 /* Bedding+Validation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bedding+Validation.h"; sourceTree = "<group>"; };
 		023DF00115C309AD00591572 /* Bedding+Validation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Bedding+Validation.m"; sourceTree = "<group>"; };
 		023DF00315C30A2C00591572 /* Contact+Validation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Contact+Validation.h"; sourceTree = "<group>"; };
@@ -524,6 +522,8 @@
 		0298C25B159B43F30038E89C /* Record+Validation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Record+Validation.m"; sourceTree = "<group>"; };
 		0298C25D159B45650038E89C /* Record+NameEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Record+NameEncoding.h"; sourceTree = "<group>"; };
 		0298C25E159B45650038E89C /* Record+NameEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Record+NameEncoding.m"; sourceTree = "<group>"; };
+		0298E97815DDA0A60067364D /* Formation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Formation.h; sourceTree = "<group>"; };
+		0298E97915DDA0A60067364D /* Formation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Formation.m; sourceTree = "<group>"; };
 		029A2D6515CC23FF000853D9 /* GroupSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupSettingsTableViewController.h; sourceTree = "<group>"; };
 		029A2D6615CC23FF000853D9 /* GroupSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupSettingsTableViewController.m; sourceTree = "<group>"; };
 		02A7762615BCA3BE008A22C2 /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
@@ -1408,8 +1408,8 @@
 		0298C251159B43170038E89C /* Formation */ = {
 			isa = PBXGroup;
 			children = (
-				023DEFFD15C2FE8800591572 /* Formation.h */,
-				023DEFFE15C2FE8800591572 /* Formation.m */,
+				0298E97815DDA0A60067364D /* Formation.h */,
+				0298E97915DDA0A60067364D /* Formation.m */,
 				0238587A1599731F00A0DB98 /* Formation+Creation.h */,
 				0238587B1599731F00A0DB98 /* Formation+Creation.m */,
 				0238587D1599747200A0DB98 /* Formation+Modification.h */,
@@ -1980,7 +1980,6 @@
 				02BBB43515C04DF2008F7D68 /* Image.m in Sources */,
 				218BF61C15C078FA00963CB6 /* Contact+Formation.m in Sources */,
 				023DEFFC15C1C1EB00591572 /* Answer+DateFormatter.m in Sources */,
-				023DEFFF15C2FE8800591572 /* Formation.m in Sources */,
 				023DF00215C309AD00591572 /* Bedding+Validation.m in Sources */,
 				023DF00515C30A2C00591572 /* Contact+Validation.m in Sources */,
 				023DF00815C30A8700591572 /* Fault+Validation.m in Sources */,
@@ -2003,6 +2002,7 @@
 				027AA6B015DCABAD00C97157 /* RecordByNameTVC.m in Sources */,
 				027AA6B315DCABBE00C97157 /* RecordByDateTVC.m in Sources */,
 				027AA6B615DCABD600C97157 /* RecordByTypeTVC.m in Sources */,
+				0298E97A15DDA0A60067364D /* Formation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

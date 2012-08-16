@@ -21,8 +21,7 @@
 @synthesize formationName=_formationName;
 @synthesize formationSortNumber=_formationSortNumber;
 @synthesize formationFolder=_formationFolder;
-@synthesize formationColor = _formationColor;
-@synthesize colorName = _colorName;
+@synthesize color = _color;
 
 @synthesize managedFormation=_managedFormation;
 
@@ -53,7 +52,7 @@
     formation.formationFolder=[self.formationFolder saveFormationFolderToManagedObjectContext:context completion:completionHandler];
     
     //Set the color name
-    formation.colorName=self.colorName;
+    formation.color=self.color;
     
     self.managedFormation=formation;
 }

@@ -257,16 +257,17 @@
                     animated:(BOOL)animated
 {
     //If the calling navigation controller controls the model MVC group and the new view controller is being pushed onto the navigation stack
-    //And the map view is on screen
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-    if (navigationController==self.popoverViewController.contentViewController && [dataMapSegmentVC.topViewController isKindOfClass:[RecordMapViewController class]]) {
+    if (navigationController==self.popoverViewController.contentViewController) {
         //If the recently pushed view controller is a folder tvc, swap the view MVC group to show the initial view
         if ([viewController isKindOfClass:[FolderTableViewController class]])
             [self pushInitialViewControllerOnScreen];
         
-        //Update the map view
-        [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:NO updateRegion:YES];
-        [dataMapSegmentVC setMapSelectedRecord:nil];  
+        //Update the map view if it's on screen
+        if ([dataMapSegmentVC.topViewController isKindOfClass:[RecordMapViewController class]]) {
+            [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:NO updateRegion:YES];
+            [dataMapSegmentVC setMapSelectedRecord:nil];  
+        }
         
         //If switching to the record tvc and the map is on screen, show the checkboxes in the record tvc
         RecordTableViewController *recordTVC=[self recordTableViewController];

@@ -17,7 +17,7 @@
 @synthesize name=_name;
 
 - (UIColor *)colorForFormation:(Formation *)formation {
-    UIColor *formationColor=[[ColorManager standardColorManager] colorWithName:formation.colorName];
+    UIColor *formationColor=[[ColorManager standardColorManager] colorWithName:formation.color];
     
     return formationColor;
 }

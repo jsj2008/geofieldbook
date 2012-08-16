@@ -2,7 +2,7 @@
 //  Formation.h
 //  GeoFieldBook
 //
-//  Created by Kien Hoang on 7/27/12.
+//  Created by Kien Hoang on 8/16/12.
 //  Copyright (c) 2012 Lafayette College. All rights reserved.
 //
 
@@ -13,7 +13,7 @@
 
 @interface Formation : NSManagedObject
 
-@property (nonatomic, retain) NSString * colorName;
+@property (nonatomic, retain) NSString * color;
 @property (nonatomic, retain) NSString * formationName;
 @property (nonatomic, retain) NSNumber * formationSortNumber;
 @property (nonatomic, retain) NSSet *beddings;

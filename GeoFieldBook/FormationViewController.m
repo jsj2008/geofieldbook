@@ -73,7 +73,7 @@
     self.formationName=self.formation.formationName;
     
     //Update the color
-    self.formationColor=formation.colorName;
+    self.formationColor=formation.color;
 }
 
 #pragma mark - Data Collectors
