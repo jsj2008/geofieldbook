@@ -257,9 +257,9 @@
                     animated:(BOOL)animated
 {
     //If the calling navigation controller controls the model MVC group and the new view controller is being pushed onto the navigation stack
-    if (navigationController==self.popoverViewController.contentViewController) {
-        DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-        
+    //And the map view is on screen
+    DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
+    if (navigationController==self.popoverViewController.contentViewController && [dataMapSegmentVC.topViewController isKindOfClass:[RecordMapViewController class]]) {
         //If the recently pushed view controller is a folder tvc, swap the view MVC group to show the initial view
         if ([viewController isKindOfClass:[FolderTableViewController class]])
             [self pushInitialViewControllerOnScreen];

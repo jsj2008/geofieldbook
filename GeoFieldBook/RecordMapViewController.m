@@ -58,7 +58,7 @@
 - (void)updateMapView:(MKMapView *)mapView willUpdateRegion:(BOOL)willUpdateRegion {
     //Filter the records
     NSArray *records=[self.recordFilter filterRecordCollectionByRecordType:self.records];
-     
+    
     //Save the old region
     MKCoordinateRegion mapRegion=mapView.region;
     
@@ -69,7 +69,6 @@
             if (![annotation isKindOfClass:[MKUserLocation class]])
                 [removedAnnotations addObject:annotation];
         }
-        
         [mapView removeAnnotations:removedAnnotations.copy];
     }
     
@@ -80,10 +79,12 @@
     
     //Set up the annotations for the map view
     if (records.count) {
+        NSMutableArray *mapAnnotations=[NSMutableArray array];
         //Convert the array of records into annotations
         for (Record *record in records)
-            [mapView addAnnotation:[MKGeoRecordAnnotation annotationForRecord:record]];
-
+            [mapAnnotations addObject:[MKGeoRecordAnnotation annotationForRecord:record]];
+        
+        [mapView addAnnotations:mapAnnotations.copy];
         //Save the annotations
         self.mapAnnotations=mapView.annotations;
         
@@ -95,7 +96,7 @@
         
         CLLocationCoordinate2D center = [mapView centerCoordinate];
         [mapView setCenterCoordinate:center];
-    }    
+    }
 }
 
 #pragma mark - Getters and Setters
@@ -205,11 +206,15 @@
     //Show user location
     self.mapView.showsUserLocation=YES;
     
-    //Update records
-    [self updateRecords:[self.mapDelegate recordsForMapViewController:self] forceUpdate:NO updateRegion:YES];    
-    
     //Register for notifications
     [self registerForNotifications];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    //Update records
+    [self updateRecords:[self.mapDelegate recordsForMapViewController:self] forceUpdate:NO updateRegion:YES];  
 }
 
 - (void)viewDidAppear:(BOOL)animated {

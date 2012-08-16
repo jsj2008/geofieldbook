@@ -104,8 +104,6 @@
     CGContextSetLineWidth(context, 3.0);
     CGContextBeginPath(context);
     
-    
-    
     [self drawStrikeWithContext:context point:point1 andPoint:point2 withColor:self.color];
     
     //DIP
