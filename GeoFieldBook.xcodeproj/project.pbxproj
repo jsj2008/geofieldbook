@@ -85,6 +85,11 @@
 		027764BB15BA4ADE00C9DCEB /* ColorPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 027764BA15BA4ADE00C9DCEB /* ColorPickerViewController.m */; };
 		027AA69E15DC551400C97157 /* RecordSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA69D15DC551400C97157 /* RecordSettingsTVC.m */; };
 		027AA6A415DC777800C97157 /* Folder.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA6A315DC777800C97157 /* Folder.m */; };
+		027AA6AA15DCA77600C97157 /* RecordSegmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA6A915DCA77600C97157 /* RecordSegmentViewController.m */; };
+		027AA6AD15DCA7DB00C97157 /* RecordSegmentVCSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA6AC15DCA7DB00C97157 /* RecordSegmentVCSegue.m */; };
+		027AA6B015DCABAD00C97157 /* RecordByNameTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA6AF15DCABAC00C97157 /* RecordByNameTVC.m */; };
+		027AA6B315DCABBE00C97157 /* RecordByDateTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA6B215DCABBE00C97157 /* RecordByDateTVC.m */; };
+		027AA6B615DCABD600C97157 /* RecordByTypeTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 027AA6B515DCABD500C97157 /* RecordByTypeTVC.m */; };
 		02806EE615BA6B94003D09A7 /* Formation+DictionaryKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 02806EE515BA6B94003D09A7 /* Formation+DictionaryKeys.m */; };
 		02806EEC15BA7E97003D09A7 /* CustomFormationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02806EEB15BA7E97003D09A7 /* CustomFormationCell.m */; };
 		02806F0515BB00E5003D09A7 /* green_pin.png in Resources */ = {isa = PBXBuildFile; fileRef = 02806F0315BB00E5003D09A7 /* green_pin.png */; };
@@ -420,6 +425,16 @@
 		027AA69D15DC551400C97157 /* RecordSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordSettingsTVC.m; sourceTree = "<group>"; };
 		027AA6A215DC777800C97157 /* Folder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Folder.h; sourceTree = "<group>"; };
 		027AA6A315DC777800C97157 /* Folder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Folder.m; sourceTree = "<group>"; };
+		027AA6A815DCA77600C97157 /* RecordSegmentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordSegmentViewController.h; sourceTree = "<group>"; };
+		027AA6A915DCA77600C97157 /* RecordSegmentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordSegmentViewController.m; sourceTree = "<group>"; };
+		027AA6AB15DCA7DB00C97157 /* RecordSegmentVCSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordSegmentVCSegue.h; sourceTree = "<group>"; };
+		027AA6AC15DCA7DB00C97157 /* RecordSegmentVCSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordSegmentVCSegue.m; sourceTree = "<group>"; };
+		027AA6AE15DCABAC00C97157 /* RecordByNameTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordByNameTVC.h; sourceTree = "<group>"; };
+		027AA6AF15DCABAC00C97157 /* RecordByNameTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordByNameTVC.m; sourceTree = "<group>"; };
+		027AA6B115DCABBE00C97157 /* RecordByDateTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordByDateTVC.h; sourceTree = "<group>"; };
+		027AA6B215DCABBE00C97157 /* RecordByDateTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordByDateTVC.m; sourceTree = "<group>"; };
+		027AA6B415DCABD500C97157 /* RecordByTypeTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordByTypeTVC.h; sourceTree = "<group>"; };
+		027AA6B515DCABD500C97157 /* RecordByTypeTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordByTypeTVC.m; sourceTree = "<group>"; };
 		02806EE215BA66D5003D09A7 /* ColorPickerViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPickerViewControllerDelegate.h; sourceTree = "<group>"; };
 		02806EE415BA6B94003D09A7 /* Formation+DictionaryKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Formation+DictionaryKeys.h"; sourceTree = "<group>"; };
 		02806EE515BA6B94003D09A7 /* Formation+DictionaryKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Formation+DictionaryKeys.m"; sourceTree = "<group>"; };
@@ -886,6 +901,8 @@
 				0287330415B35EC30001BBC2 /* DoubleTableViewControllerSegue.m */,
 				02A7766515BCC37D008A22C2 /* CustomSplitViewControllerSegue.h */,
 				02A7766615BCC37D008A22C2 /* CustomSplitViewControllerSegue.m */,
+				027AA6AB15DCA7DB00C97157 /* RecordSegmentVCSegue.h */,
+				027AA6AC15DCA7DB00C97157 /* RecordSegmentVCSegue.m */,
 			);
 			name = "Custom Segues";
 			sourceTree = "<group>";
@@ -930,16 +947,8 @@
 		027406B615AE6F5300AD9EDC /* Folder-Record Group */ = {
 			isa = PBXGroup;
 			children = (
-				020EBB5815941F7C00EECC08 /* FolderTableViewController.h */,
-				020EBB5915941F7C00EECC08 /* FolderTableViewController.m */,
-				020EBBB81594611A00EECC08 /* RecordTableViewController.h */,
-				020EBBB91594611A00EECC08 /* RecordTableViewController.m */,
-				028732F615B27E570001BBC2 /* FolderSelectTableViewController.h */,
-				028732F715B27E570001BBC2 /* FolderSelectTableViewController.m */,
-				020EBB9F15942E8800EECC08 /* ModalFolderViewController.h */,
-				020EBBA015942E8800EECC08 /* ModalFolderViewController.m */,
-				020EBBBF159467F100EECC08 /* ModalRecordTypeSelector.h */,
-				020EBBC0159467F100EECC08 /* ModalRecordTypeSelector.m */,
+				027AA6A515DCA5C400C97157 /* Folder Group */,
+				027AA6A615DCA5CF00C97157 /* Record Group */,
 			);
 			name = "Folder-Record Group";
 			sourceTree = "<group>";
@@ -1033,6 +1042,46 @@
 				027AA69D15DC551400C97157 /* RecordSettingsTVC.m */,
 			);
 			name = "Record Settings";
+			sourceTree = "<group>";
+		};
+		027AA6A515DCA5C400C97157 /* Folder Group */ = {
+			isa = PBXGroup;
+			children = (
+				020EBB5815941F7C00EECC08 /* FolderTableViewController.h */,
+				020EBB5915941F7C00EECC08 /* FolderTableViewController.m */,
+				020EBB9F15942E8800EECC08 /* ModalFolderViewController.h */,
+				020EBBA015942E8800EECC08 /* ModalFolderViewController.m */,
+			);
+			name = "Folder Group";
+			sourceTree = "<group>";
+		};
+		027AA6A615DCA5CF00C97157 /* Record Group */ = {
+			isa = PBXGroup;
+			children = (
+				027AA6A815DCA77600C97157 /* RecordSegmentViewController.h */,
+				027AA6A915DCA77600C97157 /* RecordSegmentViewController.m */,
+				027AA6A715DCA62300C97157 /* Record TVCs */,
+				028732F615B27E570001BBC2 /* FolderSelectTableViewController.h */,
+				028732F715B27E570001BBC2 /* FolderSelectTableViewController.m */,
+				020EBBBF159467F100EECC08 /* ModalRecordTypeSelector.h */,
+				020EBBC0159467F100EECC08 /* ModalRecordTypeSelector.m */,
+			);
+			name = "Record Group";
+			sourceTree = "<group>";
+		};
+		027AA6A715DCA62300C97157 /* Record TVCs */ = {
+			isa = PBXGroup;
+			children = (
+				020EBBB81594611A00EECC08 /* RecordTableViewController.h */,
+				020EBBB91594611A00EECC08 /* RecordTableViewController.m */,
+				027AA6AE15DCABAC00C97157 /* RecordByNameTVC.h */,
+				027AA6AF15DCABAC00C97157 /* RecordByNameTVC.m */,
+				027AA6B115DCABBE00C97157 /* RecordByDateTVC.h */,
+				027AA6B215DCABBE00C97157 /* RecordByDateTVC.m */,
+				027AA6B415DCABD500C97157 /* RecordByTypeTVC.h */,
+				027AA6B515DCABD500C97157 /* RecordByTypeTVC.m */,
+			);
+			name = "Record TVCs";
 			sourceTree = "<group>";
 		};
 		028732FA15B28F630001BBC2 /* Import */ = {
@@ -1949,6 +1998,11 @@
 				2159612115DBF5C500478C86 /* JointSetSymbol.m in Sources */,
 				027AA69E15DC551400C97157 /* RecordSettingsTVC.m in Sources */,
 				027AA6A415DC777800C97157 /* Folder.m in Sources */,
+				027AA6AA15DCA77600C97157 /* RecordSegmentViewController.m in Sources */,
+				027AA6AD15DCA7DB00C97157 /* RecordSegmentVCSegue.m in Sources */,
+				027AA6B015DCABAD00C97157 /* RecordByNameTVC.m in Sources */,
+				027AA6B315DCABBE00C97157 /* RecordByDateTVC.m in Sources */,
+				027AA6B615DCABD600C97157 /* RecordByTypeTVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

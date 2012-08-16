@@ -84,7 +84,6 @@
 
 #pragma mark - Record Map View Controller Data Forward Mechanisms
 
-
 - (void)setMapViewDelegate:(id<RecordMapViewControllerDelegate>)mapDelegate {
     //Set the map delegate of the map vc
     id mapDetail=[self.viewControllers lastObject];
@@ -211,7 +210,7 @@
 #pragma mark - Prepare for Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    NSMutableArray *viewControllers=[self.viewControllers mutableCopy];
+    NSMutableArray *viewControllers=self.viewControllers.mutableCopy;
     UIViewController *newViewController=nil;
     int index=0;
     if ([segue.identifier isEqualToString:@"Initial View Controller"]) {
@@ -230,15 +229,15 @@
         newViewController=[self.storyboard instantiateViewControllerWithIdentifier:RECORD_DETAIL_VIEW_CONTROLLER_IDENTIFIER];
     }
     
-    if ([viewControllers count]<index+1) {
+    if (viewControllers.count<index+1) {
         [viewControllers addObject:newViewController];
-        self.viewControllers=[viewControllers copy];
+        self.viewControllers=viewControllers.copy;
     }
     else if ([viewControllers objectAtIndex:index])
         [self replaceViewControllerAtSegmentIndex:index withViewController:newViewController];
     else {
         [viewControllers insertObject:newViewController atIndex:index];
-        self.viewControllers=[viewControllers copy];
+        self.viewControllers=viewControllers.copy;
     }    
 }
 

@@ -21,6 +21,8 @@
 
 @property (nonatomic,weak) id <RecordTableViewControllerDelegate> delegate;
 
+- (void)setupFetchedResultsController;
+
 #pragma mark - Currently active record
 
 @property (nonatomic,strong) Record *chosenRecord;

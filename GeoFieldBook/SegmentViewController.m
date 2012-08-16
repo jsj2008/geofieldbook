@@ -43,8 +43,23 @@
     //Adjust the frame of the specified view controller's view
     viewController.view.frame=self.contentView.bounds;
     
+    //If a view controller is already on screen
     if (self.currentViewController) {
-        if (animationOption==TransitionAnimationFold || animationOption==TransitionAnimationUnfold) {
+        //No animation
+        if (animationOption==TransionAnimationNone) {
+            //Remove the view of the current view controller from the view hierachy
+            [self.currentViewController.view removeFromSuperview];
+            
+            //Add the view of the new vc to the hierachy and set it as the current view controller
+            [self.contentView addSubview:viewController.view];
+            
+            //set the new view as the current view controller
+            [viewController didMoveToParentViewController:self];
+            self.currentViewController=viewController;
+        }
+        
+        //Fold/Unfold animations
+        else if (animationOption==TransitionAnimationFold || animationOption==TransitionAnimationUnfold) {
             MPFoldStyle style=animationOption==TransitionAnimationFold ? MPFoldStyleHorizontal : MPFoldStyleUnfold;
             [MPFoldTransition transitionFromViewController:self.currentViewController toViewController:viewController duration:0.4 style:style completion:^(BOOL finished){
                 //Remove the view of the current view controller from the view hierachy
@@ -58,6 +73,8 @@
                 self.currentViewController=viewController;
             }];
         }
+        
+        //Push animation
         else {
             UIViewAnimationOptions option=(animationOption!=TransitionAnimationPushLeft && animationOption!=TransitionAnimationPushRight) ? 1:0;
             if (option) 
@@ -87,6 +104,8 @@
             }];
         }
     } 
+    
+    //If there is no view controller on the screen at the moment
     else {
         //Some transition animation
         CATransition *transition=[CATransition animation];
@@ -142,14 +161,14 @@
 
 - (void)pushViewController:(UIViewController *)viewController {
     //Add the specified view controller at the end of the view controller array
-    [self insertViewController:viewController atSegmentIndex:[self.viewControllers count]];
+    [self insertViewController:viewController atSegmentIndex:self.viewControllers.count];
 }
 
 - (void)insertViewController:(UIViewController *)viewController atSegmentIndex:(int)segmentIndex {
     //Insert the specified view controller at the specified index in the view controller array
-    NSMutableArray *viewControllers=[self.viewControllers mutableCopy];
+    NSMutableArray *viewControllers=self.viewControllers.mutableCopy;
     [viewControllers insertObject:viewController atIndex:segmentIndex];
-    self.viewControllers=[viewControllers copy];
+    self.viewControllers=viewControllers.copy;
 }
 
 - (void)replaceViewControllerAtSegmentIndex:(int)segmentIndex withViewController:(UIViewController *)viewController {

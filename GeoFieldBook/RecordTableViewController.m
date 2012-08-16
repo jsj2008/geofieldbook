@@ -44,9 +44,9 @@
 #pragma mark - UI Outlets
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *setLocationButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *editButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *addButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *moveButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *selectAllButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *selectNone;
@@ -88,12 +88,7 @@
 #pragma mark - Controller State Initialization
 
 - (void)setupFetchedResultsController {
-    //Set up the fetched results controller to fetch records
-    NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Record"];
-    request.predicate=[NSPredicate predicateWithFormat:@"folder.folderName=%@",self.folder.folderName];
-    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]];
-    
-    self.fetchedResultsController=[[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.database.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    //Will be overidden by subclasses
 }
 
 #pragma mark - Setters
