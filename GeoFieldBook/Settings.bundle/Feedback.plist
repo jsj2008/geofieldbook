@@ -12,7 +12,7 @@
 			<key>Key</key>
 			<string>feedback_enabled</string>
 			<key>DefaultValue</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>

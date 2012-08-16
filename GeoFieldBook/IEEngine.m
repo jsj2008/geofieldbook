@@ -736,6 +736,7 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         if([formationsByFolders.allKeys containsObject:formation.formationFolder.folderName]) {
             //new formation to add
             NSArray *newFormation = [NSArray arrayWithObjects:[ TextInputFilter csvCompliantStringFromString:formation.formationName], [TextInputFilter csvCompliantStringFromString:formation.color], nil];
+            
             //get the existing value
             NSMutableArray *formationArray =[formationsByFolders objectForKey:formation.formationFolder.folderName];
             [formationsByFolders removeObjectForKey:formation.formationFolder.folderName];
@@ -798,34 +799,6 @@ typedef enum columnHeadings{Name, Type, Longitude, Latitude, Date, Time, Strike,
         }
         [handler closeFile];
     }
-}
-
--(void)writeFormations:(NSArray *)twoDimensionalFormationArray {
-    //Format the date
-    NSDate *current = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"MM-dd-yy"];        
-    NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init]; 
-    [timeFormatter setDateFormat:@"HH:mm:ss"];
-
-    //create the file in the documents directory
-    NSString *formationFileName = [NSString stringWithFormat:@"Formation_%@_%@",[dateFormatter stringFromDate:current], [timeFormatter stringFromDate:current]];
-    NSFileManager *fileManager=[NSFileManager defaultManager];
-    NSArray *urlsArray = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
-    NSString *documentsDirectory = [[urlsArray objectAtIndex:0] path];
-    
-    NSString *destinationPath = [NSString stringWithFormat:@"%@/%@.formation.csv",documentsDirectory,formationFileName];
-    [[NSFileManager defaultManager] createFileAtPath:destinationPath contents:nil attributes:nil];
-    NSFileHandle *handler = [NSFileHandle fileHandleForWritingAtPath:destinationPath];
-    
-    //now write the records to the csv file
-    for (NSArray *formations in twoDimensionalFormationArray) {
-        NSString *line=[formations componentsJoinedByString:@", "];
-        line=[line stringByAppendingString:@"\n"];
-        [handler writeData:[line dataUsingEncoding:NSUTF8StringEncoding]];
-    }
-    
-    [handler closeFile];
 }
 
 #pragma mark - Student Response Exporting
