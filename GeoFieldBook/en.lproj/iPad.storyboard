@@ -70,7 +70,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="-8108" y="-11361"/>
+            <point key="canvasLocation" x="-8092" y="-9065"/>
         </scene>
         <!--Record Segment View Controller-->
         <scene sceneID="Uen-wC-OEU">
@@ -4565,7 +4565,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="-7887" y="-9713"/>
+            <point key="canvasLocation" x="-6911" y="-14053"/>
         </scene>
         <!--Record By NameTVC-->
         <scene sceneID="Bni-5c-FeS">
@@ -4724,7 +4724,7 @@
                     </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="-9181" y="-8875"/>
+            <point key="canvasLocation" x="-8205" y="-13215"/>
         </scene>
         <!--Folder Select Table View Controller-->
         <scene sceneID="fy3-Xc-Lje">
@@ -4789,7 +4789,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="-7685" y="-7785"/>
+            <point key="canvasLocation" x="-6709" y="-12125"/>
         </scene>
         <!--Formation Folder Picker View Controller-->
         <scene sceneID="UOG-Gj-Dpn">
@@ -4814,7 +4814,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="-7759" y="-8791"/>
+            <point key="canvasLocation" x="-6783" y="-13131"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="u0D-up-9qm">
@@ -4832,7 +4832,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="-9015" y="-7728"/>
+            <point key="canvasLocation" x="-8039" y="-12068"/>
         </scene>
     </scenes>
     <resources>
