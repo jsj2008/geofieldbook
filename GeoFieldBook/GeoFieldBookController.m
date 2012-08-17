@@ -265,6 +265,7 @@
         
         //Update the map view if it's on screen
         if ([dataMapSegmentVC.topViewController isKindOfClass:[RecordMapViewController class]]) {
+            //Update the records of the map
             [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:NO updateRegion:YES];
             [dataMapSegmentVC setMapSelectedRecord:nil];  
         }
@@ -279,6 +280,8 @@
                 recordTVC.willShowCheckboxes=NO;
         }
     }
+    
+    
 }
 
 #pragma mark - Prepare for Segue

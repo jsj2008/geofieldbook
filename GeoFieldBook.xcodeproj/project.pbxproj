@@ -714,8 +714,6 @@
 			children = (
 				020EBB971594259900EECC08 /* GeoDatabaseManager.h */,
 				020EBB981594259900EECC08 /* GeoDatabaseManager.m */,
-				02A7766F15BCE39A008A22C2 /* SettingManager.h */,
-				02A7767015BCE39A008A22C2 /* SettingManager.m */,
 				020EBBAD15944F4500EECC08 /* TextInputFilter.h */,
 				020EBBAE15944F4500EECC08 /* TextInputFilter.m */,
 				2128E74115A238F900B277F9 /* GeoFilter.h */,
@@ -744,22 +742,13 @@
 		020EBB9B15942C8F00EECC08 /* View MVC Group */ = {
 			isa = PBXGroup;
 			children = (
+				0298969215A408B100E51C27 /* DataMapSegmentViewController.h */,
+				0298969315A408B100E51C27 /* DataMapSegmentViewController.m */,
 				0294C0C515BE5DEE00E0E2D0 /* Initial View */,
 				0294C0C315BE5DD300E0E2D0 /* Record View */,
 				0294C0C415BE5DDE00E0E2D0 /* Map View */,
-				0298969215A408B100E51C27 /* DataMapSegmentViewController.h */,
-				0298969315A408B100E51C27 /* DataMapSegmentViewController.m */,
 			);
 			name = "View MVC Group";
-			sourceTree = "<group>";
-		};
-		0222DB251596B9B200699D62 /* Picker View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				0277646415BA43AE00C9DCEB /* Color Picker */,
-				0277646315BA439900C9DCEB /* RecordViewController Pickers */,
-			);
-			name = "Picker View Controllers";
 			sourceTree = "<group>";
 		};
 		022C3DF815AE74FD004F0EDD /* TransientManagedObjects */ = {
@@ -921,8 +910,8 @@
 		027406B315AE6F2C00AD9EDC /* I/E Group */ = {
 			isa = PBXGroup;
 			children = (
-				028732FB15B28F720001BBC2 /* Export */,
-				028732FA15B28F630001BBC2 /* Import */,
+				211B728D15AB522D00EC4C60 /* Model */,
+				0298E97D15DDC8E70067364D /* Controllers */,
 			);
 			name = "I/E Group";
 			sourceTree = "<group>";
@@ -930,16 +919,9 @@
 		027406B515AE6F3F00AD9EDC /* Formation Group */ = {
 			isa = PBXGroup;
 			children = (
-				023858651599233F00A0DB98 /* FormationFolderTableViewController.h */,
-				023858661599233F00A0DB98 /* FormationFolderTableViewController.m */,
-				0238586815994DF100A0DB98 /* FormationFolderViewController.h */,
-				0238586915994DF200A0DB98 /* FormationFolderViewController.m */,
-				0238587415996B5B00A0DB98 /* FormationTableViewController.h */,
-				0238587515996B5C00A0DB98 /* FormationTableViewController.m */,
-				0238587715996F4900A0DB98 /* FormationViewController.h */,
-				0238587815996F4900A0DB98 /* FormationViewController.m */,
-				0249DAFA15DAC91300DBA75B /* SelectFormationFolderTVC.h */,
-				0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */,
+				0298E97B15DDC8A20067364D /* Formation Folder */,
+				0298E97C15DDC8AE0067364D /* Formation */,
+				0277646415BA43AE00C9DCEB /* Color Picker */,
 			);
 			name = "Formation Group";
 			sourceTree = "<group>";
@@ -970,7 +952,7 @@
 			name = "Table Cells";
 			sourceTree = "<group>";
 		};
-		0277646315BA439900C9DCEB /* RecordViewController Pickers */ = {
+		0277646315BA439900C9DCEB /* Picker View Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				0222DB261596B9ED00699D62 /* FormationPickerViewController.h */,
@@ -988,7 +970,7 @@
 				020F06FD15982ED10006B53B /* PlungePickerViewController.h */,
 				020F06FE15982ED10006B53B /* PlungePickerViewController.m */,
 			);
-			name = "RecordViewController Pickers";
+			name = "Picker View Controllers";
 			sourceTree = "<group>";
 		};
 		0277646415BA43AE00C9DCEB /* Color Picker */ = {
@@ -1104,14 +1086,8 @@
 			children = (
 				0287331315B379FD0001BBC2 /* ExportDoubleTableViewController.h */,
 				0287331415B379FD0001BBC2 /* ExportDoubleTableViewController.m */,
-				0287330D15B378190001BBC2 /* ExportFolderTableViewController.h */,
-				0287330E15B378190001BBC2 /* ExportFolderTableViewController.m */,
-				0287331615B37FA90001BBC2 /* ExportRecordTableViewController.h */,
-				0287331715B37FA90001BBC2 /* ExportRecordTableViewController.m */,
-				212DD13415B46512000203AB /* ExportFormationFolderTableViewController.h */,
-				212DD13515B46513000203AB /* ExportFormationFolderTableViewController.m */,
-				212DD13815B46575000203AB /* ExportFormationTableViewController.h */,
-				212DD13915B46576000203AB /* ExportFormationTableViewController.m */,
+				0298E98715DDCA100067364D /* Record */,
+				0298E98815DDCA1B0067364D /* Formation */,
 			);
 			name = Export;
 			sourceTree = "<group>";
@@ -1209,6 +1185,7 @@
 			children = (
 				020EBB9C15942CBB00EECC08 /* RecordViewController.h */,
 				020EBB9D15942CBB00EECC08 /* RecordViewController.m */,
+				0277646315BA439900C9DCEB /* Picker View Controllers */,
 			);
 			name = "Record View";
 			sourceTree = "<group>";
@@ -1218,10 +1195,10 @@
 			children = (
 				0298968F15A38F4C00E51C27 /* RecordMapViewController.h */,
 				0298969015A38F4C00E51C27 /* RecordMapViewController.m */,
-				02AC0F8815A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.h */,
-				02AC0F8915A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.m */,
-				21FC475315A4244000F245FF /* FilterByRecordTypeController.h */,
-				21FC475415A4244000F245FF /* FilterByRecordTypeController.m */,
+				0298E98115DDC9400067364D /* Filter Controllers */,
+				0298E98015DDC9320067364D /* Callout */,
+				0298E97F15DDC91E0067364D /* MKAnnotationView */,
+				2128E73D15A2378000B277F9 /* MKAnnotation */,
 			);
 			name = "Map View";
 			sourceTree = "<group>";
@@ -1282,13 +1259,10 @@
 				020EBB9A15942C7900EECC08 /* Model MVC Group */,
 				020EBB9B15942C8F00EECC08 /* View MVC Group */,
 				02A7761F15BC9A5C008A22C2 /* Settings */,
-				0222DB251596B9B200699D62 /* Picker View Controllers */,
+				024097A2159D373F00855D33 /* Custom Views */,
 				0249E2E515A8EECB00A7532E /* Custom Segues */,
 				0249E2EC15A903BE00A7532E /* NSNotification Registrations */,
-				211B728D15AB522D00EC4C60 /* Import/Export */,
-				024097A2159D373F00855D33 /* Custom Views */,
 				029877FC1595954D000D71E7 /* Images */,
-				2128E73D15A2378000B277F9 /* MKAnnotation */,
 				0288944E15B49E6A0062E6DA /* Custom Animations */,
 				029877F015955CB2000D71E7 /* Protocols */,
 				020EBB961594255700EECC08 /* Library */,
@@ -1531,17 +1505,141 @@
 			name = "Formation Folder";
 			sourceTree = "<group>";
 		};
-		02A7761F15BC9A5C008A22C2 /* Settings */ = {
+		0298E97B15DDC8A20067364D /* Formation Folder */ = {
+			isa = PBXGroup;
+			children = (
+				023858651599233F00A0DB98 /* FormationFolderTableViewController.h */,
+				023858661599233F00A0DB98 /* FormationFolderTableViewController.m */,
+				0238586815994DF100A0DB98 /* FormationFolderViewController.h */,
+				0238586915994DF200A0DB98 /* FormationFolderViewController.m */,
+			);
+			name = "Formation Folder";
+			sourceTree = "<group>";
+		};
+		0298E97C15DDC8AE0067364D /* Formation */ = {
+			isa = PBXGroup;
+			children = (
+				0238587415996B5B00A0DB98 /* FormationTableViewController.h */,
+				0238587515996B5C00A0DB98 /* FormationTableViewController.m */,
+				0238587715996F4900A0DB98 /* FormationViewController.h */,
+				0238587815996F4900A0DB98 /* FormationViewController.m */,
+				0249DAFA15DAC91300DBA75B /* SelectFormationFolderTVC.h */,
+				0249DAFB15DAC91300DBA75B /* SelectFormationFolderTVC.m */,
+			);
+			name = Formation;
+			sourceTree = "<group>";
+		};
+		0298E97D15DDC8E70067364D /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				028732FB15B28F720001BBC2 /* Export */,
+				028732FA15B28F630001BBC2 /* Import */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		0298E97F15DDC91E0067364D /* MKAnnotationView */ = {
+			isa = PBXGroup;
+			children = (
+				218F8FD015B9AA220008710A /* MKCustomAnnotationView.h */,
+				218F8FD115B9AA220008710A /* MKCustomAnnotationView.m */,
+			);
+			name = MKAnnotationView;
+			sourceTree = "<group>";
+		};
+		0298E98015DDC9320067364D /* Callout */ = {
+			isa = PBXGroup;
+			children = (
+				02AC0F8815A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.h */,
+				02AC0F8915A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.m */,
+			);
+			name = Callout;
+			sourceTree = "<group>";
+		};
+		0298E98115DDC9400067364D /* Filter Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				21FC475315A4244000F245FF /* FilterByRecordTypeController.h */,
+				21FC475415A4244000F245FF /* FilterByRecordTypeController.m */,
+			);
+			name = "Filter Controllers";
+			sourceTree = "<group>";
+		};
+		0298E98215DDC9740067364D /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				02A7767315BD28BA008A22C2 /* Settings.bundle */,
-				02A7766215BCC26F008A22C2 /* SettingsSplitViewController.h */,
-				02A7766315BCC26F008A22C2 /* SettingsSplitViewController.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		0298E98315DDC9800067364D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0298E98415DDC9A00067364D /* Left Side */,
+				0298E98515DDC9AA0067364D /* Right Side */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		0298E98415DDC9A00067364D /* Left Side */ = {
+			isa = PBXGroup;
+			children = (
+				02A7765C15BCAE2C008A22C2 /* MainSettingsTableViewController.h */,
+				02A7765D15BCAE2D008A22C2 /* MainSettingsTableViewController.m */,
+			);
+			name = "Left Side";
+			sourceTree = "<group>";
+		};
+		0298E98515DDC9AA0067364D /* Right Side */ = {
+			isa = PBXGroup;
+			children = (
 				027AA69415DC46D700C97157 /* General Settings */,
 				027AA69515DC46E700C97157 /* Group Settings */,
 				027AA69B15DC550200C97157 /* Record Settings */,
-				02A7765C15BCAE2C008A22C2 /* MainSettingsTableViewController.h */,
-				02A7765D15BCAE2D008A22C2 /* MainSettingsTableViewController.m */,
+			);
+			name = "Right Side";
+			sourceTree = "<group>";
+		};
+		0298E98615DDC9B60067364D /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				02A7766215BCC26F008A22C2 /* SettingsSplitViewController.h */,
+				02A7766315BCC26F008A22C2 /* SettingsSplitViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		0298E98715DDCA100067364D /* Record */ = {
+			isa = PBXGroup;
+			children = (
+				0287330D15B378190001BBC2 /* ExportFolderTableViewController.h */,
+				0287330E15B378190001BBC2 /* ExportFolderTableViewController.m */,
+				0287331615B37FA90001BBC2 /* ExportRecordTableViewController.h */,
+				0287331715B37FA90001BBC2 /* ExportRecordTableViewController.m */,
+			);
+			name = Record;
+			sourceTree = "<group>";
+		};
+		0298E98815DDCA1B0067364D /* Formation */ = {
+			isa = PBXGroup;
+			children = (
+				212DD13415B46512000203AB /* ExportFormationFolderTableViewController.h */,
+				212DD13515B46513000203AB /* ExportFormationFolderTableViewController.m */,
+				212DD13815B46575000203AB /* ExportFormationTableViewController.h */,
+				212DD13915B46576000203AB /* ExportFormationTableViewController.m */,
+			);
+			name = Formation;
+			sourceTree = "<group>";
+		};
+		02A7761F15BC9A5C008A22C2 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				02A7766F15BCE39A008A22C2 /* SettingManager.h */,
+				02A7767015BCE39A008A22C2 /* SettingManager.m */,
+				0298E98215DDC9740067364D /* Model */,
+				0298E98315DDC9800067364D /* Views */,
+				0298E98615DDC9B60067364D /* Controller */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -1633,7 +1731,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		211B728D15AB522D00EC4C60 /* Import/Export */ = {
+		211B728D15AB522D00EC4C60 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				02F86EB615AF6F09000A84D2 /* IEEngine.h */,
@@ -1641,7 +1739,7 @@
 				02F86EBA15AF6F37000A84D2 /* ConflictHandler.h */,
 				02F86EBB15AF6F37000A84D2 /* ConflictHandler.m */,
 			);
-			name = Import/Export;
+			name = Model;
 			path = ..;
 			sourceTree = "<group>";
 		};
@@ -1678,8 +1776,6 @@
 				0249DB0515DB45B900DBA75B /* DotSymbol.m */,
 				0249DB0715DB482800DBA75B /* OtherSymbol.h */,
 				0249DB0815DB482800DBA75B /* OtherSymbol.m */,
-				218F8FD015B9AA220008710A /* MKCustomAnnotationView.h */,
-				218F8FD115B9AA220008710A /* MKCustomAnnotationView.m */,
 			);
 			name = "Map Symbols";
 			sourceTree = "<group>";

@@ -55,7 +55,7 @@
 
 #pragma mark - Map View Setup methods
 
-- (void)updateMapView:(MKMapView *)mapView willUpdateRegion:(BOOL)willUpdateRegion {
+- (void)updateMapView:(MKMapView *)mapView willUpdateRegion:(BOOL)willUpdateRegion {    
     //Filter the records
     NSArray *records=[self.recordFilter filterRecordCollectionByRecordType:self.records];
     
@@ -302,23 +302,6 @@
                                             animated:YES];
     self.annotationCalloutPopover=annotationCalloutPopover;
 }
-
-- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views { 
-    //Drop-pin animation
-    for (MKAnnotationView *view in views) {
-        CGRect endFrame = view.frame;
-        
-        view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y - 300.0, view.frame.size.width, view.frame.size.height);
-        
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:0.25];
-        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-        [view setFrame:endFrame];
-        [UIView commitAnimations];
-        
-    }
-}
-
 
 #pragma mark - Determine span of map view
 
