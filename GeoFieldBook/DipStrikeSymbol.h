@@ -7,12 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MapSymbol.h"
 
-@interface DipStrikeSymbol : UIView
-
-@property (nonatomic) float strike;
-@property (nonatomic) float dip;
-@property (nonatomic, strong) NSString *dipDirection;
-@property (nonatomic, strong) UIColor *color;
+@interface DipStrikeSymbol : UIView <MapSymbol>
 
 @end

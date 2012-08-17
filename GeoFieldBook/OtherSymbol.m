@@ -10,6 +10,9 @@
 
 @implementation OtherSymbol
 
+@synthesize strike=_strike;
+@synthesize dip=_dip;
+@synthesize dipDirection=_dipDirection;
 @synthesize color=_color;
 
 - (void) drawDotWithCenter:(CGPoint)center andRect:(CGRect)rect

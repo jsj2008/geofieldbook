@@ -6,12 +6,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MapSymbol.h"
 
-@interface JointSetSymbol : UIView
-
-@property (nonatomic) float strike;
-@property (nonatomic) float dip;
-@property (nonatomic, strong) NSString *dipDirection;
-@property (nonatomic, strong) UIColor *color;
+@interface JointSetSymbol : UIView <MapSymbol>
 
 @end

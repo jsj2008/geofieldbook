@@ -524,6 +524,7 @@
 		0298C25E159B45650038E89C /* Record+NameEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Record+NameEncoding.m"; sourceTree = "<group>"; };
 		0298E97815DDA0A60067364D /* Formation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Formation.h; sourceTree = "<group>"; };
 		0298E97915DDA0A60067364D /* Formation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Formation.m; sourceTree = "<group>"; };
+		0298E9A815DDD4760067364D /* MapSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapSymbol.h; sourceTree = "<group>"; };
 		029A2D6515CC23FF000853D9 /* GroupSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupSettingsTableViewController.h; sourceTree = "<group>"; };
 		029A2D6615CC23FF000853D9 /* GroupSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupSettingsTableViewController.m; sourceTree = "<group>"; };
 		02A7762615BCA3BE008A22C2 /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
@@ -1766,6 +1767,7 @@
 		217C9F9C15B9A3A800C3AABC /* Map Symbols */ = {
 			isa = PBXGroup;
 			children = (
+				0298E9A815DDD4760067364D /* MapSymbol.h */,
 				218F8FD315B9AA490008710A /* DipStrikeSymbol.h */,
 				218F8FD415B9AA490008710A /* DipStrikeSymbol.m */,
 				2159611F15DBF5C400478C86 /* JointSetSymbol.h */,

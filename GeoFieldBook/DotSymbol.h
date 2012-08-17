@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MapSymbol.h"
 
-@interface DotSymbol : UIView
-
-@property (nonatomic, strong) UIColor *color;
+@interface DotSymbol : UIView <MapSymbol>
 
 @end
