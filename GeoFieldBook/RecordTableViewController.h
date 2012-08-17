@@ -15,6 +15,23 @@
 
 #import "RecordTableViewControllerDelegate.h"
 
+#import "Record.h"
+#import "Record+State.h"
+#import "Record+Types.h"
+#import "Record+Creation.h"
+#import "Record+Validation.h"
+#import "Record+NameEncoding.h"
+#import "Record+DateAndTimeFormatter.h"
+#import "Formation_Folder.h"
+#import "CheckBox.h"
+#import "Image.h"
+
+#import "Bedding.h"
+#import "Contact.h"
+#import "Fault.h"
+#import "JointSet.h"
+#import "Other.h"
+
 @interface RecordTableViewController : PrototypeRecordTableViewController
 
 @property (nonatomic) BOOL willShowCheckboxes;

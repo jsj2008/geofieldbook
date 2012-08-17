@@ -12,17 +12,6 @@
 #import "GeoDatabaseManager.h"
 #import "Folder.h"
 
-#import "Record.h"
-#import "Record+State.h"
-#import "Record+Types.h"
-#import "Record+Creation.h"
-#import "Record+Validation.h"
-#import "Record+NameEncoding.h"
-#import "Record+DateAndTimeFormatter.h"
-#import "Formation_Folder.h"
-#import "CheckBox.h"
-#import "Image.h"
-
 #import "ModelGroupNotificationNames.h"
 
 #import "FolderSelectTableViewController.h"
@@ -288,14 +277,13 @@
 - (void)formationFolderPickerViewController:(FormationFolderPickerViewController *)sender 
        userDidSelectFormationFolderWithName:(NSString *)formationFolderName 
 {
-    //Save the formation folder name in the folder if the returned formationFolderName is not empty (it's empty when user selects the empty option)
-    if ([formationFolderName length])
-        [self.delegate recordTableViewController:self 
-                               needsUpdateFolder:self.folder
-                          setFormationFolderName:formationFolderName];
-    
     //Change the text of the set location button to show the new location
-    self.setLocationButton.title=[formationFolderName length] ? formationFolderName : @"Set Location";
+    self.setLocationButton.title=formationFolderName.length ? formationFolderName : @"Set Location";
+    
+    //Save the formation folder name in the folder
+    [self.delegate recordTableViewController:self 
+                           needsUpdateFolder:self.folder
+                      setFormationFolderName:formationFolderName];
 }
 
 - (void)alertViewCancel:(UIAlertView *)alertView {

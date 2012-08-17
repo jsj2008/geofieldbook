@@ -38,6 +38,12 @@
 
 - (BOOL)setFormationFolderWithName:(NSString *)formationFolder 
 {
+    //If the new formation folder name is empty string or nil, unset the relationship and return yes
+    if (!formationFolder.length) {
+        self.formationFolder=nil;
+        return YES;
+    }
+    
     //Query for the formation folder with the specified name
     NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Formation_Folder"];
     request.predicate=[NSPredicate predicateWithFormat:@"folderName=%@",formationFolder];
@@ -45,11 +51,11 @@
     NSArray *results=[self.managedObjectContext executeFetchRequest:request error:NULL];
     
     //if there is no formation folder with the specified name, return false
-    if (![results count])
+    if (!results.count)
         return NO;
     
     //Change the formation folder of the folder
-    self.formationFolder=[results lastObject];
+    self.formationFolder=results.lastObject;
     
     return YES;
 }

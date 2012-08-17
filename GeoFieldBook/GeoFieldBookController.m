@@ -569,7 +569,8 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-	return YES;
+    //Only support landscape modes
+	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
 - (void)viewDidUnload {

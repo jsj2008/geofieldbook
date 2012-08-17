@@ -13,7 +13,6 @@
 #import "GeoDatabaseManager.h"
 
 #import "Folder.h"
-#import "Record.h"
 #import "Folder+Creation.h"
 #import "Folder+Modification.h"
 #import "Folder+DictionaryKeys.h"
@@ -127,69 +126,83 @@
                 needsUpdateFolder:(Folder *)folder 
            setFormationFolderName:(NSString *)formationFolder
 {
-    //Update the folder
-    [folder setFormationFolderWithName:formationFolder];
-    
-    //reassign formation relationships in the folder's records if the new formation list has formations named after the ones present in the records.
-    [self reassignFormationsForRecordsInFolder:folder toNewFormationsInList:formationFolder];
+    //Update the folder and reassign formations if successful
+    if ([folder setFormationFolderWithName:formationFolder])
+        [self reassignFormationsForRecordsInFolder:folder toNewFormationsInList:formationFolder];
 }
 
 #pragma mark - Reassigning Formations On SetLocation
+
 -(void)reassignFormationsForRecordsInFolder:(Folder *)folder toNewFormationsInList:(NSString *)formationFolderName
 {
-    //fetch the records in that folder
-    NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Record"];
-    request.predicate=[NSPredicate predicateWithFormat:@"folder.folderName=%@",folder.folderName];
-    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]];
-    NSArray *records=[self.database.managedObjectContext executeFetchRequest:request error:NULL];
+    //Get the records in that folder
+    NSSet *records=folder.records;
     
+    //If the new formation folder name is not empty, reset all record-formation relationships; else, unset all
     //fetch the formations in the new formation folder
     NSFetchRequest *formationRequest = [[NSFetchRequest alloc] initWithEntityName:@"Formation"];
     formationRequest.predicate = [NSPredicate predicateWithFormat:@"formationFolder.folderName=%@",formationFolderName];
     NSArray *formations = [self.database.managedObjectContext executeFetchRequest:formationRequest error:NULL];
     
-    //now reassign the formations to those of the new list if the formation names in the records match those in the list
-    NSString *formName;
-    NSString *lowerFormName;
-    NSString *upperFormName;
-    
-    for(Record *record in records) {
-        for(Formation *formation in formations) {
-            //see if the formation with name exists in the fetched formations. if no such formation exists, break the existing relationship (or assign it to some zombie formation that we create !?);
-            if([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[JointSet class]] || [record isKindOfClass:[Fault class]]) {
-                formName = [(id)record formationName];
-                if([formName isEqualToString:formation.formationName])
-                    [(id) record setFormation:formation];
-                else {
-                    //break existing relationship
-                }
-            }else if([record isKindOfClass:[Contact class]]) {
-                lowerFormName=[(Contact *)record lowerFormationName];
-                upperFormName=[(Contact *)record upperFormationName];
+    //Reset record-formation relationships for non-other records
+    for (Record *record in records) {
+        if (![record isKindOfClass:[Other class]]) {
+            //Contact type
+            if ([record isKindOfClass:[Contact class]]) {
+                //Get the contact
+                Contact *contact=(Contact *)record;
                 
-                if([upperFormName isEqualToString:formation.formationName])
-                    [(id) record setUpperFormation:formation];
-                else {
-                    //break existing relationship
+                //Unset all formation relationships first (if there is a match, there is no relationship)
+                contact.upperFormation=nil;
+                contact.lowerFormation=nil;
+                
+                //Reset formation relationships only
+                //This will ensure that when there is no formation, whether or not because the formation folder is empty, there is no relationship
+                for (Formation *formation in formations) {
+                    //Reset upper formation if there is a match
+                    if ([formation.formationName isEqualToString:contact.upperFormationName])
+                        contact.upperFormation=formation;
+                    
+                    //Reset lower formation if there is a match
+                    if ([formation.formationName isEqualToString:contact.lowerFormationName])
+                        contact.lowerFormation=formation;
                 }
-                if([lowerFormName isEqualToString:formation.formationName])
-                    [(id) record setLowerFormation:formation];   
-                else {
-                    //break existing relationship
+            }
+            
+            //Non-contact types
+            else {
+                id nonContact=(id)record;
+                
+                //Unset all formation relation ships
+                [nonContact setFormation:nil];
+                
+                //Reset formation
+                //This will ensure that when there is no formation, whether or not because the formation folder is empty, there is no relationship
+                for (Formation *formation in formations) {
+                    if ([[nonContact formationName] isEqualToString:formation.formationName])
+                        [nonContact setFormation:formation];
                 }
-            }            
+            }
         }
     }
+    
     //now save the changes in the database  
-    [self saveChangesToDatabase];    
+    [self saveChangesToDatabaseWithCompletionHandler:^{
+        //Send a notification to broadcast the formation changes
+        [self postNotificationWithName:GeoNotificationModelGroupFormationDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+    }];    
 }
 
 #pragma mark - Folder Creation/Editing/Deletion
 
-- (void)saveChangesToDatabase {
+typedef void (^save_completion_t)(void);
+
+- (void)saveChangesToDatabaseWithCompletionHandler:(save_completion_t)completionHandler {
     //Save changes to database
     [self.database saveToURL:self.database.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success){
-        if (!success) {
+        if (success) 
+            completionHandler();
+        else {
             //handle errors
             NSLog(@"Database error: %@",self.database);
             [self putUpDatabaseErrorAlertWithMessage:@"Failed to save changes to database. Please try to submit them again."];
@@ -206,7 +219,7 @@
         
     //Else, save
     else 
-        [self saveChangesToDatabase];
+        [self saveChangesToDatabaseWithCompletionHandler:^{}];
     
     //Update the record filter (add the name of the newly created folder)
     [self.recordFilter userDidSelectFolderWithName:[folderInfo objectForKey:FOLDER_NAME]];
@@ -228,7 +241,7 @@
     
     //Else, save
     else
-        [self saveChangesToDatabase];
+        [self saveChangesToDatabaseWithCompletionHandler:^{}];
     
     //Update the filter
     [self.recordFilter changeFolderName:originalName toFolderName:[folderInfo objectForKey:FOLDER_NAME]];
@@ -249,7 +262,7 @@
     }
     
     //Save
-    [self saveChangesToDatabase];
+    [self saveChangesToDatabaseWithCompletionHandler:^{}];
     
     //Send out a notification to indicate that the folder database has changed
     [self postNotificationWithName:GeoNotificationModelGroupFolderDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
