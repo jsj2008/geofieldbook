@@ -27,6 +27,8 @@
 
 #import "SettingManager.h"
 
+#import "Formation.h"
+
 @interface FolderTableViewController() <ModalFolderDelegate,UIActionSheetDelegate,RecordTableViewControllerDelegate,CustomFolderCellDelegate,NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) GeoFilter *recordFilter;
@@ -127,6 +129,59 @@
 {
     //Update the folder
     [folder setFormationFolderWithName:formationFolder];
+    
+    //reassign formation relationships in the folder's records if the new formation list has formations named after the ones present in the records.
+    [self reassignFormationsForRecordsInFolder:folder toNewFormationsInList:formationFolder];
+}
+
+#pragma mark - Reassigning Formations On SetLocation
+-(void)reassignFormationsForRecordsInFolder:(Folder *)folder toNewFormationsInList:(NSString *)formationFolderName
+{
+    //fetch the records in that folder
+    NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Record"];
+    request.predicate=[NSPredicate predicateWithFormat:@"folder.folderName=%@",folder.folderName];
+    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]];
+    NSArray *records=[self.database.managedObjectContext executeFetchRequest:request error:NULL];
+    
+    //fetch the formations in the new formation folder
+    NSFetchRequest *formationRequest = [[NSFetchRequest alloc] initWithEntityName:@"Formation"];
+    formationRequest.predicate = [NSPredicate predicateWithFormat:@"formationFolder.folderName=%@",formationFolderName];
+    NSArray *formations = [self.database.managedObjectContext executeFetchRequest:formationRequest error:NULL];
+    
+    //now reassign the formations to those of the new list if the formation names in the records match those in the list
+    NSString *formName;
+    NSString *lowerFormName;
+    NSString *upperFormName;
+    
+    for(Record *record in records) {
+        for(Formation *formation in formations) {
+            //see if the formation with name exists in the fetched formations. if no such formation exists, break the existing relationship (or assign it to some zombie formation that we create !?);
+            if([record isKindOfClass:[Bedding class]] || [record isKindOfClass:[JointSet class]] || [record isKindOfClass:[Fault class]]) {
+                formName = [(id)record formationName];
+                if([formName isEqualToString:formation.formationName])
+                    [(id) record setFormation:formation];
+                else {
+                    //break existing relationship
+                }
+            }else if([record isKindOfClass:[Contact class]]) {
+                lowerFormName=[(Contact *)record lowerFormationName];
+                upperFormName=[(Contact *)record upperFormationName];
+                
+                if([upperFormName isEqualToString:formation.formationName])
+                    [(id) record setUpperFormation:formation];
+                else {
+                    //break existing relationship
+                }
+                if([lowerFormName isEqualToString:formation.formationName])
+                    [(id) record setLowerFormation:formation];   
+                else {
+                    //break existing relationship
+                }
+            }            
+        }
+    }
+    //now save the changes in the database  
+    [self saveChangesToDatabase];    
 }
 
 #pragma mark - Folder Creation/Editing/Deletion
