@@ -2415,7 +2415,7 @@
             </objects>
             <point key="canvasLocation" x="-10003" y="1082"/>
         </scene>
-        <!--Export Double Table View Controller-->
+        <!--Export Double Table View Controller - Export Records-->
         <scene sceneID="n6b-vG-5U9">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5I2-Q3-fdt" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2443,7 +2443,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <navigationItem key="navigationItem" id="l7R-yp-NFb">
+                    <navigationItem key="navigationItem" title="Export Records" id="l7R-yp-NFb">
                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="Export" width="120" style="done" id="Hr8-9x-l18">
                             <color key="tintColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
@@ -2823,7 +2823,7 @@
             </objects>
             <point key="canvasLocation" x="-7823" y="-6710"/>
         </scene>
-        <!--Export Double Table View Controller-->
+        <!--Export Double Table View Controller - Export Formations-->
         <scene sceneID="H2o-Yr-hpn">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J1h-aQ-jm5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2851,7 +2851,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <navigationItem key="navigationItem" id="xfV-1J-fmm">
+                    <navigationItem key="navigationItem" title="Export Formations" id="xfV-1J-fmm">
                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="Export" width="120" style="done" id="NlS-x9-YKu">
                             <color key="tintColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
