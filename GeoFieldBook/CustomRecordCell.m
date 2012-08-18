@@ -119,12 +119,14 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     
-    //Notify the delegate if selected and not visible
-    if (selected && !self.visible)
-        [self visibilityChanged:nil];
-    
-    //Keep the visibility of the cell
-    self.visibility.highlighted=self.visible;
+    if (self.visibility.alpha) {
+        //Notify the delegate if selected and not visible
+        if (selected && !self.visible)
+            [self visibilityChanged:nil];
+        
+        //Keep the visibility of the cell
+        self.visibility.highlighted=self.visible;
+    }
 }
 
 @end

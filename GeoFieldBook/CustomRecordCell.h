@@ -39,6 +39,6 @@
 - (void)showVisibilityIconAnimated:(BOOL)animated;
 - (void)hideVisibilityIconAnimated:(BOOL)animated;
 
-#define VISIBILITY_ANIMATION_DURATION 1.0
+#define VISIBILITY_ANIMATION_DURATION 0.5
 
 @end

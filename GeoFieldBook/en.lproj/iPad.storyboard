@@ -1737,7 +1737,7 @@
             </objects>
             <point key="canvasLocation" x="-7774" y="-4542"/>
         </scene>
-        <!--Record ImportTVC-->
+        <!--Record ImportTVC - Import Records-->
         <scene sceneID="q1x-nj-RNJ">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iHM-w7-6Bz" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1796,7 +1796,7 @@
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="WQy-mu-cNv"/>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="X8h-y1-uIb">
+                    <navigationItem key="navigationItem" title="Import Records" id="X8h-y1-uIb">
                         <barButtonItem key="leftBarButtonItem" title="Select All" width="100" id="80b-Om-pS0">
                             <connections>
                                 <action selector="selectAll:" destination="8tf-9a-8AO" id="vyu-95-bac"/>
@@ -2318,7 +2318,7 @@
             </objects>
             <point key="canvasLocation" x="-10027" y="-2150"/>
         </scene>
-        <!--Formation ImportTVC-->
+        <!--Formation ImportTVC - Import Formations-->
         <scene sceneID="nBD-Xt-9wU">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xWC-UW-0bN" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2377,7 +2377,7 @@
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="NrH-2b-Eip"/>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="p1i-xy-RXt">
+                    <navigationItem key="navigationItem" title="Import Formations" id="p1i-xy-RXt">
                         <barButtonItem key="leftBarButtonItem" title="Select All" width="100" id="xVB-JO-xnH">
                             <connections>
                                 <action selector="selectAll:" destination="Uu5-sC-dG8" id="C8j-w0-2VY"/>
@@ -2562,15 +2562,10 @@
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
-                                        <imageView contentMode="scaleToFill" id="MAp-cY-NFD" customClass="CheckBox">
-                                            <rect key="frame" x="8" y="16" width="26" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <connections>
-                                    <outlet property="checkBox" destination="MAp-cY-NFD" id="d0g-ha-OJe"/>
                                     <outlet property="subtitle" destination="Nrj-5R-Uok" id="11W-fP-ubm"/>
                                     <outlet property="title" destination="DAa-v6-wjz" id="Ibf-3e-1Y1"/>
                                 </connections>
@@ -2643,10 +2638,6 @@
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="highlightedColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
-                                        <imageView contentMode="scaleToFill" id="Qk3-7V-3sk" customClass="CheckBox">
-                                            <rect key="frame" x="6" y="29" width="32" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Type:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Na0-cO-c6V">
                                             <rect key="frame" x="120" y="22" width="43" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -2669,7 +2660,6 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <connections>
-                                    <outlet property="checkBox" destination="Qk3-7V-3sk" id="SBg-ni-ZXe"/>
                                     <outlet property="date" destination="oHP-FE-adc" id="Toy-DT-9gl"/>
                                     <outlet property="name" destination="rvb-Y3-rNb" id="OFk-bc-P2G"/>
                                     <outlet property="recordImageView" destination="PrR-Hf-SQC" id="Vq1-cq-Ffj"/>
@@ -4675,7 +4665,7 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="p8t-Gq-qnE"/>
                         <barButtonItem title="Select All" width="80" id="4Fk-Cd-uH0">
                             <connections>
-                                <action selector="selectAll:" destination="XaV-pg-EMy" id="uL0-eF-ej6"/>
+                                <action selector="selectAll:" destination="XaV-pg-EMy" id="OUS-45-IxL"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem enabled="NO" title="Move" width="95" id="HNw-mP-9Mu">
@@ -4758,15 +4748,10 @@
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
-                                        <imageView contentMode="scaleToFill" id="lfw-d4-7ZF" customClass="CheckBox">
-                                            <rect key="frame" x="8" y="16" width="26" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <connections>
-                                    <outlet property="checkBox" destination="lfw-d4-7ZF" id="Gru-g3-YW6"/>
                                     <outlet property="subtitle" destination="4wR-vu-SS4" id="fvY-k1-6Bv"/>
                                     <outlet property="title" destination="nhX-vE-Rb0" id="59j-uV-HNC"/>
                                 </connections>

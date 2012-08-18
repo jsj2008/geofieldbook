@@ -318,12 +318,6 @@
                       setFormationFolderName:formationFolderName];
 }
 
-- (void)alertViewCancel:(UIAlertView *)alertView {
-    //Nillify the temporary record modified data
-    self.modifiedRecord=nil;
-    self.recordModifiedInfo=nil;
-}
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad {
@@ -492,10 +486,10 @@
 - (IBAction)selectAll:(UIBarButtonItem *)sender {
     //Select all the csv files
     self.selectedRecords=self.fetchedResultsController.fetchedObjects;
-    
+        
     //Select all the rows
     for (UITableViewCell *cell in self.tableView.visibleCells)
-        [self.tableView selectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES scrollPosition:UITableViewScrollPositionNone];
+        [self.tableView selectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES scrollPosition:UITableViewScrollPositionNone];    
 }
 
 - (IBAction)selectNone:(UIBarButtonItem *)sender {
@@ -561,17 +555,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CustomRecordCell *cell=(CustomRecordCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
-    
+        
     //Setup cell
     cell.delegate=self;
     
     //Select cell if its record is in the list of selected records
     Record *record=[self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([self.selectedRecords containsObject:record]) {
+    if ([self.selectedRecords containsObject:record])
         [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-    } else {
+    else
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    }
     
     //Load the visibility icon if table view is not in editing mode and willShowCheckBoxes is YES (the map is visible)
     if (!tableView.editing && self.willFilterRecord) {
