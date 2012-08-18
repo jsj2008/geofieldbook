@@ -270,14 +270,21 @@
             [dataMapSegmentVC setMapSelectedRecord:nil];  
         }
         
-        //If switching to the record tvc and the map is on screen, show the checkboxes in the record tvc
-        RecordTableViewController *recordTVC=[self recordTableViewController];
+        //If switching to the record tvc and the map is on screen, show the visibilty icons in the record tvc
+        RecordTableViewController *recordTVC=self.recordTableViewController;
         if (recordTVC) {
             DataMapSegmentViewController *dataMapSegmentVC=(DataMapSegmentViewController *)self.viewGroupController;
-            if ([dataMapSegmentVC.topViewController isKindOfClass:[RecordMapViewController class]])
-                recordTVC.willShowCheckboxes=YES;
-            else
-                recordTVC.willShowCheckboxes=NO;
+            if ([dataMapSegmentVC.topViewController isKindOfClass:[RecordMapViewController class]]) {
+                recordTVC.willFilterRecord=YES;
+            
+                //Set the selected record types of the record list
+                RecordMapViewController *mapVC=(RecordMapViewController *)dataMapSegmentVC.topViewController;
+                recordTVC.selectedRecordTypes=mapVC.selectedRecordTypes;
+            }
+            else {
+                recordTVC.willFilterRecord=NO;
+        
+            }
         }
     }
     
@@ -395,8 +402,8 @@
         [folderNav popToRootViewControllerAnimated:YES];
         
         //Tell the folder tvc to reload its data
-        FolderTableViewController *folderTVC=[self folderTableViewController];
-        [folderTVC reloadVisibleCells];
+        //FolderTableViewController *folderTVC=[self folderTableViewController];
+        //[folderTVC reloadVisibleCells];
         
         //Redraw the map
         [[self dataMapSegmentViewController] reloadMapAnnotationViews];
@@ -746,9 +753,9 @@
     RecordTableViewController *recordTVC=[self recordTableViewController];
     if (recordTVC) {
         if ([viewController isKindOfClass:[RecordMapViewController class]])
-            recordTVC.willShowCheckboxes=YES;
+            recordTVC.willFilterRecord=YES;
         else
-            recordTVC.willShowCheckboxes=NO;
+            recordTVC.willFilterRecord=NO;
     }
 }
 
@@ -872,22 +879,17 @@
     //If the current TVC in the model group is the record table view controller
     id modelGroupTopVC=[self recordTableViewController];
     if (modelGroupTopVC) {
-        return [(RecordTableViewController *)modelGroupTopVC records];
+        return [(RecordTableViewController *)modelGroupTopVC filteredRecords];
     }
     
     //Else if the current TVC in the model group is the folder table view controller
     modelGroupTopVC=[self folderTableViewController];
     if (modelGroupTopVC) {
+        //Get the records from the list of selected folders
         NSMutableArray *records=[NSMutableArray array];
         NSArray *selectedFolders=[(FolderTableViewController *)modelGroupTopVC selectedFolders];
-        UIManagedDocument *database=[GeoDatabaseManager standardDatabaseManager].geoFieldBookDatabase;
-        for (NSString *folder in selectedFolders) {
-            NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Record"];
-            request.predicate=[NSPredicate predicateWithFormat:@"folder.folderName=%@",folder];
-            request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
-            NSArray *results=[database.managedObjectContext executeFetchRequest:request error:NULL];
-            [records addObjectsFromArray:results];
-        }
+        for (Folder *folder in selectedFolders)
+            [records addObjectsFromArray:folder.records.allObjects];
                 
         return records.copy;
     }
@@ -923,7 +925,7 @@
 
 - (void)userDidChooseToDisplayRecordTypes:(NSArray *)selectedRecordTypes {
     //Update the record tvc
-    RecordTableViewController *recordTVC=[self recordTableViewController];
+    RecordTableViewController *recordTVC=self.recordTableViewController;
     if (recordTVC)
         recordTVC.selectedRecordTypes=selectedRecordTypes;
 }

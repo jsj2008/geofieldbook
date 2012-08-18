@@ -11,10 +11,8 @@
 
 @interface FolderTableViewController : PrototypeFolderTableViewController 
 
-@property (nonatomic,readonly) NSArray *selectedFolders;
+@property (nonatomic,strong) NSArray *selectedFolders;
 
 @property (nonatomic) BOOL willFilterByFolder;
-
-- (void)reloadVisibleCells;
 
 @end

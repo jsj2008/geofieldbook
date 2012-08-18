@@ -7,15 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CheckBox.h"
 #import "Folder.h"
 
 @class CustomFolderCell;
 
 @protocol CustomFolderCellDelegate
 
-- (void)folderCell:(CustomFolderCell *)sender userDidSelectDidCheckBoxForFolder:(Folder *)folder;
-- (void)folderCell:(CustomFolderCell *)sender userDidDeselectDidCheckBoxForFolder:(Folder *)folder;
+- (void)folderCell:(CustomFolderCell *)sender folder:(Folder *)folder visibilityChanged:(BOOL)visible;
 
 @end
 
@@ -23,12 +21,16 @@
 
 @property (nonatomic,weak) IBOutlet UILabel *title;
 @property (nonatomic,weak) IBOutlet UILabel *subtitle;
-@property (nonatomic,weak) IBOutlet UIImageView *checkBox;
+@property (nonatomic,strong) IBOutlet UIImageView *visibility;
 @property (nonatomic,strong) Folder *folder;
 
 @property (nonatomic,weak) id <CustomFolderCellDelegate> delegate;
 
-- (void)hideCheckBoxAnimated:(BOOL)animated;
-- (void)showCheckBoxAnimated:(BOOL)animated;
+- (void)setVisible:(BOOL)visible animated:(BOOL)animated;
+
+- (void)hideVisibilityIconAnimated:(BOOL)animated;
+- (void)showVisibilityIconAnimated:(BOOL)animated;
+
+#define VISIBILITY_ANIMATION_DURATION 1.0
 
 @end

@@ -7,13 +7,12 @@
 //
 
 #import "CustomFolderCell.h"
-#import "CheckBox.h"
 
 @implementation CustomFolderCell
 
 @synthesize title=_title;
 @synthesize subtitle=_subtitle;
-@synthesize checkBox=_checkBox;
+@synthesize visibility=_visibility;
 
 @synthesize folder=_folder;
 
@@ -33,70 +32,75 @@
     
     //Add gesture recognizer to the checkbox
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] 
-                                   initWithTarget:self action:@selector(toggleCheckbox:)];
-    [self.checkBox addGestureRecognizer:tgr];
+                                   initWithTarget:self action:@selector(visibilityChanged:)];
+    [self.visibility addGestureRecognizer:tgr];
+    
+    //Hide the visibility icon initially
+    self.visibility.alpha=0;
 }
 
--(void)toggleCheckbox:(UITapGestureRecognizer *)tgr {
-    //Toggle the state of the checkbox
-    CheckBox *checkbox=(CheckBox *)self.checkBox;
-    checkbox.isChecked=!checkbox.isChecked;
-    checkbox.image = checkbox.isChecked ? checkbox.checked : checkbox.unchecked; 
+- (void)visibilityChanged:(UITapGestureRecognizer *)tgr {
+    //Toggle visibility
+    self.visibility.highlighted=!self.visibility.highlighted;
         
     //Notify the delegate
-    if (checkbox.isChecked)
-        [self.delegate folderCell:self userDidSelectDidCheckBoxForFolder:self.folder];
-    else
-        [self.delegate folderCell:self userDidDeselectDidCheckBoxForFolder:self.folder];
+    [self.delegate folderCell:self folder:self.folder visibilityChanged:self.visibility.highlighted];
 }
 
+- (void)setVisible:(BOOL)visible animated:(BOOL)animated {
+    //Set visibility
+    self.visibility.highlighted=visible;
+    
+    //Show the visibility icon
+    [self showVisibilityIconAnimated:animated];
+}
 
-- (void)showCheckBoxAnimated:(BOOL)animated {
+- (void)showVisibilityIconAnimated:(BOOL)animated {
     //Only execute if alpha is 0
-    if (!self.checkBox.alpha) {
+    if (!self.visibility.alpha) {
         //Animate if desired
         if (animated) {
-            [UIView animateWithDuration:CHECK_BOX_ANIMATION_DURATION animations:^(){
+            [UIView animateWithDuration:VISIBILITY_ANIMATION_DURATION animations:^{
                 //move the title and subtitle
-                self.title.transform=CGAffineTransformTranslate(self.title.transform, self.checkBox.frame.size.width, 0);
-                self.subtitle.transform=CGAffineTransformTranslate(self.subtitle.transform, self.checkBox.frame.size.width, 0);
+                self.title.transform=CGAffineTransformTranslate(self.title.transform, self.visibility.frame.size.width, 0);
+                self.subtitle.transform=CGAffineTransformTranslate(self.subtitle.transform, self.visibility.frame.size.width, 0);
                 
-                //show checkbox
-                self.checkBox.alpha=1;
+                //show visibility icon
+                self.visibility.alpha=1;
             }];
         } else {
-            //Show check box
-            self.checkBox.alpha=1;
+            //Show visibility icon
+            self.visibility.alpha=1;
             
             //move the title and subtitle
-            self.title.transform=CGAffineTransformTranslate(self.title.transform, self.checkBox.frame.size.width, 0);
-            self.subtitle.transform=CGAffineTransformTranslate(self.subtitle.transform, self.checkBox.frame.size.width, 0);
+            self.title.transform=CGAffineTransformTranslate(self.title.transform, self.visibility.frame.size.width, 0);
+            self.subtitle.transform=CGAffineTransformTranslate(self.subtitle.transform, self.visibility.frame.size.width, 0);
         }
     }
 }
 
-- (void)hideCheckBoxAnimated:(BOOL)animated {
+- (void)hideVisibilityIconAnimated:(BOOL)animated {
     //Animate if desired
     if (animated) {
-        [UIView animateWithDuration:CHECK_BOX_ANIMATION_DURATION animations:^(){
-            //Move the title and subtitle only if they are not in their original positions (before checkbox is showed) 
+        [UIView animateWithDuration:VISIBILITY_ANIMATION_DURATION animations:^(){
+            //Move the title and subtitle only if they are not in their original positions (before visibility icon is showed) 
             if (!CGAffineTransformIsIdentity(self.title.transform))
-                self.title.transform=CGAffineTransformTranslate(self.title.transform, -self.checkBox.frame.size.width, 0);
+                self.title.transform=CGAffineTransformTranslate(self.title.transform, -self.visibility.frame.size.width, 0);
             if (!CGAffineTransformIsIdentity(self.subtitle.transform))
-                self.subtitle.transform=CGAffineTransformTranslate(self.subtitle.transform, -self.checkBox.frame.size.width, 0);
+                self.subtitle.transform=CGAffineTransformTranslate(self.subtitle.transform, -self.visibility.frame.size.width, 0);
             
-            //Hide the checkbox
-            self.checkBox.alpha=0;
+            //Hide visibility icon
+            self.visibility.alpha=0;
         }];
     } else {
-        //Hide the checkbox
-        self.checkBox.alpha=0;
+        //Hide visibility icon
+        self.visibility.alpha=0;
         
-        //Move the title and subtitle only if they are not in their original positions (before checkbox is showed) 
+        //Move the title and subtitle only if they are not in their original positions (before visibility icon is showed) 
         if (!CGAffineTransformIsIdentity(self.title.transform))
-            self.title.transform=CGAffineTransformTranslate(self.title.transform, -self.checkBox.frame.size.width, 0);
+            self.title.transform=CGAffineTransformTranslate(self.title.transform, -self.visibility.frame.size.width, 0);
         if (!CGAffineTransformIsIdentity(self.subtitle.transform))
-            self.subtitle.transform=CGAffineTransformTranslate(self.subtitle.transform, -self.checkBox.frame.size.width, 0);
+            self.subtitle.transform=CGAffineTransformTranslate(self.subtitle.transform, -self.visibility.frame.size.width, 0);
     }
 }
 

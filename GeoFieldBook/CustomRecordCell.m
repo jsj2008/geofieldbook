@@ -15,60 +15,116 @@
 @synthesize time = _time;
 @synthesize recordImageView = _recordImageView;
 @synthesize type = _type;
-@synthesize checkBox = _checkBox;
+@synthesize visibility = _visibility;
 @synthesize spinner=_spinner;
 
-- (void)showCheckBoxAnimated:(BOOL)animated {
+@synthesize record=_record;
+@synthesize delegate=_delegate;
+
+@synthesize visible=_visible;
+
+- (void)setVisible:(BOOL)visible animated:(BOOL)animated {
+    //Set visibility
+    self.visibility.highlighted=visible;
+    self.visible=visible;
+    
+    //Show the visibility icon
+    [self showVisibilityIconAnimated:animated];
+}
+
+- (void)setRecord:(Record *)record {
+    _record=record;
+    
+    //show the name, date and time
+    self.name.text=[NSString stringWithFormat:@"%@",record.name];
+    self.type.text=[record.class description];
+    self.date.text=[Record dateFromNSDate:record.date];
+    self.time.text = [Record timeFromNSDate:record.date];
+}
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+    //Add gesture recognizer to the checkbox
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] 
+                                   initWithTarget:self action:@selector(visibilityChanged:)];
+    [self.visibility addGestureRecognizer:tgr];
+    
+    //Hide the visibility icon initially
+    self.visibility.alpha=0;
+}
+
+- (void)visibilityChanged:(UITapGestureRecognizer *)tgr {
+    //Toggle visibility
+    self.visibility.highlighted=!self.visibility.highlighted;
+    self.visible=self.visibility.highlighted;
+    
+    //Notify the delegate
+    [self.delegate recordCell:self record:self.record visibilityChanged:self.visibility.highlighted];
+}
+
+- (void)showVisibilityIconAnimated:(BOOL)animated {
     //Only execute if alpha is 0
-    if (!self.checkBox.alpha) {
+    if (!self.visibility.alpha) {
         //Animate if desired
         if (animated) {
-            [UIView animateWithDuration:CHECK_BOX_ANIMATION_DURATION animations:^(){
+            [UIView animateWithDuration:VISIBILITY_ANIMATION_DURATION animations:^(){
                 //move the other views
                 for (UIView *view in self.contentView.subviews) {
-                    if (view!=self.checkBox)
-                        view.transform=CGAffineTransformTranslate(view.transform, self.checkBox.frame.size.width, 0);
+                    if (view!=self.visibility)
+                        view.transform=CGAffineTransformTranslate(view.transform, self.visibility.frame.size.width, 0);
                 }
                 
-                //show checkbox
-                self.checkBox.alpha=1;
+                //show visibility icon
+                self.visibility.alpha=1;
             }];
         } else {
-            //Show check box
-            self.checkBox.alpha=1;
+            //Show visibility icon
+            self.visibility.alpha=1;
             
             //move the other views
             for (UIView *view in self.contentView.subviews) {
-                if (view!=self.checkBox)
-                    view.transform=CGAffineTransformTranslate(view.transform, self.checkBox.frame.size.width, 0);
+                if (view!=self.visibility)
+                    view.transform=CGAffineTransformTranslate(view.transform, self.visibility.frame.size.width, 0);
             }
         }
     }
 }
 
-- (void)hideCheckBoxAnimated:(BOOL)animated {
+- (void)hideVisibilityIconAnimated:(BOOL)animated {
     //Animate if desired
     if (animated) {
-        [UIView animateWithDuration:CHECK_BOX_ANIMATION_DURATION animations:^(){
+        [UIView animateWithDuration:VISIBILITY_ANIMATION_DURATION animations:^(){
             //move the other views
             for (UIView *view in self.contentView.subviews) {
-                if (view!=self.checkBox && !CGAffineTransformIsIdentity(view.transform))
-                    view.transform=CGAffineTransformTranslate(view.transform, -self.checkBox.frame.size.width, 0);
+                if (view!=self.visibility && !CGAffineTransformIsIdentity(view.transform))
+                    view.transform=CGAffineTransformTranslate(view.transform, -self.visibility.frame.size.width, 0);
             }
             
-            //Hide checkbox
-            self.checkBox.alpha=0;
+            //Hide visibility icon
+            self.visibility.alpha=0;
         }];
     } else {
-        //Hide check box
-        self.checkBox.alpha=0;
+        //Hide visibility icon
+        self.visibility.alpha=0;
         
         //move the other views
         for (UIView *view in self.contentView.subviews) {
-            if (view!=self.checkBox)
-                view.transform=CGAffineTransformTranslate(view.transform, -self.checkBox.frame.size.width, 0);
+            if (view!=self.visibility)
+                view.transform=CGAffineTransformTranslate(view.transform, -self.visibility.frame.size.width, 0);
         }
     }
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+    
+    //Notify the delegate if selected and not visible
+    if (selected && !self.visible)
+        [self visibilityChanged:nil];
+    
+    //Keep the visibility of the cell
+    self.visibility.highlighted=self.visible;
 }
 
 @end

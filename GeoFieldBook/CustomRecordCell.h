@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CheckBox.h"
+
+#import "Record.h"
+#import "Record+DateAndTimeFormatter.h"
+
+@class CustomRecordCell;
+
+@protocol CustomRecordCellDelegate
+
+- (void)recordCell:(CustomRecordCell *)sender record:(Record *)record visibilityChanged:(BOOL)visible;
+
+@end
 
 @interface CustomRecordCell : UITableViewCell
 
@@ -17,9 +27,18 @@
 @property (nonatomic, weak) IBOutlet UIImageView *recordImageView;
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *spinner;
 @property (nonatomic, weak) IBOutlet UILabel *type;
-@property (nonatomic, weak) IBOutlet CheckBox *checkBox;
+@property (nonatomic, weak) IBOutlet UIImageView *visibility;
 
-- (void)showCheckBoxAnimated:(BOOL)animated;
-- (void)hideCheckBoxAnimated:(BOOL)animated;
+@property (nonatomic) BOOL visible;
+
+@property (nonatomic,strong) Record *record;
+@property (nonatomic, weak) id <CustomRecordCellDelegate> delegate;
+
+- (void)setVisible:(BOOL)visible animated:(BOOL)animated;
+
+- (void)showVisibilityIconAnimated:(BOOL)animated;
+- (void)hideVisibilityIconAnimated:(BOOL)animated;
+
+#define VISIBILITY_ANIMATION_DURATION 1.0
 
 @end

@@ -19,9 +19,11 @@
 
 #import "SettingManager.h"
 
-@interface RecordTableViewController() <ModalRecordTypeSelectorDelegate,UIAlertViewDelegate,FormationFolderPickerDelegate,UIActionSheetDelegate,UIScrollViewDelegate,UIAlertViewDelegate,FolderSelectTableViewControllerDelegate>
+#import "GeoFilter.h"
 
-#pragma mark - Image Cache
+@interface RecordTableViewController() <ModalRecordTypeSelectorDelegate,UIAlertViewDelegate,FormationFolderPickerDelegate,UIActionSheetDelegate,UIScrollViewDelegate,UIAlertViewDelegate,FolderSelectTableViewControllerDelegate,NSFetchedResultsControllerDelegate,CustomRecordCellDelegate>
+
+@property (nonatomic,strong) GeoFilter *recordFilter;
 
 #pragma mark - Temporary record's modified info
 
@@ -52,11 +54,13 @@
 
 @implementation RecordTableViewController
 
-@synthesize willShowCheckboxes=_willShowCheckboxes;
+@synthesize willFilterRecord=_willFilterRecord;
 
 @synthesize modifiedRecord=_modifiedRecord;
 @synthesize recordModifiedInfo=_recordModifiedInfo;
+
 @synthesize selectedRecords=_selectedRecords;
+@synthesize filteredRecords=_filteredRecords;
 
 @synthesize setLocationButton = _setLocationButton;
 @synthesize editButton = _editButton;
@@ -74,6 +78,8 @@
 
 @synthesize selectedRecordTypes=_selectedRecordTypes;
 
+@synthesize recordFilter=_recordFilter;
+
 #pragma mark - Controller State Initialization
 
 - (void)setupFetchedResultsController {
@@ -83,24 +89,33 @@
     request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]];
     
     self.fetchedResultsController=[[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.database.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    self.fetchedResultsController.delegate=self;
 }
 
-#pragma mark - Setters
+#pragma mark - Getters and Setters
 
-- (void)setWillShowCheckboxes:(BOOL)willShowCheckboxes {
-    _willShowCheckboxes=willShowCheckboxes;
+- (void)setWillFilterRecord:(BOOL)willFilterRecord {
+    _willFilterRecord=willFilterRecord;
     
-    //Reset the checkboxes
-    [self reloadCheckboxesInVisibleCellsForEditingMode:self.tableView.editing];
+    //Reset the table view
+    [self.tableView reloadData];
+}
+
+- (GeoFilter *)recordFilter {
+    return [[GeoFilter alloc] init];
 }
 
 - (void)setSelectedRecordTypes:(NSArray *)selectedRecordTypes {
     if (![_selectedRecordTypes isEqualToArray:selectedRecordTypes]) {
         _selectedRecordTypes=selectedRecordTypes;
         
-        //Reload the checkboxes
-        if (self.selectedRecordTypes)
-            [self.tableView reloadData];
+        //Update the filtered record list
+        GeoFilter *recordFilter=self.recordFilter;
+        [recordFilter loadRecordTypes:selectedRecordTypes];
+        self.filteredRecords=[recordFilter filterRecordCollectionByRecordType:self.filteredRecords];
+                
+        //Reload the table
+        [self.tableView reloadData];
     }
 }
 
@@ -131,7 +146,6 @@
     self.moveButton.enabled=numRecords>0;
 }
 
-
 - (void)setSelectedRecords:(NSArray *)selectedRecords {
     if (selectedRecords) {
         _selectedRecords=selectedRecords;
@@ -141,6 +155,24 @@
         
         //Update the move button
         [self updateMoveButton];
+    }
+}
+
+- (NSArray *)filteredRecords {
+    //Lazy instantiation for the array of fitlered records (all records by default)
+    if (!_filteredRecords)
+        _filteredRecords=self.fetchedResultsController.fetchedObjects;
+    
+    return _filteredRecords;
+}
+
+- (void)setFilteredRecords:(NSArray *)filteredRecords {
+    if (filteredRecords) {
+        _filteredRecords=filteredRecords;
+        
+        //Post a notification
+        NSDictionary *userInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.chosenRecord,GeoNotificationKeyModelGroupSelectedRecord, nil];
+        [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidChange andUserInfo:userInfo];
     }
 }
 
@@ -333,11 +365,12 @@
 
 - (void)reloadCheckboxesInVisibleCellsForEditingMode:(BOOL)editing {
     for (CustomRecordCell *cell in self.tableView.visibleCells) {
-        if (editing || !self.willShowCheckboxes)
-            [cell hideCheckBoxAnimated:YES];
+        Record *record=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
+        if (editing || !self.willFilterRecord)
+            [cell hideVisibilityIconAnimated:YES];
         else {
-            //Show the checkboxes
-            [cell showCheckBoxAnimated:YES];
+            //Show the visibilty icons
+            [cell setVisible:[self.filteredRecords containsObject:record] animated:YES];
         }
     }
 }
@@ -410,7 +443,7 @@
             [toolbarItems insertObject:self.moveButton atIndex:2];
     }
     
-    self.toolbarItems=[toolbarItems copy];
+    self.toolbarItems=toolbarItems.copy;
 }
 
 - (void)setupButtonsForEditingMode:(BOOL)editing {
@@ -474,7 +507,7 @@
         [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForCell:cell] animated:YES];
 }
 
-#pragma mark - Prepare for segues
+#pragma mark - Prepare for Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     //If seguing to a modal record type selector, set the destination controller's array of record types
@@ -529,6 +562,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CustomRecordCell *cell=(CustomRecordCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
     
+    //Setup cell
+    cell.delegate=self;
+    
     //Select cell if its record is in the list of selected records
     Record *record=[self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([self.selectedRecords containsObject:record]) {
@@ -537,14 +573,15 @@
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     
-    //Load the checkbox if table view is not in editing mode and willShowCheckBoxes is YES (the map is visible)
-    if (tableView.editing || !self.willShowCheckboxes)
-        [cell hideCheckBoxAnimated:YES];
+    //Load the visibility icon if table view is not in editing mode and willShowCheckBoxes is YES (the map is visible)
+    if (!tableView.editing && self.willFilterRecord) {
+        [cell setVisible:[self.filteredRecords containsObject:record] animated:YES];
+    }
     else {
         //Show the checkboxes
-        [cell showCheckBoxAnimated:YES];
+        [cell hideVisibilityIconAnimated:YES];
     }
-    
+        
     return cell;
 }
 
@@ -574,6 +611,7 @@
     
     //Else, save the chosen record
     else {
+        //Choose record
         self.chosenRecord=[self.fetchedResultsController objectAtIndexPath:indexPath];
     }
 }
@@ -587,6 +625,47 @@
         [selectedRecords removeObject:folder];
         self.selectedRecords=selectedRecords.copy;
     }
+}
+
+#pragma mark - NSFetchedResultsControllerDelegate protocol methods
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    UITableView *tableView = self.tableView;
+    NSMutableArray *filteredRecords=self.filteredRecords.mutableCopy;
+    switch(type) {
+            //Add the newly inserted folder to the list of filtered records
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            if (![filteredRecords containsObject:anObject])
+                [filteredRecords addObject:anObject];
+            break;
+            
+            //Remove the folder from the list of filtered records
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            if ([filteredRecords containsObject:anObject])
+                [filteredRecords removeObject:anObject];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            //Do nothing
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+    
+    //Update the filtered records
+    self.filteredRecords=filteredRecords.copy;
 }
 
 #pragma mark - UIActionSheetDelegate protocol methods
@@ -604,6 +683,21 @@
             [self editPressed:self.editButton];
     }
 }
+
+#pragma mark - CustomRecordCellDelegate Protocol Methods
+
+- (void)recordCell:(CustomRecordCell *)sender record:(Record *)record visibilityChanged:(BOOL)visible {
+    //Add/Remove record from the list of filtered records
+    NSMutableArray *filteredRecords=self.filteredRecords.mutableCopy;
+    if (visible && ![filteredRecords containsObject:record])
+        [filteredRecords addObject:record];
+    else if (!visible && [filteredRecords containsObject:record])
+        [filteredRecords removeObject:record];
+    
+    //Update the list of filtered records
+    self.filteredRecords=filteredRecords.copy;
+}
+
 #pragma mark - FolderSelectTableViewController Protocol methods
 
 - (void)folderSelectTVC:(FolderSelectTableViewController *)sender userDidSelectFolder:(Folder *)folder {

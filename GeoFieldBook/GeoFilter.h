@@ -14,17 +14,11 @@
 - (void)userDidSelectRecordType:(NSString *)recordType;   //Add user's selection
 - (void)userDidDeselectRecordType:(NSString *)recordType;
 
-- (void)userDidSelectFolderWithName:(NSString *)folderName;   //Add user's selection
-- (void)userDidDeselectFolderWithName:(NSString *)folderName;
-
-- (void)changeFolderName:(NSString *)originalName toFolderName:(NSString *)newName;
+- (void)loadRecordTypes:(NSArray *)recordTypes;
 
 - (NSArray *)filterRecordCollectionByRecordType:(NSArray *)records;    //Filters the specified array of records and returns the results
-- (NSArray *)filterRecordCollectionByFolder:(NSArray *)records;    //Filters the specified array of records and returns the results
 
 @property (nonatomic,readonly) NSArray *allRecordTypes;
 @property (nonatomic,strong) NSArray *selectedRecordTypes;
-
-@property (nonatomic,strong) NSArray *selectedFolderNames;
 
 @end

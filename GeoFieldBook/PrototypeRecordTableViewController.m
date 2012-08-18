@@ -8,7 +8,6 @@
 
 #import "PrototypeRecordTableViewController.h"
 
-#import "Record+DateAndTimeFormatter.h"
 #import "Image.h"
 
 @interface PrototypeRecordTableViewController ()
@@ -142,12 +141,7 @@
     
     // Configure the cell...
     Record *record=[self.fetchedResultsController objectAtIndexPath:indexPath];  
-    
-    //show the name, date and time
-    cell.name.text=[NSString stringWithFormat:@"%@",record.name];
-    cell.type.text=[record.class description];
-    cell.date.text=[Record dateFromNSDate:record.date];
-    cell.time.text = [Record timeFromNSDate:record.date];
+    cell.record=record;
     
     //Hide the spinner (in case it's still animating as the cell has been reused)
     cell.spinner.hidden=YES;

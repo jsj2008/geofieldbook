@@ -17,8 +17,6 @@
 #import "Folder+Modification.h"
 #import "Folder+DictionaryKeys.h"
 
-#import "CheckBox.h"
-
 #import "GeoFilter.h"
 #import "CustomFolderCell.h"
 
@@ -29,8 +27,6 @@
 #import "Formation.h"
 
 @interface FolderTableViewController() <ModalFolderDelegate,UIActionSheetDelegate,RecordTableViewControllerDelegate,CustomFolderCellDelegate,NSFetchedResultsControllerDelegate>
-
-@property (nonatomic, strong) GeoFilter *recordFilter;
 
 #pragma mark - Temporary "to-be-deleted" data
 
@@ -53,7 +49,6 @@
 
 @implementation FolderTableViewController 
 
-@synthesize recordFilter=_recordFilter;
 @synthesize willFilterByFolder=_willFilterByFolder;
 
 @synthesize editButton = _editButton;
@@ -62,19 +57,13 @@
 @synthesize selectAllButton = _selectAllButton;
 @synthesize selectNone = _selectNone;
 
+@synthesize selectedFolders=_selectedFolders;
 @synthesize toBeDeletedFolders=_toBeDeletedFolders;
 
 @synthesize formationPopoverController=_formationPopoverController;
 @synthesize folderInfoPopoverController=_folderInfoPopoverController;
 
 #pragma mark - Getters and Setters
-
-- (GeoFilter *)recordFilter {
-    if (!_recordFilter)
-        _recordFilter=[[GeoFilter alloc] init];
-    
-    return _recordFilter;
-}
 
 - (NSArray *)toBeDeletedFolders {
     if (!_toBeDeletedFolders)
@@ -95,12 +84,25 @@
 }
 
 - (NSArray *)selectedFolders {
-    return [self.recordFilter selectedFolderNames];
+    //Lazy instantiation (all folders are selected by default)
+    if (!_selectedFolders)
+        _selectedFolders=self.fetchedResultsController.fetchedObjects;
+    
+    return _selectedFolders;
+}
+
+- (void)setSelectedFolders:(NSArray *)selectedFolders {
+    if (selectedFolders) {
+        _selectedFolders=selectedFolders;
+        
+        //Post a notification to indicate that the folder database has changed
+        [self postNotificationWithName:GeoNotificationModelGroupFolderDatabaseDidChange andUserInfo:[NSDictionary dictionary]];        
+    }
 }
 
 - (void)setWillFilterByFolder:(BOOL)willFilterByFolder {
     _willFilterByFolder=willFilterByFolder;
-    
+        
     //Reload the table view
     [self.tableView reloadData];
 }
@@ -220,19 +222,14 @@ typedef void (^save_completion_t)(void);
     //Else, save
     else 
         [self saveChangesToDatabaseWithCompletionHandler:^{}];
-    
-    //Update the record filter (add the name of the newly created folder)
-    [self.recordFilter userDidSelectFolderWithName:[folderInfo objectForKey:FOLDER_NAME]];
-    
+        
     //Reload
     [self.tableView reloadData];
     
     return YES;
 }
 
-- (BOOL)modifyFolder:(Folder *)folder withNewInfo:(NSDictionary *)folderInfo {
-    NSString *originalName=folder.folderName;
-    
+- (BOOL)modifyFolder:(Folder *)folder withNewInfo:(NSDictionary *)folderInfo {    
     //Update its name, if that returns NO (i.e. the update failed because of name duplication), put up an alert and return NO
     if (![folder updateWithNewInfo:folderInfo]) {
         [self putUpDuplicateNameAlertWithName:[folderInfo objectForKey:FOLDER_NAME]];
@@ -242,10 +239,7 @@ typedef void (^save_completion_t)(void);
     //Else, save
     else
         [self saveChangesToDatabaseWithCompletionHandler:^{}];
-    
-    //Update the filter
-    [self.recordFilter changeFolderName:originalName toFolderName:[folderInfo objectForKey:FOLDER_NAME]];
-    
+        
     //Reload
     [self.tableView reloadData];
     
@@ -253,10 +247,7 @@ typedef void (^save_completion_t)(void);
 }
 
 - (void)deleteFolders:(NSArray *)folders {
-    for (Folder *folder in folders) {
-        //Update the record filter
-        [self.recordFilter userDidDeselectFolderWithName:folder.folderName];
-    
+    for (Folder *folder in folders) {    
         //Delete the folder
         [self.database.managedObjectContext deleteObject:folder];
     }
@@ -280,12 +271,6 @@ typedef void (^save_completion_t)(void);
     [self toggleSelectButtonsForEditingMode:self.tableView.editing];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    [self reloadVisibleCells];
-}
-
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
@@ -299,10 +284,10 @@ typedef void (^save_completion_t)(void);
 - (void)reloadCheckboxesInVisibleCellsForEditingMode:(BOOL)editing {
     for (CustomFolderCell *cell in self.tableView.visibleCells) {
         if (editing || !self.willFilterByFolder)
-            [cell hideCheckBoxAnimated:YES];
+            [cell hideVisibilityIconAnimated:YES];
         else {
             //Show the checkboxes
-            [cell showCheckBoxAnimated:YES];
+            [cell showVisibilityIconAnimated:YES];
         }
     }
 }
@@ -457,31 +442,23 @@ typedef void (^save_completion_t)(void);
 
 #pragma mark - Table view data source
 
-- (void)reloadVisibleCells {
-    for (CustomFolderCell *cell in self.tableView.visibleCells)
-        cell.folder=[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CustomFolderCell *cell=(CustomFolderCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
     
     //Set the delegate of the cell to be notified when user toggles on/off checkboxes to include/exclude folders from being showed on the map
     cell.delegate=self;
-    
-    //Select cell if its folder is in the list of selected folders
+        
+    //Show/Hide folders
     Folder *folder=[self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([self.selectedFolders containsObject:folder]) {
-        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-    } else {
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    }
     
-    //Show/Hide the checkboxes
+    //Only show the visibility icons if the map is visible and the table view is not in editing mode
     if (self.willFilterByFolder && !self.tableView.editing)
-        [cell showCheckBoxAnimated:YES];
+        [cell setVisible:[self.selectedFolders containsObject:folder] animated:YES];
+    
+    //else hide the visibility icons
     else
-        [cell hideCheckBoxAnimated:YES];
+        [cell hideVisibilityIconAnimated:YES];
     
     return cell;
 }
@@ -524,46 +501,45 @@ typedef void (^save_completion_t)(void);
 
 #pragma mark - CustomFolderCellDelegate methods
 
-- (void)folderCell:(CustomFolderCell *)sender userDidSelectDidCheckBoxForFolder:(Folder *)folder {
-    [self.recordFilter userDidSelectFolderWithName:folder.folderName];
+- (void)folderCell:(CustomFolderCell *)sender folder:(Folder *)folder visibilityChanged:(BOOL)visible {
+    //Show/Hide folder as appropriate
+    NSMutableArray *selectedFolders=self.selectedFolders.mutableCopy;
+    if (visible && ![selectedFolders containsObject:folder])
+        [selectedFolders addObject:folder];
+    else if (!visible && [selectedFolders containsObject:folder])
+        [selectedFolders removeObject:folder];
         
-    //Post a notification to indicate that the folder database has changed
-    [self postNotificationWithName:GeoNotificationModelGroupFolderDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
-}
-
-- (void)folderCell:(CustomFolderCell *)sender userDidDeselectDidCheckBoxForFolder:(Folder *)folder {
-    [self.recordFilter userDidDeselectFolderWithName:folder.folderName];
-    
-    //Post a notification to indicate that the folder database has changed
-    [self postNotificationWithName:GeoNotificationModelGroupFolderDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+    //Update the list of selected folders
+    self.selectedFolders=selectedFolders.copy;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate protocol methods
 
-- (void)controller:(NSFetchedResultsController *)controller 
-   didChangeObject:(id)anObject 
-       atIndexPath:(NSIndexPath *)indexPath 
-     forChangeType:(NSFetchedResultsChangeType)type 
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
-    UITableView *tableView = self.tableView;
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath {
     
+    UITableView *tableView = self.tableView;
+    NSMutableArray *selectedFolders=self.selectedFolders.mutableCopy;
     switch(type) {
-            
+        //Add the newly inserted folder to the list of selected folders
         case NSFetchedResultsChangeInsert:
-            //If a folder is inserted, add it to the filter
-            if (type==NSFetchedResultsChangeInsert) {
-                Folder *folder=[self.fetchedResultsController objectAtIndexPath:newIndexPath];
-                [self.recordFilter userDidSelectFolderWithName:folder.folderName];
-            }
-            
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                              withRowAnimation:UITableViewRowAnimationFade];
+            if (![selectedFolders containsObject:anObject])
+                [selectedFolders addObject:anObject];
             break;
             
+        //Remove the folder from the list of selected folders
         case NSFetchedResultsChangeDelete:
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                              withRowAnimation:UITableViewRowAnimationFade];
+            if ([selectedFolders containsObject:anObject])
+                [selectedFolders removeObject:anObject];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            //Do nothing
             break;
             
         case NSFetchedResultsChangeMove:
@@ -573,7 +549,11 @@ typedef void (^save_completion_t)(void);
                              withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
+    
+    //Update the selected folders
+    self.selectedFolders=selectedFolders.copy;
 }
+
  
 #pragma mark - UIActionSheetDelegate protocol methods
 

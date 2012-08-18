@@ -26,4 +26,6 @@
 - (void)updateRecords:(NSArray *)records forceUpdate:(BOOL)willForceUpdate updateRegion:(BOOL)willUpdateRegion;
 - (void)reloadAnnotationViews;
 
+@property (nonatomic,readonly) NSArray *selectedRecordTypes;
+
 @end

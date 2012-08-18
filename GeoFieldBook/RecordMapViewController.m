@@ -115,6 +115,10 @@
     }
 }
 
+- (NSArray *)selectedRecordTypes {
+    return self.recordFilter.selectedRecordTypes;
+}
+
 - (void)reloadAnnotationViews {
     //Redraw all annotation views
     for (MKGeoRecordAnnotation *annotation in self.mapView.annotations) {

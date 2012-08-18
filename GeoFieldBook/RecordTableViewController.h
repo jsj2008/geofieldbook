@@ -23,7 +23,6 @@
 #import "Record+NameEncoding.h"
 #import "Record+DateAndTimeFormatter.h"
 #import "Formation_Folder.h"
-#import "CheckBox.h"
 #import "Image.h"
 
 #import "Bedding.h"
@@ -34,7 +33,7 @@
 
 @interface RecordTableViewController : PrototypeRecordTableViewController
 
-@property (nonatomic) BOOL willShowCheckboxes;
+@property (nonatomic) BOOL willFilterRecord;
 
 @property (nonatomic,weak) id <RecordTableViewControllerDelegate> delegate;
 
@@ -43,7 +42,9 @@
 #pragma mark - Currently active record
 
 @property (nonatomic,strong) Record *chosenRecord;
+
 @property (nonatomic,readonly) NSArray *records;
+@property (nonatomic,strong) NSArray *filteredRecords;
 
 #pragma mark - Record Manipulators
 
