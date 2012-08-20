@@ -738,8 +738,8 @@
                                 <rect key="frame" x="-21" y="0.0" width="1045" height="1024"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="redraw" image="GFBbackground2.001.png" id="7RR-Dg-4S7">
-                                        <rect key="frame" x="20" y="-12" width="1025" height="713"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="redraw" image="GFBbackground3A.png" id="7RR-Dg-4S7">
+                                        <rect key="frame" x="20" y="-23" width="1025" height="753"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="aaB-i3-Dti">
@@ -4820,7 +4820,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="GFBbackground2.001.png" width="640" height="480"/>
+        <image name="GFBbackground3A.png" width="1651" height="1275"/>
         <image name="GeoFieldBookFrontPage.png" width="1275" height="1650"/>
         <image name="closed_eyeball.png" width="375" height="389"/>
         <image name="open_eyeball.png" width="411" height="401"/>

@@ -167,6 +167,7 @@
 		02AC0F9915A5483700FBA9D3 /* formation.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC0F9815A5483700FBA9D3 /* formation.png */; };
 		02AC601815E2B560008C00BE /* background.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 02AC601715E2B560008C00BE /* background.jpeg */; };
 		02AC601A15E2B59F008C00BE /* GFBbackground2.001.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC601915E2B59F008C00BE /* GFBbackground2.001.png */; };
+		02AC602D15E2C168008C00BE /* GFBbackground3A.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC602C15E2C168008C00BE /* GFBbackground3A.png */; };
 		02AE26EF15BDF8AC00FE59C7 /* StudentFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE26EE15BDF8AC00FE59C7 /* StudentFeedbackViewController.m */; };
 		02AE26F215BE192500FE59C7 /* CustomQuestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE26F115BE192500FE59C7 /* CustomQuestionCell.m */; };
 		02AE271815BE512800FE59C7 /* libSSToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 02AE270F15BE50E100FE59C7 /* libSSToolkit.a */; };
@@ -579,6 +580,7 @@
 		02AC0F9815A5483700FBA9D3 /* formation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = formation.png; sourceTree = "<group>"; };
 		02AC601715E2B560008C00BE /* background.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpeg; sourceTree = "<group>"; };
 		02AC601915E2B59F008C00BE /* GFBbackground2.001.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBbackground2.001.png; sourceTree = "<group>"; };
+		02AC602C15E2C168008C00BE /* GFBbackground3A.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBbackground3A.png; sourceTree = "<group>"; };
 		02AE26ED15BDF8AC00FE59C7 /* StudentFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StudentFeedbackViewController.h; sourceTree = "<group>"; };
 		02AE26EE15BDF8AC00FE59C7 /* StudentFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StudentFeedbackViewController.m; sourceTree = "<group>"; };
 		02AE26F015BE192500FE59C7 /* CustomQuestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomQuestionCell.h; sourceTree = "<group>"; };
@@ -1377,6 +1379,7 @@
 				02E7235D15D9912F00B71BD9 /* nav_bar.png */,
 				02AC601715E2B560008C00BE /* background.jpeg */,
 				02AC601915E2B59F008C00BE /* GFBbackground2.001.png */,
+				02AC602C15E2C168008C00BE /* GFBbackground3A.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -1906,6 +1909,7 @@
 				025DA66815DF00E000129C7B /* open_eyeball.png in Resources */,
 				02AC601815E2B560008C00BE /* background.jpeg in Resources */,
 				02AC601A15E2B59F008C00BE /* GFBbackground2.001.png in Resources */,
+				02AC602D15E2C168008C00BE /* GFBbackground3A.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
