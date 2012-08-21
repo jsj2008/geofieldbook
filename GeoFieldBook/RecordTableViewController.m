@@ -125,7 +125,6 @@
     //Post a notification
     NSDictionary *userInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.chosenRecord,GeoNotificationKeyModelGroupSelectedRecord, nil];
     [self postNotificationWithName:GeoNotificationModelGroupDidSelectRecord andUserInfo:userInfo];
-
 }
 
 - (void)updateDeleteButton {
@@ -206,15 +205,6 @@
     }];
 }
 
-- (void)highlightRecord:(Record *)record {
-    //get ithe index path of the specified record
-    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:record];
-    
-    //Select the new record
-    if (![indexPath isEqual:self.tableView.indexPathForSelectedRow])
-        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-}
-
 - (void)postNotificationWithName:(NSString *)name andUserInfo:(NSDictionary *)userInfo {
     //Post the notification
     NSNotificationCenter *center=[NSNotificationCenter defaultCenter];
@@ -237,9 +227,6 @@
         if (success) {
             //Choose the newly created record
             self.chosenRecord=record;
-            
-            //highlight the newly created record and update the detail view accordingly
-            [self highlightRecord:record];
             
             //Put the detail view (now showing the newly created record's info) into editing mode
             [self putDetailViewIntoEditingMode];
@@ -268,9 +255,6 @@
     //Save changes to database
     [self saveChangesToDatabase:self.database completion:^(BOOL success){
         if (success) {
-            //Highlight the modified record
-            [self highlightRecord:record];
-            
             //If the record's latitude and longitude weren't updated, post a notification to indicate that the database has updated
             if (latitude==record.latitude.doubleValue && longitude==record.longitude.doubleValue) {
                 //Post a notification to indicate that the record database has changed
@@ -330,9 +314,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    //highlight the currently chosen record
-    [self highlightRecord:self.chosenRecord];
     
     //Set the title of the set location button
     NSString *formationFolderName=self.folder.formationFolder.folderName;
@@ -559,9 +540,9 @@
     //Setup cell
     cell.delegate=self;
     
-    //Select cell if its record is in the list of selected records
+    //Select cell if its record is in the list of selected records or if it has the chosen record
     Record *record=[self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([self.selectedRecords containsObject:record])
+    if ([self.selectedRecords containsObject:record] || record==self.chosenRecord)
         [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     else
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
@@ -661,6 +642,15 @@
     self.filteredRecords=filteredRecords.copy;
 }
 
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    //End updates
+    [self.tableView endUpdates];
+    
+    //Scroll to show the selected row
+    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:self.chosenRecord];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+}
+
 #pragma mark - UIActionSheetDelegate protocol methods
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -713,38 +703,44 @@
 
 #pragma mark - Change active records
 
-- (BOOL)hasNextRecord {
-    //If the currently chosen record is not the last record
-    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:self.chosenRecord];
+- (BOOL)hasNextRecordAfter:(Record *)record {
+    //If the given record is not the last record
+    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:record];
     return indexPath.row<self.fetchedResultsController.fetchedObjects.count-1;
 }
 
-- (BOOL)hasPrevRecord {
-    //If the currently chosen record is not the first record and there's more than 1 record
-    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:self.chosenRecord];
+- (BOOL)hasPrevRecordBefore:(Record *)record {
+    //If the given record is not the first record and there's more than 1 record
+    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:record];
     return indexPath.row>0 && self.fetchedResultsController.fetchedObjects.count>1;
 }
 
-- (void)forwardToNextRecord {
-    //Get the index path of the currenly chosen record
-    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:self.chosenRecord];
-    
-    //if there is a next record, choose the next record
-    if ([self hasNextRecord]) {
+- (Record *)recordAfterRecord:(Record *)record {
+    //Get the index path of the given record
+    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:record];
+        
+    //if there is a next record, return the next record
+    Record *nextRecord=nil;
+    if ([self hasNextRecordAfter:record]) {
         NSIndexPath *nextIndexPath=[NSIndexPath indexPathForRow:indexPath.row+1 inSection:indexPath.section];
-        self.chosenRecord=[self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+        nextRecord=[self.fetchedResultsController objectAtIndexPath:nextIndexPath];
     }
+    
+    return nextRecord;
 } 
 
-- (void)backToPrevRecord {
-    //Get the index path of the currenly chosen record
-    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:self.chosenRecord];
+- (Record *)recordBeforeRecord:(Record *)record {
+    //Get the index path of the given record
+    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:record];
     
-    //If there is a prev record, choose the prev record
-    if ([self hasPrevRecord]) {
+    //If there is a prev record, return the prev record
+    Record *prevRecord=nil;
+    if ([self hasPrevRecordBefore:record]) {
         NSIndexPath *prevIndexPath=[NSIndexPath indexPathForRow:indexPath.row-1 inSection:indexPath.section];
-        self.chosenRecord=[self.fetchedResultsController objectAtIndexPath:prevIndexPath];
+        prevRecord=[self.fetchedResultsController objectAtIndexPath:prevIndexPath];
     }
+    
+    return prevRecord;
 }
 
 @end

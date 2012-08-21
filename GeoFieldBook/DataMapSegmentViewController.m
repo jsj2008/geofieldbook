@@ -20,6 +20,11 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *formationButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *settingButton;
 
+@property (readonly, nonatomic) RecordPageViewController *recordPageViewController;
+@property (readonly, nonatomic) RecordViewController *recordViewController;
+
+@property (readonly, nonatomic) RecordMapViewController *mapViewController;
+
 @end
 
 @implementation DataMapSegmentViewController
@@ -41,9 +46,34 @@
     return [self.viewControllers objectAtIndex:0];
 }
 
+- (RecordPageViewController *)recordPageViewController {
+    if ([self.detailSideViewController isKindOfClass:[RecordPageViewController class]])
+        return (RecordPageViewController *)self.detailSideViewController;
+    else
+        return nil;
+}
+
+- (RecordViewController *)recordViewController {
+    return self.recordPageViewController.currentRecordViewController;
+}
+
+- (RecordMapViewController *)mapViewController {
+    id mapVC=[self.viewControllers lastObject];
+    if (![mapVC isKindOfClass:[RecordMapViewController class]])
+        mapVC=nil;
+    
+    return mapVC;
+}
+
 //Determine the type of animation
 - (TransionAnimationOption)animationOption {
     return self.currentViewController==self.viewControllers.lastObject ? TransitionAnimationFlipLeft : TransitionAnimationFlipRight;
+}
+
+#pragma mark - Record Page View Controller Data Forward Mechanisms
+
+- (void)setRecordPageViewControllerDelegate:(id <RecordPageViewControllerDelegate>)delegate {
+    self.recordPageViewController.delegate=delegate;
 }
 
 #pragma mark - Record View Controller Data Forward Mechanisms
@@ -54,61 +84,44 @@
 }
 
 - (void)setRecordViewControllerDelegate:(id <RecordViewControllerDelegate>)delegate {
-    //Set the delegate of the record detail vc if it's in the view controller array
-    id recordDetail=self.detailSideViewController;
-    if ([recordDetail isKindOfClass:[RecordViewController class]])
-        [(RecordViewController *)recordDetail setDelegate:delegate];
+    //Set the delegate of the record detail vc
+    self.recordViewController.delegate=delegate;
 }
 
 - (void)updateRecordDetailViewWithRecord:(Record *)record {
     //Set the record of the record detail vc
-    id recordDetail=self.detailSideViewController;
-    if ([recordDetail isKindOfClass:[RecordViewController class]])
-        [(RecordViewController *)recordDetail setRecord:record];
+    [self.recordPageViewController updateRecord:record];
 }
 
 - (void)putRecordViewControllerIntoEditingMode {
     //Put the record view controller into edit mode
-    RecordViewController *recordDetail=(RecordViewController *)self.detailSideViewController;
-    [recordDetail setEditing:YES animated:YES];
-    [recordDetail showKeyboard];
+    [self.recordViewController setEditing:YES animated:YES];
+    [self.recordViewController showKeyboard];
 }
 
 - (void)resetRecordViewController {
     //Cancel the record view controller's edit mode
-    if ([self.detailSideViewController isKindOfClass:[RecordViewController class]]) {
-        RecordViewController *recordDetail=(RecordViewController *)self.detailSideViewController;
-        [recordDetail cancelEditingMode];
-    }
+    [self.recordViewController cancelEditingMode];
 }
 
 #pragma mark - Record Map View Controller Data Forward Mechanisms
 
 - (void)setMapViewDelegate:(id<RecordMapViewControllerDelegate>)mapDelegate {
     //Set the map delegate of the map vc
-    id mapDetail=[self.viewControllers lastObject];
-    if ([mapDetail isKindOfClass:[RecordMapViewController class]])
-        [(RecordMapViewController *)mapDetail setMapDelegate:mapDelegate];
+    self.mapViewController.mapDelegate=mapDelegate;
 }
 
 - (void)updateMapWithRecords:(NSArray *)records forceUpdate:(BOOL)willForceUpdate updateRegion:(BOOL)willUpdateRegion {
     //Set the records of the record map view controller if it's in the view controller array
-    RecordMapViewController *recordMap=[self.viewControllers lastObject];
-    [recordMap updateRecords:records forceUpdate:willForceUpdate updateRegion:willUpdateRegion];
+    [self.mapViewController updateRecords:records forceUpdate:willForceUpdate updateRegion:willUpdateRegion];
 }
 
 - (void)setMapSelectedRecord:(Record *)selectedRecord {
-    if ([self.viewControllers.lastObject isKindOfClass:[RecordMapViewController class]]) {
-        RecordMapViewController *mapDetail=(RecordMapViewController *)self.viewControllers.lastObject;
-        mapDetail.selectedRecord=selectedRecord;
-    }
+    self.mapViewController.selectedRecord=selectedRecord;
 }
 
 - (void)reloadMapAnnotationViews {
-    if ([self.viewControllers.lastObject isKindOfClass:[RecordMapViewController class]]) {
-        RecordMapViewController *mapDetail=(RecordMapViewController *)self.viewControllers.lastObject;
-        [mapDetail reloadAnnotationViews];
-    }
+    [self.mapViewController reloadAnnotationViews];
 }
 
 #pragma mark - View Controller Manipulation (Pushing, Poping, Swapping)
@@ -121,52 +134,10 @@
 }
 
 - (void)pushRecordViewController {
-    [self performSegueWithIdentifier:@"Record View Controller" sender:nil];
-    if (!self.topViewController)
-        [self swapToViewControllerAtSegmentIndex:0];
-}
-
-- (void)pushRecordViewControllerWithTransitionAnimation:(TransionAnimationOption)animationOption 
-                                                  setup:(push_completion_handler_t)setupHandler 
-                                             completion:(push_completion_handler_t)completionHandler 
-{
-    //Only proceed if the current view controller is the reocrd view controller
-    if ([self.topViewController isKindOfClass:[RecordViewController class]]) {
-        //Setup the new record view controller
-        RecordViewController *newRecordViewController=[self.storyboard instantiateViewControllerWithIdentifier:RECORD_DETAIL_VIEW_CONTROLLER_IDENTIFIER];
-        
-        //Replace the old record vc in the view controller array
-        NSMutableArray *viewControllers=self.viewControllers.mutableCopy;
-        [viewControllers replaceObjectAtIndex:0 withObject:newRecordViewController];
-        self.viewControllers=viewControllers.copy;
-        
-        //Prepare to put the new record vc's view on screen
-        [self addChildViewController:newRecordViewController];
-        [newRecordViewController willMoveToParentViewController:self];
-        
-        //Run the setup handler
-        setupHandler();
-        
-        //Animation
-        UIViewAnimationOptions option=animationOption==TransitionAnimationCurlDown ? UIViewAnimationOptionTransitionCurlDown : UIViewAnimationOptionTransitionCurlUp;
-        
-        [self transitionFromViewController:self.currentViewController toViewController:newRecordViewController duration:0.6 options:option animations:^{                
-            //Remove the view of the current view controller from the view hierachy
-            [self.currentViewController.view removeFromSuperview];
-            
-        } completion:^(BOOL completed){
-            if (completed) {
-                //Add the view of the new vc to the hierachy and set it as the current view controller
-                [self.contentView addSubview:newRecordViewController.view];
-                
-                //set the new view as the current view controller
-                [newRecordViewController didMoveToParentViewController:self];
-                self.currentViewController=newRecordViewController;
-                
-                //Run the completion handler
-                completionHandler();
-            }
-        }];
+    if (!self.recordPageViewController) {
+        [self performSegueWithIdentifier:RECORD_PAGE_VIEW_CONTROLLER_IDENTIFIER sender:nil];
+        if (!self.topViewController)
+            [self swapToViewControllerAtSegmentIndex:0];
     }
 }
 
@@ -182,14 +153,8 @@
     //Get the selected record
     Record *selectedRecord=[notification.userInfo objectForKey:GeoNotificationKeyModelGroupSelectedRecord];
     
-    //Push the detail view if it's not in the array of view controllers yet
-    if (![self.detailSideViewController isKindOfClass:[RecordViewController class]]) {
-        [self pushRecordViewController];
-        
-        //Swap to the record view controller if no view controller is currently taking the screen
-        if (!self.topViewController)
-            [self swapToViewControllerAtSegmentIndex:0];
-    }
+    //Push the detail
+    [self pushRecordViewController];
     
     //Update the detail side
     [self updateRecordDetailViewWithRecord:selectedRecord];
@@ -224,9 +189,9 @@
         index=1;
     }
     
-    else if ([segue.identifier isEqualToString:@"Record View Controller"]) {
-        //Instantiate the record map view controller
-        newViewController=[self.storyboard instantiateViewControllerWithIdentifier:RECORD_DETAIL_VIEW_CONTROLLER_IDENTIFIER];
+    else if ([segue.identifier isEqualToString:@"Record Page View Controller"]) {
+        //Instantiate the record page view controller
+        newViewController=[self.storyboard instantiateViewControllerWithIdentifier:RECORD_PAGE_VIEW_CONTROLLER_IDENTIFIER];
     }
     
     if (viewControllers.count<index+1) {

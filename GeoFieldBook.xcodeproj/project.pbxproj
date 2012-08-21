@@ -168,12 +168,16 @@
 		02AC601815E2B560008C00BE /* background.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 02AC601715E2B560008C00BE /* background.jpeg */; };
 		02AC601A15E2B59F008C00BE /* GFBbackground2.001.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC601915E2B59F008C00BE /* GFBbackground2.001.png */; };
 		02AC602D15E2C168008C00BE /* GFBbackground3A.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC602C15E2C168008C00BE /* GFBbackground3A.png */; };
+		02AC604915E302E8008C00BE /* nav_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC604815E302E8008C00BE /* nav_bar.png */; };
+		02AC604F15E3036C008C00BE /* GFBbackground4A.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC604E15E3036C008C00BE /* GFBbackground4A.png */; };
+		02AC605C15E304DD008C00BE /* MPFlipTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC605515E304DD008C00BE /* MPFlipTransition.m */; };
+		02AC605D15E304DD008C00BE /* MPFlipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC605715E304DD008C00BE /* MPFlipViewController.m */; };
+		02AC606515E3062B008C00BE /* RecordPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC606415E3062B008C00BE /* RecordPageViewController.m */; };
 		02AE26EF15BDF8AC00FE59C7 /* StudentFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE26EE15BDF8AC00FE59C7 /* StudentFeedbackViewController.m */; };
 		02AE26F215BE192500FE59C7 /* CustomQuestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE26F115BE192500FE59C7 /* CustomQuestionCell.m */; };
 		02AE271815BE512800FE59C7 /* libSSToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 02AE270F15BE50E100FE59C7 /* libSSToolkit.a */; };
 		02AE271915BE515E00FE59C7 /* SSToolkitResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 02AE271315BE50E100FE59C7 /* SSToolkitResources.bundle */; };
 		02BBB43515C04DF2008F7D68 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 02BBB43415C04DF1008F7D68 /* Image.m */; };
-		02E7235E15D9912F00B71BD9 /* nav_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 02E7235D15D9912F00B71BD9 /* nav_bar.png */; };
 		02F86EB415AF6E5B000A84D2 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F86EB315AF6E5B000A84D2 /* iAd.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		02F86EB815AF6F09000A84D2 /* IEEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F86EB715AF6F09000A84D2 /* IEEngine.m */; };
 		02F86EB915AF6F09000A84D2 /* IEEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F86EB715AF6F09000A84D2 /* IEEngine.m */; };
@@ -581,6 +585,16 @@
 		02AC601715E2B560008C00BE /* background.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpeg; sourceTree = "<group>"; };
 		02AC601915E2B59F008C00BE /* GFBbackground2.001.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBbackground2.001.png; sourceTree = "<group>"; };
 		02AC602C15E2C168008C00BE /* GFBbackground3A.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBbackground3A.png; sourceTree = "<group>"; };
+		02AC604815E302E8008C00BE /* nav_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav_bar.png; sourceTree = "<group>"; };
+		02AC604E15E3036C008C00BE /* GFBbackground4A.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBbackground4A.png; sourceTree = "<group>"; };
+		02AC605315E304DD008C00BE /* MPFlipEnumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPFlipEnumerations.h; path = ../MPFlipEnumerations.h; sourceTree = "<group>"; };
+		02AC605415E304DD008C00BE /* MPFlipTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPFlipTransition.h; sourceTree = "<group>"; };
+		02AC605515E304DD008C00BE /* MPFlipTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPFlipTransition.m; sourceTree = "<group>"; };
+		02AC605615E304DD008C00BE /* MPFlipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPFlipViewController.h; sourceTree = "<group>"; };
+		02AC605715E304DD008C00BE /* MPFlipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPFlipViewController.m; sourceTree = "<group>"; };
+		02AC606315E3062B008C00BE /* RecordPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordPageViewController.h; sourceTree = "<group>"; };
+		02AC606415E3062B008C00BE /* RecordPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordPageViewController.m; sourceTree = "<group>"; };
+		02AC606615E309B3008C00BE /* RecordPageViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; path = RecordPageViewControllerDelegate.h; sourceTree = "<group>"; };
 		02AE26ED15BDF8AC00FE59C7 /* StudentFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StudentFeedbackViewController.h; sourceTree = "<group>"; };
 		02AE26EE15BDF8AC00FE59C7 /* StudentFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StudentFeedbackViewController.m; sourceTree = "<group>"; };
 		02AE26F015BE192500FE59C7 /* CustomQuestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomQuestionCell.h; sourceTree = "<group>"; };
@@ -588,7 +602,6 @@
 		02AE270415BE50E100FE59C7 /* SSToolkit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SSToolkit.xcodeproj; path = Vendor/SSToolkit/SSToolkit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		02BBB43315C04DF1008F7D68 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		02BBB43415C04DF1008F7D68 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
-		02E7235D15D9912F00B71BD9 /* nav_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav_bar.png; sourceTree = "<group>"; };
 		02F86EB315AF6E5B000A84D2 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		02F86EB615AF6F09000A84D2 /* IEEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IEEngine.h; path = GeoFieldBook/IEEngine.h; sourceTree = "<group>"; };
 		02F86EB715AF6F09000A84D2 /* IEEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IEEngine.m; path = GeoFieldBook/IEEngine.m; sourceTree = "<group>"; };
@@ -691,6 +704,7 @@
 		020EBB5C15941F8300EECC08 /* View Controller Prototypes */ = {
 			isa = PBXGroup;
 			children = (
+				02AC605015E304CF008C00BE /* MPFlipViewController */,
 				020EBB931594217A00EECC08 /* CoreDataTableViewController.h */,
 				020EBB941594217A00EECC08 /* CoreDataTableViewController.m */,
 				0222DB221596B40C00699D62 /* PickerViewController.h */,
@@ -1097,6 +1111,7 @@
 		0288944E15B49E6A0062E6DA /* Custom Animations */ = {
 			isa = PBXGroup;
 			children = (
+				02AC606715E31A8F008C00BE /* MPFlipTransition */,
 				028894AF15B4A83F0062E6DA /* MPFoldTransition */,
 			);
 			name = "Custom Animations";
@@ -1110,6 +1125,7 @@
 				028894B515B4A83F0062E6DA /* MPFoldEnumerations.h */,
 				028894B615B4A83F0062E6DA /* MPFoldTransition.h */,
 				028894B715B4A83F0062E6DA /* MPFoldTransition.m */,
+				02AC605315E304DD008C00BE /* MPFlipEnumerations.h */,
 				028894B815B4A83F0062E6DA /* MPTransition.h */,
 				028894B915B4A83F0062E6DA /* MPTransition.m */,
 				028894BA15B4A83F0062E6DA /* MPTransitionEnumerations.h */,
@@ -1185,6 +1201,8 @@
 		0294C0C315BE5DD300E0E2D0 /* Record View */ = {
 			isa = PBXGroup;
 			children = (
+				02AC606315E3062B008C00BE /* RecordPageViewController.h */,
+				02AC606415E3062B008C00BE /* RecordPageViewController.m */,
 				020EBB9C15942CBB00EECC08 /* RecordViewController.h */,
 				020EBB9D15942CBB00EECC08 /* RecordViewController.m */,
 				0277646315BA439900C9DCEB /* Picker View Controllers */,
@@ -1344,6 +1362,7 @@
 			children = (
 				0249E2F815A944D300A7532E /* RecordMapViewControllerDelegate.h */,
 				0249E2FA15A9456700A7532E /* RecordViewControllerDelegate.h */,
+				02AC606615E309B3008C00BE /* RecordPageViewControllerDelegate.h */,
 				026640D315AA0B2E00026D88 /* RecordTableViewControllerDelegate.h */,
 				026640D415AA3B2800026D88 /* DataMapSegmentControllerDelegate.h */,
 				0238E56615B06F9500A2CA6C /* ImportTableViewControllerDelegate.h */,
@@ -1376,10 +1395,11 @@
 				0218AA7E15BE70E000D60258 /* switchBlueBg.png */,
 				0218AA7F15BE70E000D60258 /* switchOffPlain.png */,
 				0218AA8015BE70E000D60258 /* switchThumb.png */,
-				02E7235D15D9912F00B71BD9 /* nav_bar.png */,
+				02AC604815E302E8008C00BE /* nav_bar.png */,
 				02AC601715E2B560008C00BE /* background.jpeg */,
 				02AC601915E2B59F008C00BE /* GFBbackground2.001.png */,
 				02AC602C15E2C168008C00BE /* GFBbackground3A.png */,
+				02AC604E15E3036C008C00BE /* GFBbackground4A.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -1709,6 +1729,24 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		02AC605015E304CF008C00BE /* MPFlipViewController */ = {
+			isa = PBXGroup;
+			children = (
+				02AC605615E304DD008C00BE /* MPFlipViewController.h */,
+				02AC605715E304DD008C00BE /* MPFlipViewController.m */,
+			);
+			name = MPFlipViewController;
+			sourceTree = "<group>";
+		};
+		02AC606715E31A8F008C00BE /* MPFlipTransition */ = {
+			isa = PBXGroup;
+			children = (
+				02AC605415E304DD008C00BE /* MPFlipTransition.h */,
+				02AC605515E304DD008C00BE /* MPFlipTransition.m */,
+			);
+			name = MPFlipTransition;
+			sourceTree = "<group>";
+		};
 		02AE26EC15BDF1AE00FE59C7 /* Feedback Group */ = {
 			isa = PBXGroup;
 			children = (
@@ -1904,12 +1942,13 @@
 				0218AA8115BE70E000D60258 /* switchBlueBg.png in Resources */,
 				0218AA8215BE70E000D60258 /* switchOffPlain.png in Resources */,
 				0218AA8315BE70E000D60258 /* switchThumb.png in Resources */,
-				02E7235E15D9912F00B71BD9 /* nav_bar.png in Resources */,
 				025DA66715DF00E000129C7B /* closed_eyeball.png in Resources */,
 				025DA66815DF00E000129C7B /* open_eyeball.png in Resources */,
 				02AC601815E2B560008C00BE /* background.jpeg in Resources */,
 				02AC601A15E2B59F008C00BE /* GFBbackground2.001.png in Resources */,
 				02AC602D15E2C168008C00BE /* GFBbackground3A.png in Resources */,
+				02AC604915E302E8008C00BE /* nav_bar.png in Resources */,
+				02AC604F15E3036C008C00BE /* GFBbackground4A.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2107,6 +2146,9 @@
 				027AA6B315DCABBE00C97157 /* RecordByDateTVC.m in Sources */,
 				027AA6B615DCABD600C97157 /* RecordByTypeTVC.m in Sources */,
 				0298E97A15DDA0A60067364D /* Formation.m in Sources */,
+				02AC605C15E304DD008C00BE /* MPFlipTransition.m in Sources */,
+				02AC605D15E304DD008C00BE /* MPFlipViewController.m in Sources */,
+				02AC606515E3062B008C00BE /* RecordPageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

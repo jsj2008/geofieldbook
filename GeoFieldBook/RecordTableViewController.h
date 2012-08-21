@@ -56,9 +56,7 @@
 
 #pragma mark - Change active records
 
-- (BOOL)hasNextRecord;
-- (BOOL)hasPrevRecord;
-- (void)forwardToNextRecord;
-- (void)backToPrevRecord;
+- (Record *)recordAfterRecord:(Record *)record;
+- (Record *)recordBeforeRecord:(Record *)record;
 
 @end

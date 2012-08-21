@@ -7,25 +7,22 @@
 //
 
 #import "SegmentViewController.h"
+
 #import "RecordMapViewController.h"
 #import "InitialDetailViewController.h"
-#import "RecordViewController.h"
-#import "Record.h"
-
-#import "RecordViewControllerDelegate.h"
-#import "RecordMapViewControllerDelegate.h"
+#import "RecordPageViewController.h"
 
 #import "DataMapSegmentControllerDelegate.h"
 
 @interface DataMapSegmentViewController : SegmentViewController
 
 #define INITIAL_DETAIL_VIEW_CONTROLLER_IDENTIFIER @"Initial Detail View Controller"
-#define RECORD_DETAIL_VIEW_CONTROLLER_IDENTIFIER @"Record Detail View Controller"
+#define RECORD_PAGE_VIEW_CONTROLLER_IDENTIFIER @"Record Page View Controller"
 #define RECORD_MAP_VIEW_CONTROLLER_IDENTIFIER @"Record Map View Controller"
 
 typedef void (^push_completion_handler_t)(void);
 
-
+- (void)setRecordPageViewControllerDelegate:(id <RecordPageViewControllerDelegate>)delegate;
 - (void)setRecordViewControllerDelegate:(id <RecordViewControllerDelegate>)delegate;
 - (void)updateRecordDetailViewWithRecord:(Record *)record;
 - (void)putRecordViewControllerIntoEditingMode;
@@ -40,10 +37,6 @@ typedef void (^push_completion_handler_t)(void);
 - (void)pushRecordViewController;
 
 - (void)dismissKeyboardInDataSideView;
-
-- (void)pushRecordViewControllerWithTransitionAnimation:(TransionAnimationOption)animationOption 
-                                                  setup:(push_completion_handler_t)setupHandler 
-                                             completion:(push_completion_handler_t)completionHandler;
 
 @property (nonatomic,readonly) UIViewController *detailSideViewController;
 

@@ -33,7 +33,7 @@
 #import "GeoDatabaseManager.h"
 #import "SettingManager.h"
 
-@interface GeoFieldBookController() <UINavigationControllerDelegate,DataMapSegmentControllerDelegate,RecordViewControllerDelegate,UIAlertViewDelegate,RecordMapViewControllerDelegate,UIActionSheetDelegate,SettingsSplitViewControllerDelegate>
+@interface GeoFieldBookController() <UINavigationControllerDelegate,DataMapSegmentControllerDelegate,RecordViewControllerDelegate,UIAlertViewDelegate,RecordMapViewControllerDelegate,UIActionSheetDelegate,SettingsSplitViewControllerDelegate,RecordPageViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *formationButton;
@@ -365,8 +365,7 @@
 - (void)modelGroupDidCreateNewRecord:(NSNotification *)notification {
     //If the data side of the data map segment controller is not a record view controller, push rvc
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-    if (![dataMapSegmentVC.detailSideViewController isKindOfClass:[RecordViewController class]])
-        [self pushRecordViewControllerOnScreen];
+    [self pushRecordViewControllerOnScreen];
     
     //Switch to the data side
     [self swapToSegmentIndex:0];
@@ -687,15 +686,15 @@
 }
 
 - (void)setupEditButtonForViewController:(UIViewController *)viewController {
+    //Remove the button first
+    [self removeButtonsWithTitles:[NSArray arrayWithObjects:@"Edit",@"Done", nil]];
+    
     //If the swapped in view controller is the record view controller put up the edit button
-    if ([viewController isKindOfClass:[RecordViewController class]]) {
-        RecordViewController *recordDetail=(RecordViewController *)viewController;
+    if ([viewController isKindOfClass:[RecordPageViewController class]]) {
+        RecordPageViewController *recordPage=(RecordPageViewController *)viewController;
+        RecordViewController *recordDetail=recordPage.currentRecordViewController;
         [self putUpButton:recordDetail.editButton atIndex:self.toolbar.items.count];
     }
-    
-    //If the edit button is on the toolbar, take it off (its title should either be "Done" or "Edit")
-    else
-        [self removeButtonsWithTitles:[NSArray arrayWithObjects:@"Edit",@"Done", nil]];
 }
 
 - (void)setupButtonsForViewSideController:(UIViewController *)viewController {
@@ -736,9 +735,11 @@
     //Setup the buttons
     [self setupButtonsForViewSideController:viewController];
     
-    //Setup delegate for the record view controller
-    if ([viewController isKindOfClass:[RecordViewController class]])
+    //Setup delegate for the record page view controller
+    if ([viewController isKindOfClass:[RecordPageViewController class]]) {
+        [sender setRecordPageViewControllerDelegate:self];
         [sender setRecordViewControllerDelegate:self];
+    }
     
     //If switching to the map, show the checkboxes (allow filter by folder) in the folder ;
     FolderTableViewController *folderTVC=[[(UINavigationController *)self.popoverViewController.contentViewController viewControllers] objectAtIndex:0];
@@ -757,6 +758,25 @@
         else
             recordTVC.willFilterRecord=NO;
     }
+}
+
+#pragma mark - RecordPageViewControllerDelegate protocol methods
+
+- (Record *)recordPage:(RecordPageViewController *)sender recordBeforeRecord:(Record *)nextRecord {
+    return [self.recordTableViewController recordBeforeRecord:nextRecord];
+}
+
+- (Record *)recordPage:(RecordPageViewController *)sender recordAfterRecord:(Record *)previousRecord {
+    return [self.recordTableViewController recordAfterRecord:previousRecord];
+}
+
+- (void)recordPage:(RecordPageViewController *)sender isTurningToRecordViewController:(RecordViewController *)recordViewController {
+    //Setup the new record view controller
+    recordViewController.delegate=self;
+    [self setupEditButtonForViewController:sender];
+    
+    //Update the chosen record
+    self.recordTableViewController.chosenRecord=recordViewController.record;
 }
 
 #pragma mark - RecordViewControllerDelegate protocol methods
@@ -804,44 +824,6 @@
     
     //Put up the new one
     [self setupEditButtonForViewController:recordVC];
-}
-
-- (void)swipeWithTransitionAnimation:(TransionAnimationOption)animationOption forward:(BOOL)forward {
-    //Switch record
-    __weak GeoFieldBookController *weakSelf=self;
-    DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-    [dataMapSegmentVC pushRecordViewControllerWithTransitionAnimation:animationOption setup:^(){
-        //Set the delegate of the new record vc
-        [dataMapSegmentVC setRecordViewControllerDelegate:weakSelf];
-        
-        //Move the next record
-        RecordTableViewController *recordTVC=[weakSelf recordTableViewController];
-        if (recordTVC) {
-            //If switching to the next record
-            if (forward)
-                [recordTVC forwardToNextRecord];
-            else
-                [recordTVC backToPrevRecord];
-        }
-    } completion:^{
-        //Replace the old edit button with the new one
-        RecordViewController *newRecordVC=(RecordViewController *)dataMapSegmentVC.topViewController;
-        [self replaceWithEditButtonOfRecordViewController:newRecordVC];
-    }];
-}
-
-- (void)userDidSwipeUpInRecordViewController:(RecordViewController *)sender {
-    //Switch to the next record
-    RecordTableViewController *recordVC=[self recordTableViewController];
-    if (recordVC && [recordVC hasNextRecord])
-        [self swipeWithTransitionAnimation:TransitionAnimationCurlUp forward:YES];
-}
-
-- (void)userDidSwipeDownInRecordViewController:(RecordViewController *)sender {
-    //Switch to the prev record
-    RecordTableViewController *recordVC=[self recordTableViewController];
-    if (recordVC && [recordVC hasPrevRecord])
-        [self swipeWithTransitionAnimation:TransitionAnimationCurlDown forward:NO];
 }
 
 - (void)userDidCancelEditingMode:(RecordViewController *)sender {
@@ -905,8 +887,7 @@
 {
     //Update the data side (push if it's not on screen somewhere)
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-    if (![dataMapSegmentVC.detailSideViewController isKindOfClass:[RecordViewController class]])
-        [self pushRecordViewControllerOnScreen];
+    [self pushRecordViewControllerOnScreen];
     [dataMapSegmentVC updateRecordDetailViewWithRecord:record];
     
     //Update the model group to reflect the changes
@@ -933,10 +914,7 @@
 #pragma mark - SettingsSplitViewControllerDelegate Protocol Methods
 
 - (NSString *)currentFolderTitleForSettingsViewController:(SettingsSplitViewController *)sender {
-    if (self.recordTableViewController)
-        return self.recordTableViewController.folder.folderName;
-    
-    return nil;
+    return self.recordTableViewController.folder.folderName;
 }
 
 #pragma mark - UIAlertViewDelegate methods
