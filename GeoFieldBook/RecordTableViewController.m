@@ -320,6 +320,13 @@
     self.setLocationButton.title=[formationFolderName length] ? formationFolderName : @"Set Location";
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:self.chosenRecord];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
@@ -555,7 +562,7 @@
         //Show the checkboxes
         [cell hideVisibilityIconAnimated:YES];
     }
-        
+            
     return cell;
 }
 
@@ -640,15 +647,6 @@
     
     //Update the filtered records
     self.filteredRecords=filteredRecords.copy;
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    //End updates
-    [self.tableView endUpdates];
-    
-    //Scroll to show the selected row
-    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:self.chosenRecord];
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
 #pragma mark - UIActionSheetDelegate protocol methods
