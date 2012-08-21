@@ -173,6 +173,7 @@
 		02AC605C15E304DD008C00BE /* MPFlipTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC605515E304DD008C00BE /* MPFlipTransition.m */; };
 		02AC605D15E304DD008C00BE /* MPFlipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC605715E304DD008C00BE /* MPFlipViewController.m */; };
 		02AC606515E3062B008C00BE /* RecordPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC606415E3062B008C00BE /* RecordPageViewController.m */; };
+		02AC609415E37D68008C00BE /* UIView+Origami.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC609315E37D68008C00BE /* UIView+Origami.m */; };
 		02AE26EF15BDF8AC00FE59C7 /* StudentFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE26EE15BDF8AC00FE59C7 /* StudentFeedbackViewController.m */; };
 		02AE26F215BE192500FE59C7 /* CustomQuestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE26F115BE192500FE59C7 /* CustomQuestionCell.m */; };
 		02AE271815BE512800FE59C7 /* libSSToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 02AE270F15BE50E100FE59C7 /* libSSToolkit.a */; };
@@ -595,6 +596,8 @@
 		02AC606315E3062B008C00BE /* RecordPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordPageViewController.h; sourceTree = "<group>"; };
 		02AC606415E3062B008C00BE /* RecordPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordPageViewController.m; sourceTree = "<group>"; };
 		02AC606615E309B3008C00BE /* RecordPageViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordPageViewControllerDelegate.h; sourceTree = "<group>"; };
+		02AC609215E37D68008C00BE /* UIView+Origami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Origami.h"; sourceTree = "<group>"; };
+		02AC609315E37D68008C00BE /* UIView+Origami.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Origami.m"; sourceTree = "<group>"; };
 		02AE26ED15BDF8AC00FE59C7 /* StudentFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StudentFeedbackViewController.h; sourceTree = "<group>"; };
 		02AE26EE15BDF8AC00FE59C7 /* StudentFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StudentFeedbackViewController.m; sourceTree = "<group>"; };
 		02AE26F015BE192500FE59C7 /* CustomQuestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomQuestionCell.h; sourceTree = "<group>"; };
@@ -1111,6 +1114,7 @@
 		0288944E15B49E6A0062E6DA /* Custom Animations */ = {
 			isa = PBXGroup;
 			children = (
+				02AC609115E37D68008C00BE /* XYOrigami */,
 				02AC606715E31A8F008C00BE /* MPFlipTransition */,
 				028894AF15B4A83F0062E6DA /* MPFoldTransition */,
 			);
@@ -1747,6 +1751,15 @@
 			name = MPFlipTransition;
 			sourceTree = "<group>";
 		};
+		02AC609115E37D68008C00BE /* XYOrigami */ = {
+			isa = PBXGroup;
+			children = (
+				02AC609215E37D68008C00BE /* UIView+Origami.h */,
+				02AC609315E37D68008C00BE /* UIView+Origami.m */,
+			);
+			path = XYOrigami;
+			sourceTree = "<group>";
+		};
 		02AE26EC15BDF1AE00FE59C7 /* Feedback Group */ = {
 			isa = PBXGroup;
 			children = (
@@ -2149,6 +2162,7 @@
 				02AC605C15E304DD008C00BE /* MPFlipTransition.m in Sources */,
 				02AC605D15E304DD008C00BE /* MPFlipViewController.m in Sources */,
 				02AC606515E3062B008C00BE /* RecordPageViewController.m in Sources */,
+				02AC609415E37D68008C00BE /* UIView+Origami.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

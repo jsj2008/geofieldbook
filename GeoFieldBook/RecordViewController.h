@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import <MapKit/MapKit.h>
 
 #import "CoreLocation/CoreLocation.h"

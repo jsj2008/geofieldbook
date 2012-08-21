@@ -60,18 +60,27 @@
         
         //Fold/Unfold animations
         else if (animationOption==TransitionAnimationFold || animationOption==TransitionAnimationUnfold) {
-            MPFoldStyle style=animationOption==TransitionAnimationFold ? MPFoldStyleHorizontal : MPFoldStyleUnfold;
-            [MPFoldTransition transitionFromViewController:self.currentViewController toViewController:viewController duration:0.4 style:style completion:^(BOOL finished){
-                //Remove the view of the current view controller from the view hierachy
-                [self.currentViewController.view removeFromSuperview];
-                
-                //Add the view of the new vc to the hierachy and set it as the current view controller
-                [self.contentView addSubview:viewController.view];
-                
-                //set the new view as the current view controller
-                [viewController didMoveToParentViewController:self];
-                self.currentViewController=viewController;
-            }];
+            if (animationOption==TransitionAnimationFold) {
+                [self.contentView hideOrigamiTransitionWith:self.currentViewController.view NumberOfFolds:3 Duration:0.5 Direction:XYOrigamiDirectionFromRight completion:^(BOOL finished){
+                    //Add the view of the new vc to the hierachy and set it as the current view controller
+                    [self.contentView addSubview:viewController.view];
+                    
+                    //set the new view as the current view controller
+                    [viewController didMoveToParentViewController:self];
+                    self.currentViewController=viewController;
+                }];
+            }
+            
+            else if (animationOption==TransitionAnimationUnfold) {
+                [self.contentView showOrigamiTransitionWith:viewController.view NumberOfFolds:3 Duration:0.5 Direction:XYOrigamiDirectionFromRight completion:^(BOOL finished){
+                    //Remove the view of the current view controller from the view hierachy
+                    [self.currentViewController.view removeFromSuperview];
+
+                    //set the new view as the current view controller
+                    [viewController didMoveToParentViewController:self];
+                    self.currentViewController=viewController;
+                }];
+            }
         }
         
         //Push animation

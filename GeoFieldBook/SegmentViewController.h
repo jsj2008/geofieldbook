@@ -11,7 +11,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-#import "MPFoldTransition.h"
+#import "XYOrigami/UIView+Origami.h"
 
 @interface SegmentViewController : UIViewController
 

@@ -410,6 +410,21 @@
 
 #pragma mark - Target-Action Handlers
 
+- (void)setupUIForEditingMode:(BOOL)editing {
+    [self setupButtonsForEditingMode:editing];
+    [self setupObservationTextAreaForEditingMode:editing];
+}
+
+- (void)setupObservationTextAreaForEditingMode:(BOOL)editing {
+    //The observation text area should have some border if in editing mode
+    float borderWidth=editing ? 1.0f : 0.0f;
+    CGColorRef borderColor=editing ? [UIColor blackColor].CGColor : [UIColor clearColor].CGColor;
+    
+    //Set up the border for the field observation text area
+    self.fieldObservationTextArea.layer.borderWidth=borderWidth;
+    self.fieldObservationTextArea.layer.borderColor=borderColor;
+}
+
 - (void)setupButtonsForEditingMode:(BOOL)editing {
     self.browseButton.hidden=!editing;
     self.takePhotoButton.hidden=!editing;
@@ -426,7 +441,8 @@
         [self setEditing:YES animated:YES];
     }
     
-    [self setupButtonsForEditingMode:self.editing];
+    //Setup the UI
+    [self setupUIForEditingMode:self.editing];
 }
 
 - (IBAction)cancelPressed:(UIBarButtonItem *)sender {
@@ -778,6 +794,9 @@
     
     //initialize and set up location services
     [self setUpLocationManager];
+    
+    //Setup UI initially
+    [self setupUIForEditingMode:NO];
 } 
 
 - (void)viewWillLayoutSubviews {

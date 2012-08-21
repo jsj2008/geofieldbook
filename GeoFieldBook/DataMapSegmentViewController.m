@@ -68,7 +68,7 @@
 
 //Determine the type of animation
 - (TransionAnimationOption)animationOption {
-    return self.currentViewController==self.viewControllers.lastObject ? TransitionAnimationFlipLeft : TransitionAnimationFlipRight;
+    return self.currentViewController==self.viewControllers.lastObject ? TransitionAnimationFold : TransitionAnimationUnfold;
 }
 
 #pragma mark - Record Page View Controller Data Forward Mechanisms

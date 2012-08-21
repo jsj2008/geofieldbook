@@ -8,6 +8,8 @@
 
 #import "TransientRecord.h"
 #import "TransientImage.h"
+
+#import "Record+State.h"
 #import "Record+DipDirectionValues.h"
 
 #import "TransientBedding.h"
@@ -48,6 +50,9 @@
         record.fieldObservations=self.fieldOservations;
         record.latitude=self.latitude;
         record.longitude=self.longitude;
+        
+        //Set the state of the record
+        record.recordState=RecordStateUpdated;
         
         //Associate with the folder
         record.folder=[self.folder saveFolderToManagedObjectContext:context];
