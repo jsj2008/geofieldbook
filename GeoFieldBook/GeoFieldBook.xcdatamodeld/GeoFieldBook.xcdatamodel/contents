@@ -27,7 +27,7 @@
     <entity name="Folder" representedClassName="Folder" syncable="YES">
         <attribute name="folderDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="folderID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="folderName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="folderName" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="prefixCounter" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="prefixEnabled" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="prefixText" optional="YES" attributeType="String" syncable="YES"/>
@@ -36,7 +36,7 @@
     </entity>
     <entity name="Formation" representedClassName="Formation" syncable="YES">
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="formationName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="formationName" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="formationSortNumber" optional="YES" attributeType="Integer 32" defaultValueString="0.0" syncable="YES"/>
         <relationship name="beddings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Bedding" inverseName="formation" inverseEntity="Bedding" syncable="YES"/>
         <relationship name="faults" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Fault" inverseName="formation" inverseEntity="Fault" syncable="YES"/>
@@ -46,7 +46,7 @@
         <relationship name="upperContacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contact" inverseName="upperFormation" inverseEntity="Contact" syncable="YES"/>
     </entity>
     <entity name="Formation_Folder" representedClassName="Formation_Folder" syncable="YES">
-        <attribute name="folderName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="folderName" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="folders" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Folder" inverseName="formationFolder" inverseEntity="Folder" syncable="YES"/>
         <relationship name="formations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Formation" inverseName="formationFolder" inverseEntity="Formation" syncable="YES"/>
     </entity>

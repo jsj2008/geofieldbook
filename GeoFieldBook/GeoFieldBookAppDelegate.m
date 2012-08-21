@@ -59,8 +59,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     //Initialize the settings
-    [self registerDefaultsForPListFile:@"Gestures.plist"];
-    [self registerDefaultsForPListFile:@"Symbols.plist"];
+    [self registerDefaultsForPListFile:@"Map Symbols.plist"];
     [self registerDefaultsForPListFile:@"Feedback.plist"];
     [self registerDefaultsForPListFile:@"Record Settings.plist"];
     

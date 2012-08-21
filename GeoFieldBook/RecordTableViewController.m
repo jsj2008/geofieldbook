@@ -623,6 +623,9 @@
                              withRowAnimation:UITableViewRowAnimationFade];
             if (![filteredRecords containsObject:anObject])
                 [filteredRecords addObject:anObject];
+            
+            //Update the filtered records
+            self.filteredRecords=filteredRecords.copy;
             break;
             
             //Remove the folder from the list of filtered records
@@ -631,6 +634,9 @@
                              withRowAnimation:UITableViewRowAnimationFade];
             if ([filteredRecords containsObject:anObject])
                 [filteredRecords removeObject:anObject];
+            
+            //Update the filtered records
+            self.filteredRecords=filteredRecords.copy;
             break;
             
         case NSFetchedResultsChangeUpdate:
@@ -644,9 +650,6 @@
                              withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
-    
-    //Update the filtered records
-    self.filteredRecords=filteredRecords.copy;
 }
 
 #pragma mark - UIActionSheetDelegate protocol methods

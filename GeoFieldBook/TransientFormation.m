@@ -52,6 +52,8 @@
     formation.formationFolder=[self.formationFolder saveFormationFolderToManagedObjectContext:context completion:completionHandler];
     
     //Set the color name
+    if (!self.color.length)
+        self.color=[SettingManager standardSettingManager].defaultFormationColor;
     formation.color=self.color;
     
     self.managedFormation=formation;

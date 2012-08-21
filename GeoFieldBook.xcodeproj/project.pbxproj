@@ -594,7 +594,7 @@
 		02AC605715E304DD008C00BE /* MPFlipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPFlipViewController.m; sourceTree = "<group>"; };
 		02AC606315E3062B008C00BE /* RecordPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordPageViewController.h; sourceTree = "<group>"; };
 		02AC606415E3062B008C00BE /* RecordPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordPageViewController.m; sourceTree = "<group>"; };
-		02AC606615E309B3008C00BE /* RecordPageViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; path = RecordPageViewControllerDelegate.h; sourceTree = "<group>"; };
+		02AC606615E309B3008C00BE /* RecordPageViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordPageViewControllerDelegate.h; sourceTree = "<group>"; };
 		02AE26ED15BDF8AC00FE59C7 /* StudentFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StudentFeedbackViewController.h; sourceTree = "<group>"; };
 		02AE26EE15BDF8AC00FE59C7 /* StudentFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StudentFeedbackViewController.m; sourceTree = "<group>"; };
 		02AE26F015BE192500FE59C7 /* CustomQuestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomQuestionCell.h; sourceTree = "<group>"; };

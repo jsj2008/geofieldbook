@@ -80,7 +80,7 @@ CGRect IASKCGRectSwap(CGRect rect);
 
 - (NSString*)file {
 	if (!_file) {
-		return @"Gestures";
+		return @"Root";
 	}
 	return [[_file retain] autorelease];
 }

@@ -63,6 +63,9 @@
             UIViewController<CustomSplitViewControllerChildren> *detailViewController=(UIViewController<CustomSplitViewControllerChildren> *)detailNav.topViewController;
             detailViewController.customSplitViewController=self;
         }
+        
+        //Set the initial settings for right hand side
+        self.rightSideSettingViewController.file=@"Map Symbols";
     }
     
     //Set the title of the right side view controller
@@ -75,7 +78,7 @@
 #pragma mark - MainSettingsTableViewControllerDelegate methods
 
 - (void)mainSettingsTVC:(MainSettingsTableViewController *)sender userDidSelectSettingPaneWithTitle:(NSString *)paneTitle {
-    NSSet *generalPanes=[NSSet setWithObjects:@"Color",@"Symbols",@"Feedback",@"Gestures", nil];
+    NSSet *generalPanes=[NSSet setWithObjects:@"Color",@"Map Symbols",@"Feedback",@"Gestures", nil];
     //If the pane title is one of the general pane titles, make sure the general settings vc is on screen, and pass it the pane title
     if ([generalPanes containsObject:paneTitle]) {
         //Push the general settings vc on screen

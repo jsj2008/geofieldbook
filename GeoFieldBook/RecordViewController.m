@@ -291,7 +291,7 @@
     }
 }
 
--(void) timerFired{
+-(void)timerFired{
     //Stop animating
     if (self.gatheringGPS.isAnimating) {
         [self.gatheringGPS stopAnimating];
@@ -299,7 +299,7 @@
     }
 }
 
--(void) locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation{
+-(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation{
     //here, save the current location
     NSString *latitudeText = [NSString stringWithFormat:@"%3.5f", newLocation.coordinate.latitude];
     NSString *longitudeText = [NSString stringWithFormat:@"%3.5f", newLocation.coordinate.longitude];
@@ -311,7 +311,7 @@
     
 }
 
--(void) locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{    
+-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{    
     NSLog(@"Location grabing error %@, %@", error, [error userInfo]);
 }
 
