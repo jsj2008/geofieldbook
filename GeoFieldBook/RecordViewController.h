@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
 
-#import "CoreLocation/CoreLocation.h"
+#import "Record.h"
 #import "Record+Creation.h"
 #import "Record+DictionaryKeys.h"
 #import "Image.h"

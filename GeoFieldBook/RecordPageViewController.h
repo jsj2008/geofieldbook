@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 
-#import "Record.h"
+#import "InitialDetailViewController.h"
 #import "RecordViewController.h"
 #import "MPFlipViewController.h"
 

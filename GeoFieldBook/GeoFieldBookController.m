@@ -544,7 +544,7 @@
     settingButtonCustomView.showsTouchWhenHighlighted=YES;
     self.settingButton.customView=settingButtonCustomView;
     
-    [self.toolbar setBackgroundImage:[UIImage imageNamed:@"nav_bar.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    [self.toolbar setBackgroundImage:[UIImage imageNamed:@"nar_bar.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     
     //Setup gesture recognizers
     [self setupGestureRecognizers];
@@ -666,7 +666,7 @@
         [toolbarItems insertObject:button atIndex:index];
     
     //Set the tolbar
-    self.toolbar.items=[toolbarItems copy];
+    self.toolbar.items=toolbarItems.copy;
 }
 
 - (void)setupCancelButtonForViewController:(UIViewController *)viewController {
@@ -687,9 +687,13 @@
     
     //If the swapped in view controller is the record view controller put up the edit button
     if ([viewController isKindOfClass:[RecordPageViewController class]]) {
+        //Get the record view controller
         RecordPageViewController *recordPage=(RecordPageViewController *)viewController;
         RecordViewController *recordDetail=recordPage.currentRecordViewController;
-        [self putUpButton:recordDetail.editButton atIndex:self.toolbar.items.count];
+        
+        //Put up edit button
+        if (recordDetail)
+            [self putUpButton:recordDetail.editButton atIndex:self.toolbar.items.count];
     }
 }
 
@@ -764,6 +768,10 @@
 
 - (Record *)recordPage:(RecordPageViewController *)sender recordAfterRecord:(Record *)previousRecord {
     return [self.recordTableViewController recordAfterRecord:previousRecord];
+}
+
+- (double)recordPage:(RecordPageViewController *)sender recordPercentage:(Record *)record {
+    return record ? [self.recordTableViewController recordPercentage:record] : -1;
 }
 
 - (void)recordPage:(RecordPageViewController *)sender isTurningToRecordViewController:(RecordViewController *)recordViewController {

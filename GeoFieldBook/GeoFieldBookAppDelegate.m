@@ -17,6 +17,8 @@
     
 @property (nonatomic,readonly) SettingManager *settingManager;
 
+void uncaughtExceptionHandler(NSException *exception);
+
 @end
 
 @implementation GeoFieldBookAppDelegate
@@ -25,6 +27,12 @@
 
 - (SettingManager *)settingManager {
     return [SettingManager standardSettingManager];
+}
+
+void uncaughtExceptionHandler(NSException *exception) {
+    NSLog(@"CRASH: %@", exception);
+    NSLog(@"Stack Trace: %@", [exception callStackSymbols]);
+    // Internal error reporting
 }
 
 - (void)registerDefaultsForPListFile:(NSString *)plistFileName {
@@ -58,6 +66,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //Custom Exception Handler
+    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    
     //Initialize the settings
     [self registerDefaultsForPListFile:@"Map Symbols.plist"];
     [self registerDefaultsForPListFile:@"Feedback.plist"];

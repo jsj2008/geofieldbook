@@ -10,29 +10,72 @@
 
 @interface RecordPageViewController()
 
+@property (weak, nonatomic) IBOutlet UIView *contentView;
+@property (weak, nonatomic) IBOutlet UIImageView *fieldbookBackground;
+
 @end
 
 @implementation RecordPageViewController
+@synthesize contentView = _contentView;
+@synthesize fieldbookBackground = _fieldbookBackground;
 
 @synthesize flipViewController=_flipViewController;
 @synthesize delegate=_delegate;
 
 @synthesize record=_record;
 
-#pragma mark - Getters and Setters
+#pragma mark - Helpers
+
+- (NSString *)fieldbookImageNameForPercentage:(double)percentage {
+    if (!percentage)
+        return @"fieldbook_first_page";
+    else if (percentage<=0.5 && percentage>0)
+        return @"fieldbook_first_few";
+    else if (percentage>0.5 && percentage<1)
+        return @"fieldbook_last_few";
+    else if (percentage==1)
+        return @"fieldbook_last_page";
+    
+    return @"fieldbook_cover";
+}
+
+- (void)setFieldBookBackgroundForRecord:(Record *)record {
+    //Setup the new fieldbook background
+    NSString *imageName=[self fieldbookImageNameForPercentage:[self.delegate recordPage:self recordPercentage:record]];
+    self.fieldbookBackground.image=[UIImage imageNamed:imageName];
+}
 
 - (void)updateRecord:(Record *)record {
     if (record!=self.record) {
+        //Current percentage
+        double currentPercentage=[self.delegate recordPage:self recordPercentage:self.record];
+        
         //Update record
         self.record=record;
         
-        //Set the record of the currently active record vc
-        self.currentRecordViewController.record=record;
+        //Current percentage
+        double percentage=[self.delegate recordPage:self recordPercentage:self.record];
+        
+        //Set new background
+        [self setFieldBookBackgroundForRecord:self.record];
+        
+        //Create the new record vc
+        RecordViewController *recordVC=[self.storyboard instantiateViewControllerWithIdentifier:@"Record Detail View Controller"];
+        recordVC.record=self.record;
+        MPFlipViewControllerDirection direction=currentPercentage<percentage ? MPFlipViewControllerDirectionForward : MPFlipViewControllerDirectionReverse;
+        [self.flipViewController setViewController:recordVC direction:direction animated:YES completion:^(BOOL success){}];
     }
 }
 
+#pragma mark - Getters and Setters
+
 - (RecordViewController *)currentRecordViewController {
-    return (RecordViewController *)self.flipViewController.viewController;
+    RecordViewController *recordVC=nil;
+    
+    if ([self.flipViewController.viewController isKindOfClass:[RecordViewController class]])
+        recordVC=(RecordViewController *)self.flipViewController.viewController;
+        
+    return recordVC;
 }
 
 #pragma mark - View Controller Lifecycle
@@ -47,17 +90,16 @@
 	self.flipViewController.dataSource = self;
 	
 	// Set the page view controller's bounds
-	self.flipViewController.view.frame = self.view.bounds;
+	self.flipViewController.view.frame = self.contentView.bounds;
 	[self addChildViewController:self.flipViewController];
-	[self.view addSubview:self.flipViewController.view];
+	[self.contentView addSubview:self.flipViewController.view];
 	[self.flipViewController didMoveToParentViewController:self];
 	
     //Create the initial record vc
-    RecordViewController *recordVC=[self.storyboard instantiateViewControllerWithIdentifier:@"Record Detail View Controller"];
-	[self.flipViewController setViewController:recordVC direction:MPFlipViewControllerDirectionForward animated:NO completion:^(BOOL success){
-        if (success && self.record)
-            recordVC.record=self.record;
-    }];
+    InitialDetailViewController *fieldbookCover=[self.storyboard instantiateViewControllerWithIdentifier:@"Initial Detail View Controller"];
+        
+    //First animation
+	[self.flipViewController setViewController:fieldbookCover direction:MPFlipViewControllerDirectionReverse animated:NO completion:^(BOOL success){}];
 	
 	// Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
 	self.view.gestureRecognizers = self.flipViewController.gestureRecognizers;
@@ -70,6 +112,9 @@
 	//Update the current record
     RecordViewController *recordVC=(RecordViewController *)flipViewController.viewController;
     self.record=recordVC.record;
+    
+    //Setup the new fieldbook background
+    [self setFieldBookBackgroundForRecord:self.record];
     
     //Notify delegate
     [self.delegate recordPage:self isTurningToRecordViewController:recordVC];
@@ -88,6 +133,10 @@
     Record *record=[self.delegate recordPage:self recordBeforeRecord:self.record];
     RecordViewController *recordVC=nil;
     
+    //Setup the new fieldbook background
+    [self setFieldBookBackgroundForRecord:record];
+    
+    //Setup the new record vc
     if (record) {
         //Create a new record vc
         recordVC=[self.storyboard instantiateViewControllerWithIdentifier:@"Record Detail View Controller"];
@@ -103,6 +152,10 @@
     Record *record=[self.delegate recordPage:self recordAfterRecord:self.record];
     RecordViewController *recordVC=nil;
     
+    //Setup the new fieldbook background
+    [self setFieldBookBackgroundForRecord:record];
+    
+    //Create a new record vc
     if (record) {
         //Create a new record vc
         recordVC=[self.storyboard instantiateViewControllerWithIdentifier:@"Record Detail View Controller"];
@@ -112,4 +165,8 @@
     return recordVC;
 }
 
+- (void)viewDidUnload {
+    [self setFieldbookBackground:nil];
+    [super viewDidUnload];
+}
 @end

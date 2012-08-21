@@ -704,6 +704,21 @@
 
 #pragma mark - Change active records
 
+- (double)recordPercentage:(Record *)record {
+    NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:record];
+    
+    //Special case (first record)
+    if (!indexPath.row)
+        return 0;
+    
+    //Special case (last record)
+    if (indexPath.row+1==self.fetchedResultsController.fetchedObjects.count)
+        return 1;
+    
+    //Standard case
+    return (indexPath.row+1)/((double) self.fetchedResultsController.fetchedObjects.count);
+}
+
 - (BOOL)hasNextRecordAfter:(Record *)record {
     //If the given record is not the last record
     NSIndexPath *indexPath=[self.fetchedResultsController indexPathForObject:record];

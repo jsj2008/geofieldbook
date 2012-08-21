@@ -59,4 +59,6 @@
 - (Record *)recordAfterRecord:(Record *)record;
 - (Record *)recordBeforeRecord:(Record *)record;
 
+- (double)recordPercentage:(Record *)record;
+
 @end

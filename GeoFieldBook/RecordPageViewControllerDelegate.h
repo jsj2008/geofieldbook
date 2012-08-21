@@ -16,6 +16,8 @@
 
 - (Record *)recordPage:(RecordPageViewController *)sender recordBeforeRecord:(Record *)nextRecord;
 - (Record *)recordPage:(RecordPageViewController *)sender recordAfterRecord:(Record *)previousRecord;
+- (double)recordPage:(RecordPageViewController *)sender recordPercentage:(Record *)record;
+
 - (void)recordPage:(RecordPageViewController *)sender isTurningToRecordViewController:(RecordViewController *)recordViewController;
 
 @end

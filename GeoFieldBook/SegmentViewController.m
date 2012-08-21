@@ -116,20 +116,13 @@
     
     //If there is no view controller on the screen at the moment
     else {
-        //Some transition animation
-        CATransition *transition=[CATransition animation];
-        transition.type=kCATransitionFade;
-        transition.duration=0.4;
-        [self.contentView.layer addAnimation:transition forKey:@"fade-animation"];
-        
-        //Adjust the frame of the specified view controller's view
-        viewController.view.frame=self.contentView.bounds;
-        
         //Remove the view of the current view controller from the view hierachy
         [self.currentViewController.view removeFromSuperview];
         
         //Add the view of the new vc to the hierachy and set it as the current view controller
         [self.contentView addSubview:viewController.view];
+        
+        //set the new view as the current view controller
         [viewController didMoveToParentViewController:self];
         self.currentViewController=viewController;
     }

@@ -133,7 +133,6 @@
 		0294E0D4159362FC0025219F /* GeoFieldBook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0294E0D2159362FC0025219F /* GeoFieldBook.xcdatamodeld */; };
 		029877F8159566E0000D71E7 /* Record+Creation.m in Sources */ = {isa = PBXBuildFile; fileRef = 029877F7159566E0000D71E7 /* Record+Creation.m */; };
 		029877FB1595740C000D71E7 /* InitialDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 029877FA1595740C000D71E7 /* InitialDetailViewController.m */; };
-		029877FE1595955E000D71E7 /* RecordVCBackground.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 029877FD1595955E000D71E7 /* RecordVCBackground.jpg */; };
 		0298968B15A375B500E51C27 /* SegmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298968A15A375B500E51C27 /* SegmentViewController.m */; };
 		0298969115A38F4C00E51C27 /* RecordMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298969015A38F4C00E51C27 /* RecordMapViewController.m */; };
 		0298969415A408B200E51C27 /* DataMapSegmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298969315A408B100E51C27 /* DataMapSegmentViewController.m */; };
@@ -141,6 +140,14 @@
 		0298C25F159B45650038E89C /* Record+NameEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298C25E159B45650038E89C /* Record+NameEncoding.m */; };
 		0298E97A15DDA0A60067364D /* Formation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0298E97915DDA0A60067364D /* Formation.m */; };
 		029A2D6715CC23FF000853D9 /* GroupSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 029A2D6615CC23FF000853D9 /* GroupSettingsTableViewController.m */; };
+		02A35AAD15E3FB3D00EC7C4E /* fieldbook_back_cover.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A35AA515E3FB3C00EC7C4E /* fieldbook_back_cover.png */; };
+		02A35AAE15E3FB3D00EC7C4E /* fieldbook_cover.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A35AA615E3FB3C00EC7C4E /* fieldbook_cover.png */; };
+		02A35AAF15E3FB3D00EC7C4E /* fieldbook_first_few.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A35AA715E3FB3C00EC7C4E /* fieldbook_first_few.png */; };
+		02A35AB015E3FB3D00EC7C4E /* fieldbook_first_page.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A35AA815E3FB3C00EC7C4E /* fieldbook_first_page.png */; };
+		02A35AB115E3FB3D00EC7C4E /* fieldbook_front_cover.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A35AA915E3FB3C00EC7C4E /* fieldbook_front_cover.png */; };
+		02A35AB215E3FB3D00EC7C4E /* fieldbook_last_few.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A35AAA15E3FB3D00EC7C4E /* fieldbook_last_few.png */; };
+		02A35AB315E3FB3D00EC7C4E /* fieldbook_last_page.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A35AAB15E3FB3D00EC7C4E /* fieldbook_last_page.png */; };
+		02A35AB415E3FB3D00EC7C4E /* fieldbook_page.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A35AAC15E3FB3D00EC7C4E /* fieldbook_page.png */; };
 		02A7764515BCA3BE008A22C2 /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A7762715BCA3BE008A22C2 /* IASKAppSettingsViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		02A7764615BCA3BE008A22C2 /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A7762915BCA3BE008A22C2 /* IASKAppSettingsWebViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		02A7764715BCA3BE008A22C2 /* IASKSpecifierValuesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A7762B15BCA3BE008A22C2 /* IASKSpecifierValuesViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -165,11 +172,6 @@
 		02AC0F8A15A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC0F8915A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.m */; };
 		02AC0F9515A5408300FBA9D3 /* folder.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC0F9415A5408300FBA9D3 /* folder.png */; };
 		02AC0F9915A5483700FBA9D3 /* formation.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC0F9815A5483700FBA9D3 /* formation.png */; };
-		02AC601815E2B560008C00BE /* background.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 02AC601715E2B560008C00BE /* background.jpeg */; };
-		02AC601A15E2B59F008C00BE /* GFBbackground2.001.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC601915E2B59F008C00BE /* GFBbackground2.001.png */; };
-		02AC602D15E2C168008C00BE /* GFBbackground3A.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC602C15E2C168008C00BE /* GFBbackground3A.png */; };
-		02AC604915E302E8008C00BE /* nav_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC604815E302E8008C00BE /* nav_bar.png */; };
-		02AC604F15E3036C008C00BE /* GFBbackground4A.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC604E15E3036C008C00BE /* GFBbackground4A.png */; };
 		02AC605C15E304DD008C00BE /* MPFlipTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC605515E304DD008C00BE /* MPFlipTransition.m */; };
 		02AC605D15E304DD008C00BE /* MPFlipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC605715E304DD008C00BE /* MPFlipViewController.m */; };
 		02AC606515E3062B008C00BE /* RecordPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC606415E3062B008C00BE /* RecordPageViewController.m */; };
@@ -520,7 +522,6 @@
 		029877F7159566E0000D71E7 /* Record+Creation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Record+Creation.m"; sourceTree = "<group>"; };
 		029877F91595740C000D71E7 /* InitialDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitialDetailViewController.h; sourceTree = "<group>"; };
 		029877FA1595740C000D71E7 /* InitialDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitialDetailViewController.m; sourceTree = "<group>"; };
-		029877FD1595955E000D71E7 /* RecordVCBackground.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = RecordVCBackground.jpg; sourceTree = "<group>"; };
 		0298968915A375B500E51C27 /* SegmentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentViewController.h; sourceTree = "<group>"; };
 		0298968A15A375B500E51C27 /* SegmentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentViewController.m; sourceTree = "<group>"; };
 		0298968F15A38F4C00E51C27 /* RecordMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordMapViewController.h; sourceTree = "<group>"; };
@@ -536,6 +537,14 @@
 		0298E9A815DDD4760067364D /* MapSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapSymbol.h; sourceTree = "<group>"; };
 		029A2D6515CC23FF000853D9 /* GroupSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupSettingsTableViewController.h; sourceTree = "<group>"; };
 		029A2D6615CC23FF000853D9 /* GroupSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupSettingsTableViewController.m; sourceTree = "<group>"; };
+		02A35AA515E3FB3C00EC7C4E /* fieldbook_back_cover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fieldbook_back_cover.png; sourceTree = "<group>"; };
+		02A35AA615E3FB3C00EC7C4E /* fieldbook_cover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fieldbook_cover.png; sourceTree = "<group>"; };
+		02A35AA715E3FB3C00EC7C4E /* fieldbook_first_few.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fieldbook_first_few.png; sourceTree = "<group>"; };
+		02A35AA815E3FB3C00EC7C4E /* fieldbook_first_page.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fieldbook_first_page.png; sourceTree = "<group>"; };
+		02A35AA915E3FB3C00EC7C4E /* fieldbook_front_cover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fieldbook_front_cover.png; sourceTree = "<group>"; };
+		02A35AAA15E3FB3D00EC7C4E /* fieldbook_last_few.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fieldbook_last_few.png; sourceTree = "<group>"; };
+		02A35AAB15E3FB3D00EC7C4E /* fieldbook_last_page.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fieldbook_last_page.png; sourceTree = "<group>"; };
+		02A35AAC15E3FB3D00EC7C4E /* fieldbook_page.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fieldbook_page.png; sourceTree = "<group>"; };
 		02A7762615BCA3BE008A22C2 /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
 		02A7762715BCA3BE008A22C2 /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
 		02A7762815BCA3BE008A22C2 /* IASKAppSettingsWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsWebViewController.h; sourceTree = "<group>"; };
@@ -583,11 +592,6 @@
 		02AC0F8915A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKMapRecordInfoViewController.m; sourceTree = "<group>"; };
 		02AC0F9415A5408300FBA9D3 /* folder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folder.png; sourceTree = "<group>"; };
 		02AC0F9815A5483700FBA9D3 /* formation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = formation.png; sourceTree = "<group>"; };
-		02AC601715E2B560008C00BE /* background.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpeg; sourceTree = "<group>"; };
-		02AC601915E2B59F008C00BE /* GFBbackground2.001.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBbackground2.001.png; sourceTree = "<group>"; };
-		02AC602C15E2C168008C00BE /* GFBbackground3A.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBbackground3A.png; sourceTree = "<group>"; };
-		02AC604815E302E8008C00BE /* nav_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav_bar.png; sourceTree = "<group>"; };
-		02AC604E15E3036C008C00BE /* GFBbackground4A.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBbackground4A.png; sourceTree = "<group>"; };
 		02AC605315E304DD008C00BE /* MPFlipEnumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPFlipEnumerations.h; path = ../MPFlipEnumerations.h; sourceTree = "<group>"; };
 		02AC605415E304DD008C00BE /* MPFlipTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPFlipTransition.h; sourceTree = "<group>"; };
 		02AC605515E304DD008C00BE /* MPFlipTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPFlipTransition.m; sourceTree = "<group>"; };
@@ -1388,7 +1392,6 @@
 			children = (
 				025DA66515DF00E000129C7B /* closed_eyeball.png */,
 				025DA66615DF00E000129C7B /* open_eyeball.png */,
-				029877FD1595955E000D71E7 /* RecordVCBackground.jpg */,
 				0222DB1B1596487800699D62 /* GeoFieldBookFrontPage.png */,
 				02AC0F9415A5408300FBA9D3 /* folder.png */,
 				02AC0F9815A5483700FBA9D3 /* formation.png */,
@@ -1399,11 +1402,14 @@
 				0218AA7E15BE70E000D60258 /* switchBlueBg.png */,
 				0218AA7F15BE70E000D60258 /* switchOffPlain.png */,
 				0218AA8015BE70E000D60258 /* switchThumb.png */,
-				02AC604815E302E8008C00BE /* nav_bar.png */,
-				02AC601715E2B560008C00BE /* background.jpeg */,
-				02AC601915E2B59F008C00BE /* GFBbackground2.001.png */,
-				02AC602C15E2C168008C00BE /* GFBbackground3A.png */,
-				02AC604E15E3036C008C00BE /* GFBbackground4A.png */,
+				02A35AA515E3FB3C00EC7C4E /* fieldbook_back_cover.png */,
+				02A35AA615E3FB3C00EC7C4E /* fieldbook_cover.png */,
+				02A35AA715E3FB3C00EC7C4E /* fieldbook_first_few.png */,
+				02A35AA815E3FB3C00EC7C4E /* fieldbook_first_page.png */,
+				02A35AA915E3FB3C00EC7C4E /* fieldbook_front_cover.png */,
+				02A35AAA15E3FB3D00EC7C4E /* fieldbook_last_few.png */,
+				02A35AAB15E3FB3D00EC7C4E /* fieldbook_last_page.png */,
+				02A35AAC15E3FB3D00EC7C4E /* fieldbook_page.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -1942,7 +1948,6 @@
 			files = (
 				0294E0A0159361060025219F /* InfoPlist.strings in Resources */,
 				02AE271915BE515E00FE59C7 /* SSToolkitResources.bundle in Resources */,
-				029877FE1595955E000D71E7 /* RecordVCBackground.jpg in Resources */,
 				0222DB1C1596487800699D62 /* GeoFieldBookFrontPage.png in Resources */,
 				02AC0F9515A5408300FBA9D3 /* folder.png in Resources */,
 				02AC0F9915A5483700FBA9D3 /* formation.png in Resources */,
@@ -1957,11 +1962,14 @@
 				0218AA8315BE70E000D60258 /* switchThumb.png in Resources */,
 				025DA66715DF00E000129C7B /* closed_eyeball.png in Resources */,
 				025DA66815DF00E000129C7B /* open_eyeball.png in Resources */,
-				02AC601815E2B560008C00BE /* background.jpeg in Resources */,
-				02AC601A15E2B59F008C00BE /* GFBbackground2.001.png in Resources */,
-				02AC602D15E2C168008C00BE /* GFBbackground3A.png in Resources */,
-				02AC604915E302E8008C00BE /* nav_bar.png in Resources */,
-				02AC604F15E3036C008C00BE /* GFBbackground4A.png in Resources */,
+				02A35AAD15E3FB3D00EC7C4E /* fieldbook_back_cover.png in Resources */,
+				02A35AAE15E3FB3D00EC7C4E /* fieldbook_cover.png in Resources */,
+				02A35AAF15E3FB3D00EC7C4E /* fieldbook_first_few.png in Resources */,
+				02A35AB015E3FB3D00EC7C4E /* fieldbook_first_page.png in Resources */,
+				02A35AB115E3FB3D00EC7C4E /* fieldbook_front_cover.png in Resources */,
+				02A35AB215E3FB3D00EC7C4E /* fieldbook_last_few.png in Resources */,
+				02A35AB315E3FB3D00EC7C4E /* fieldbook_last_page.png in Resources */,
+				02A35AB415E3FB3D00EC7C4E /* fieldbook_page.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

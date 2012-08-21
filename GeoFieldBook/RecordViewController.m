@@ -9,13 +9,15 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <CommonCrypto/CommonDigest.h>
 
+#import "RecordViewController.h"
+
 #import "TextInputFilter.h"
 
 #import "Record.h"
 #import "Folder.h"
 
 #import "Image+Creation.h"
-#import "RecordViewController.h"
+
 #import "Record+Modification.h"
 #import "Record+Validation.h"
 #import "Record+NameEncoding.h"
