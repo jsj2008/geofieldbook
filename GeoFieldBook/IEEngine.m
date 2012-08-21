@@ -19,9 +19,6 @@
 #import "TransientFormation_Folder.h"
 #import "TransientProject.h"
 
-#import "ValidationMessageBoard.h"
-#import "IEEngineNotificationNames.h"
-
 #import "TextInputFilter.h"
 #import "IEFormatter.h"
 #import "ColorManager.h"

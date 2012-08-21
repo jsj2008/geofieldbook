@@ -20,8 +20,6 @@
 #import "GeoFilter.h"
 #import "CustomFolderCell.h"
 
-#import "ModelGroupNotificationNames.h"
-
 #import "SettingManager.h"
 
 #import "Formation.h"

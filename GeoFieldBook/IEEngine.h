@@ -7,6 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#import "ValidationMessageBoard.h"
+#import "IEEngineNotificationNames.h"
+
 #import "ConflictHandler.h"
 #import "SettingManager.h"
 

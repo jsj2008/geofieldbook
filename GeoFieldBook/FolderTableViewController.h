@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+
 #import "PrototypeFolderTableViewController.h"
+
+#import "ModelGroupNotificationNames.h"
 
 @interface FolderTableViewController : PrototypeFolderTableViewController 
 
