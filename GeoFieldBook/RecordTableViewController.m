@@ -120,11 +120,13 @@
 }
 
 - (void)setChosenRecord:(Record *)chosenRecord {
-    _chosenRecord=chosenRecord;
-    
-    //Post a notification
-    NSDictionary *userInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.chosenRecord,GeoNotificationKeyModelGroupSelectedRecord, nil];
-    [self postNotificationWithName:GeoNotificationModelGroupDidSelectRecord andUserInfo:userInfo];
+    if (_chosenRecord!=chosenRecord) {
+        _chosenRecord=chosenRecord;
+        
+        //Post a notification
+        NSDictionary *userInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.chosenRecord,GeoNotificationKeyModelGroupSelectedRecord, nil];
+        [self postNotificationWithName:GeoNotificationModelGroupDidSelectRecord andUserInfo:userInfo];
+    }
 }
 
 - (void)updateDeleteButton {
@@ -257,8 +259,9 @@
         [self.database.managedObjectContext deleteObject:record];
     
         //If the deleted record is the currently chosen record, set it to nil
-        if (record==self.chosenRecord)
+        if (record==self.chosenRecord) {
             self.chosenRecord=[self recordBeforeRecord:record];
+        }
     }
     
     //Save changes to database

@@ -347,7 +347,6 @@
 - (void)modelGroupDidCreateNewRecord:(NSNotification *)notification {
     //If the data side of the data map segment controller is not a record view controller, push rvc
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-    [self pushRecordViewControllerOnScreen];
     
     //Switch to the data side
     [self swapToSegmentIndex:0];
@@ -929,19 +928,15 @@
     else if ([alertView.title isEqualToString:CANCEL_ALERT_TITLE]) {
         //If user click "Continue", cancel the editing mode of the record view controller
         if ([buttonTitle isEqualToString:@"Confirm"]) {
-            //Cancel editing mode
-            DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-            [dataMapSegmentVC resetRecordViewController];
-            
             //Delete the record if it's "fresh" (newly created and has not been modified) and push the initial view on screen
             RecordTableViewController *recordTVC=[self recordTableViewController];
             Record *record=recordTVC.chosenRecord;
             if (record.recordState==RecordStateNew) {
                 //Delete the record
                 [record.managedObjectContext deleteObject:record];
-            
-                //Push the initial view on screen
-                [self pushInitialViewControllerOnScreen];
+                
+                //Turn to the previous record page
+                recordTVC.chosenRecord=[recordTVC recordBeforeRecord:record];
                 
                 //Decrement the prefix counter of the folder if record prefix is enabled
                 SettingManager *settingManager=[SettingManager standardSettingManager];
@@ -952,6 +947,11 @@
                     NSNumber *newCounter=[NSNumber numberWithInt:newCounterValue];
                     [settingManager setPrefixCounter:newCounter forFolderWithName:folderName];
                 }
+            } 
+            else {
+                //Cancel editing mode
+                DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
+                [dataMapSegmentVC resetRecordViewController];
             }
         }
     }
