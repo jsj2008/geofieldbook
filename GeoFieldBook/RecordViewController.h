@@ -11,6 +11,8 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 
+#import "FlippablePage.h"
+
 #import "Record.h"
 #import "Record+Creation.h"
 #import "Record+State.h"
@@ -33,7 +35,7 @@
 
 #import "RecordViewControllerDelegate.h"
 
-@interface RecordViewController : UIViewController
+@interface RecordViewController : UIViewController <FlippablePage>
 
 @property (nonatomic,strong) Record *record;
 @property (nonatomic,weak) id <RecordViewControllerDelegate> delegate;

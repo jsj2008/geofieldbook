@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "MPTransitionEnumerations.h"
 
+#import "FlippablePage.h"
+
 enum {
     MPFlipViewControllerOrientationHorizontal = 0,
     MPFlipViewControllerOrientationVertical = 1

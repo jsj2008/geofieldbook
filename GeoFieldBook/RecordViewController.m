@@ -980,4 +980,19 @@
         label.hidden=YES;
 }
 
+#pragma mark - FlippablePage Protocol Methods
+
+- (BOOL)tapToFlip {
+    //Only allow tap-flipping if self is not in editing mode
+    return !self.editing;
+}
+
+- (BOOL)panToFlip {
+    return YES;
+}
+
+- (BOOL)swipeToFlip {
+    return YES;
+}
+
 @end

@@ -148,6 +148,7 @@ NSString *MPFlipViewControllerDidFinishAnimatingNotification = @"com.markpospese
 	right.delegate = self;
 	[self.view addGestureRecognizer:right];
 	
+    //Tap gesture (Disabled temporarily)
 	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
 	tap.delegate = self;
 	[self.view addGestureRecognizer:tap];
@@ -198,133 +199,145 @@ NSString *MPFlipViewControllerDidFinishAnimatingNotification = @"com.markpospese
 
 - (void)handleTap:(UITapGestureRecognizer *)gestureRecognizer
 {
-	if ([self isAnimating])
-		return;
-	
-	CGPoint tapPoint = [gestureRecognizer locationInView:self.view];
-	BOOL isHorizontal = [self orientation] == MPFlipViewControllerOrientationHorizontal;
-	CGFloat value = isHorizontal? tapPoint.x : tapPoint.y;
-	CGFloat dimension = isHorizontal? self.view.bounds.size.width : self.view.bounds.size.height;
-	if (value <= MARGIN)
-		[self gotoPreviousPage];
-	else if (value >= dimension - MARGIN)
-		[self gotoNextPage];
+	//Only turn pages if the view controller wants to
+    if (![self.viewController conformsToProtocol:@protocol(FlippablePage)] || [(id <FlippablePage>)self.viewController tapToFlip]) {
+        if ([self isAnimating])
+            return;
+        
+        CGPoint tapPoint = [gestureRecognizer locationInView:self.view];
+        BOOL isHorizontal = [self orientation] == MPFlipViewControllerOrientationHorizontal;
+        CGFloat value = isHorizontal? tapPoint.x : tapPoint.y;
+        CGFloat dimension = isHorizontal? self.view.bounds.size.width : self.view.bounds.size.height;
+        if (value <= MARGIN)
+            [self gotoPreviousPage];
+        else if (value >= dimension - MARGIN)
+            [self gotoNextPage];
+    }
 }
 
 - (void)handleSwipePrev:(UIGestureRecognizer *)gestureRecognizer
 {
-	if ([self isAnimating])
-		return;
-	
-	[self gotoPreviousPage];
+    //Only turn pages if the view controller wants to
+    if (![self.viewController conformsToProtocol:@protocol(FlippablePage)] || [(id <FlippablePage>)self.viewController swipeToFlip]) {
+        if ([self isAnimating])
+            return;
+        
+        [self gotoPreviousPage];
+    }
 }
 
 - (void)handleSwipeNext:(UIGestureRecognizer *)gestureRecognizer
 {
-	if ([self isAnimating])
-		return;
-	
-	[self gotoNextPage];
+    //Only turn pages if the view controller wants to
+    if (![self.viewController conformsToProtocol:@protocol(FlippablePage)] || [(id <FlippablePage>)self.viewController swipeToFlip]) {
+        if ([self isAnimating])
+            return;
+        
+        [self gotoNextPage];
+    }
 }
 
 - (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer
 {
-    UIGestureRecognizerState state = [gestureRecognizer state];
-	CGPoint currentPosition = [gestureRecognizer locationInView:self.view];
-	
-	if (state == UIGestureRecognizerStateBegan)
-	{
-		if ([self isAnimating])
-			return;
-		
-		// See if touch started near one of the edges, in which case we'll pan a page turn
-		BOOL isHorizontal = [self orientation] == MPFlipViewControllerOrientationHorizontal;
-		CGFloat value = isHorizontal? currentPosition.x : currentPosition.y;
-		CGFloat dimension = isHorizontal? self.view.bounds.size.width : self.view.bounds.size.height;
-		if (value <= MARGIN)
-		{
-			if (![self startFlipWithDirection:MPFlipViewControllerDirectionReverse])
-				return;
-		}
-		else if (value >= dimension - MARGIN)
-		{
-			if (![self startFlipWithDirection:MPFlipViewControllerDirectionForward])
-				return;
-		}
-		else
-		{
-			// Do nothing for now, but it might become a swipe later
-			return;
-		}
-		
-		[self setPanning:YES];
-		[self setPanStart:currentPosition];
-		[self setLastPanPosition:currentPosition];
-	}
-	
-	if ([self isPanning] && state == UIGestureRecognizerStateChanged)
-	{
-		CGFloat progress = [self progressFromPosition:currentPosition];
-		CGPoint vel = [gestureRecognizer velocityInView:gestureRecognizer.view];
-		//NSLog(@"Pan position changed, velocity = %@", NSStringFromCGPoint(vel));
-		CGFloat velocityComponent = (self.orientation == MPFlipViewControllerOrientationHorizontal)? vel.x : vel.y;
-		CGFloat velocityMinorComponent = (self.orientation == MPFlipViewControllerOrientationHorizontal)? vel.y : vel.x;
-		// ignore the velocity if it's mostly in the off-axis direction (e.g. don't consider left velocity if swipe is mostly up or even diagonally up-left)
-		if (fabs(velocityMinorComponent) > fabs(velocityComponent))
-			velocityComponent = 0;
-		
-		if (![self isRubberbanding] && (velocityComponent < -SWIPE_ESCAPE_VELOCITY || velocityComponent > SWIPE_ESCAPE_VELOCITY))
-		{
-			// Detected a swipe to the left
-			BOOL shouldFallBack = (velocityComponent < -SWIPE_ESCAPE_VELOCITY)? self.direction != MPFlipViewControllerDirectionForward : self.direction == MPFlipViewControllerDirectionForward;
-			[self setPanning:NO];
-			
-			// finish the remaining animation, but from the last touch position
-			[self finishPan:shouldFallBack];
-		}
-		else
-		{
-			if (progress < 1)
-				[self.flipTransition setStage:MPFlipAnimationStage1 progress:progress];
-			else
-				[self.flipTransition setStage:MPFlipAnimationStage2 progress:progress - 1];
-			[self setLastPanPosition:currentPosition];
-		}
-	}
-	
-	if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled)
-	{
-		CGPoint vel = [gestureRecognizer velocityInView:gestureRecognizer.view];
-		CGFloat velocityComponent = (self.orientation == MPFlipViewControllerOrientationHorizontal)? vel.x : vel.y;
-		CGFloat velocityMinorComponent = (self.orientation == MPFlipViewControllerOrientationHorizontal)? vel.y : vel.x;
-		// ignore the velocity if it's mostly in the off-axis direction (e.g. don't consider left velocity if swipe is mostly up or even diagonally up-left)
-		if (fabs(velocityMinorComponent) > fabs(velocityComponent))
-			velocityComponent = 0;
-		
-		//NSLog(@"Terminal velocity = %@", NSStringFromCGPoint(vel));
-		if ([self isPanning])
+    //Only turn pages if the view controller wants to
+    if (![self.viewController conformsToProtocol:@protocol(FlippablePage)] || [(id <FlippablePage>)self.viewController panToFlip]) {
+        UIGestureRecognizerState state = [gestureRecognizer state];
+        CGPoint currentPosition = [gestureRecognizer locationInView:self.view];
+        
+        if (state == UIGestureRecognizerStateBegan)
         {
-			// If moving slowly, let page fall either forward or back depending on where we were
-			BOOL shouldFallBack = [self isFlipFrontPage];
-			
-			if ([self isRubberbanding])
-				shouldFallBack = YES;
-			// But, if user was swiping in an appropriate direction, go ahead and honor that
-			else if (velocityComponent < -SWIPE_THRESHOLD)
-			{
-				// Detected a swipe to the left/top
-				shouldFallBack = self.direction != MPFlipViewControllerDirectionForward;
-			}
-			else if (velocityComponent > SWIPE_THRESHOLD)
-			{
-				// Detected a swipe to the right/bottom
-				shouldFallBack = self.direction == MPFlipViewControllerDirectionForward;
-			}				
-			
-			// finish Animation
-			[self finishPan:shouldFallBack];
+            if ([self isAnimating])
+                return;
+            
+            // See if touch started near one of the edges, in which case we'll pan a page turn
+            BOOL isHorizontal = [self orientation] == MPFlipViewControllerOrientationHorizontal;
+            CGFloat value = isHorizontal? currentPosition.x : currentPosition.y;
+            CGFloat dimension = isHorizontal? self.view.bounds.size.width : self.view.bounds.size.height;
+            if (value <= MARGIN)
+            {
+                if (![self startFlipWithDirection:MPFlipViewControllerDirectionReverse])
+                    return;
+            }
+            else if (value >= dimension - MARGIN)
+            {
+                if (![self startFlipWithDirection:MPFlipViewControllerDirectionForward])
+                    return;
+            }
+            else
+            {
+                // Do nothing for now, but it might become a swipe later
+                return;
+            }
+            
+            [self setPanning:YES];
+            [self setPanStart:currentPosition];
+            [self setLastPanPosition:currentPosition];
         }
-	}
+        
+        if ([self isPanning] && state == UIGestureRecognizerStateChanged)
+        {
+            CGFloat progress = [self progressFromPosition:currentPosition];
+            CGPoint vel = [gestureRecognizer velocityInView:gestureRecognizer.view];
+            //NSLog(@"Pan position changed, velocity = %@", NSStringFromCGPoint(vel));
+            CGFloat velocityComponent = (self.orientation == MPFlipViewControllerOrientationHorizontal)? vel.x : vel.y;
+            CGFloat velocityMinorComponent = (self.orientation == MPFlipViewControllerOrientationHorizontal)? vel.y : vel.x;
+            // ignore the velocity if it's mostly in the off-axis direction (e.g. don't consider left velocity if swipe is mostly up or even diagonally up-left)
+            if (fabs(velocityMinorComponent) > fabs(velocityComponent))
+                velocityComponent = 0;
+            
+            if (![self isRubberbanding] && (velocityComponent < -SWIPE_ESCAPE_VELOCITY || velocityComponent > SWIPE_ESCAPE_VELOCITY))
+            {
+                // Detected a swipe to the left
+                BOOL shouldFallBack = (velocityComponent < -SWIPE_ESCAPE_VELOCITY)? self.direction != MPFlipViewControllerDirectionForward : self.direction == MPFlipViewControllerDirectionForward;
+                [self setPanning:NO];
+                
+                // finish the remaining animation, but from the last touch position
+                [self finishPan:shouldFallBack];
+            }
+            else
+            {
+                if (progress < 1)
+                    [self.flipTransition setStage:MPFlipAnimationStage1 progress:progress];
+                else
+                    [self.flipTransition setStage:MPFlipAnimationStage2 progress:progress - 1];
+                [self setLastPanPosition:currentPosition];
+            }
+        }
+        
+        if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled)
+        {
+            CGPoint vel = [gestureRecognizer velocityInView:gestureRecognizer.view];
+            CGFloat velocityComponent = (self.orientation == MPFlipViewControllerOrientationHorizontal)? vel.x : vel.y;
+            CGFloat velocityMinorComponent = (self.orientation == MPFlipViewControllerOrientationHorizontal)? vel.y : vel.x;
+            // ignore the velocity if it's mostly in the off-axis direction (e.g. don't consider left velocity if swipe is mostly up or even diagonally up-left)
+            if (fabs(velocityMinorComponent) > fabs(velocityComponent))
+                velocityComponent = 0;
+            
+            //NSLog(@"Terminal velocity = %@", NSStringFromCGPoint(vel));
+            if ([self isPanning])
+            {
+                // If moving slowly, let page fall either forward or back depending on where we were
+                BOOL shouldFallBack = [self isFlipFrontPage];
+                
+                if ([self isRubberbanding])
+                    shouldFallBack = YES;
+                // But, if user was swiping in an appropriate direction, go ahead and honor that
+                else if (velocityComponent < -SWIPE_THRESHOLD)
+                {
+                    // Detected a swipe to the left/top
+                    shouldFallBack = self.direction != MPFlipViewControllerDirectionForward;
+                }
+                else if (velocityComponent > SWIPE_THRESHOLD)
+                {
+                    // Detected a swipe to the right/bottom
+                    shouldFallBack = self.direction == MPFlipViewControllerDirectionForward;
+                }				
+                
+                // finish Animation
+                [self finishPan:shouldFallBack];
+            }
+        }
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate

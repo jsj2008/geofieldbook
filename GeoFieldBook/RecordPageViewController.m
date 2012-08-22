@@ -197,8 +197,4 @@
     return recordVC;
 }
 
-- (void)viewDidUnload {
-    [self setFieldbookBackground:nil];
-    [super viewDidUnload];
-}
 @end
