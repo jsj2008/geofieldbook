@@ -77,6 +77,15 @@
     self.recordPageViewController.delegate=delegate;
 }
 
+- (void)reloadRecordPagePosition {
+    [self.recordPageViewController reloadPagePosition];
+}
+
+- (void)updateRecordDetailViewWithRecord:(Record *)record {
+    //Set the record of the record detail vc
+    [self.recordPageViewController updateRecord:record];
+}
+
 #pragma mark - Record View Controller Data Forward Mechanisms
 
 - (void)dismissKeyboardInDataSideView {
@@ -89,10 +98,6 @@
     self.recordViewController.delegate=delegate;
 }
 
-- (void)updateRecordDetailViewWithRecord:(Record *)record {
-    //Set the record of the record detail vc
-    [self.recordPageViewController updateRecord:record];
-}
 
 - (void)putRecordViewControllerIntoEditingMode {
     //Put the record view controller into edit mode

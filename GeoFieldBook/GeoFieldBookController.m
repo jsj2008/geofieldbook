@@ -335,6 +335,9 @@
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
     [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:YES updateRegion:YES];
         
+    //Reload current record page position
+    [dataMapSegmentVC reloadRecordPagePosition];
+    
     //Pop the detail record vc (if the chosen record got deleted)
     RecordTableViewController *recordTVC=[self recordTableViewController];
     if (!recordTVC.chosenRecord) {

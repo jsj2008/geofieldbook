@@ -24,5 +24,6 @@
 @property (weak, nonatomic) id <RecordPageViewControllerDelegate> delegate;
 
 - (void)updateRecord:(Record *)record;
+- (void)reloadPagePosition;
 
 @end

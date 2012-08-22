@@ -22,16 +22,26 @@
 
 typedef void (^push_completion_handler_t)(void);
 
+#pragma mark - Record Page Data Forward Mechanisms
+
 - (void)setRecordPageViewControllerDelegate:(id <RecordPageViewControllerDelegate>)delegate;
-- (void)setRecordViewControllerDelegate:(id <RecordViewControllerDelegate>)delegate;
 - (void)updateRecordDetailViewWithRecord:(Record *)record;
+- (void)reloadRecordPagePosition;
+
+#pragma mark - Record View Controller Data Forward Mechanisms
+
 - (void)putRecordViewControllerIntoEditingMode;
 - (void)resetRecordViewController;
+- (void)setRecordViewControllerDelegate:(id <RecordViewControllerDelegate>)delegate;
+
+#pragma mark - Map View Controller Data Forward Mechanisms
 
 - (void)setMapViewDelegate:(id <RecordMapViewControllerDelegate>)mapDelegate;
 - (void)updateMapWithRecords:(NSArray *)records forceUpdate:(BOOL)willForceUpdate updateRegion:(BOOL)willUpdateRegion;
 - (void)setMapSelectedRecord:(Record *)selectedRecord;
 - (void)reloadMapAnnotationViews;
+
+#pragma mark - Helpers
 
 - (void)pushInitialViewController;
 - (void)pushRecordViewController;

@@ -26,6 +26,10 @@
 
 #pragma mark - Helpers
 
+- (void)reloadPagePosition {
+    [self setFieldBookBackgroundForRecord:self.record];
+}
+
 - (NSString *)fieldbookImageNameForPercentage:(double)percentage {
     if (!percentage)
         return @"fieldbook_first_page";
@@ -47,7 +51,6 @@
 
 - (void)updateRecord:(Record *)record {
     if (record!=self.record || (self.record && !self.currentRecordViewController)) {    
-        NSLog(@"???");
         //Current percentage
         double currentPercentage=[self.delegate recordPage:self recordPercentage:self.record];
         
