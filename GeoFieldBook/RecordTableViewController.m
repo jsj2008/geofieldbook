@@ -258,7 +258,7 @@
     
         //If the deleted record is the currently chosen record, set it to nil
         if (record==self.chosenRecord)
-            self.chosenRecord=nil;
+            self.chosenRecord=[self recordBeforeRecord:record];
     }
     
     //Save changes to database

@@ -803,7 +803,7 @@
                     withNewInfo:(NSDictionary *)newInfo
 {
     //If the given record has not been deleted yet, show the autosave alert
-    if (!record.isDeleted) {
+    if (!record.isDeleted && record.managedObjectContext) {
         //Put up the autosave alert
         [self autosaveRecord:record withNewRecordInfo:newInfo]; 
     }
