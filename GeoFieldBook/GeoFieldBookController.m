@@ -942,6 +942,10 @@
                 //Turn to the previous record page
                 recordTVC.chosenRecord=[recordTVC recordBeforeRecord:record];
                 
+                //If there is no previous record page, push the initial view controller on screen
+                if (!recordTVC.chosenRecord)
+                    [self pushInitialViewControllerOnScreen];
+                
                 //Decrement the prefix counter of the folder if record prefix is enabled
                 SettingManager *settingManager=[SettingManager standardSettingManager];
                 NSString *folderName=record.folder.folderName;

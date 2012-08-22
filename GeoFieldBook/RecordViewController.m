@@ -540,8 +540,8 @@
     if (!self.editing && [self.gatheringGPS isAnimating])
         [self timerFired];
     
-    //Initially setup the buttons
-    [self setupButtonsForEditingMode:self.editing];
+    //Setup the UI
+    [self setupUIForEditingMode:self.editing];
 }
 
 - (void)endEditingModeAndSaveWithValidationsEnabled:(BOOL)validationEnabled {
