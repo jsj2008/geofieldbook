@@ -686,15 +686,20 @@
     [self removeButtonsWithTitles:[NSArray arrayWithObjects:@"Edit",@"Done", nil]];
     
     //If the swapped in view controller is the record view controller put up the edit button
+    RecordViewController *recordDetail=nil;
     if ([viewController isKindOfClass:[RecordPageViewController class]]) {
         //Get the record view controller
         RecordPageViewController *recordPage=(RecordPageViewController *)viewController;
-        RecordViewController *recordDetail=recordPage.currentRecordViewController;
-        
-        //Put up edit button
-        if (recordDetail)
-            [self putUpButton:recordDetail.editButton atIndex:self.toolbar.items.count];
+        recordDetail=recordPage.currentRecordViewController;
     }
+    
+    else if ([viewController isKindOfClass:[RecordViewController class]]) {
+        recordDetail=(RecordViewController *)viewController;
+    }
+        
+    //Put up edit button
+    if (recordDetail)
+        [self putUpButton:recordDetail.editButton atIndex:self.toolbar.items.count];
 }
 
 - (void)setupButtonsForViewSideController:(UIViewController *)viewController {
@@ -777,7 +782,7 @@
 - (void)recordPage:(RecordPageViewController *)sender isTurningToRecordViewController:(RecordViewController *)recordViewController {
     //Setup the new record view controller
     recordViewController.delegate=self;
-    [self setupEditButtonForViewController:sender];
+    [self setupEditButtonForViewController:recordViewController];
     
     //Update the chosen record
     self.recordTableViewController.chosenRecord=recordViewController.record;

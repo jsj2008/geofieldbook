@@ -13,21 +13,7 @@
 
 #import "Record.h"
 #import "Record+Creation.h"
-#import "Record+State.h"
 #import "Record+DictionaryKeys.h"
-#import "Record+Modification.h"
-#import "Record+Validation.h"
-#import "Record+NameEncoding.h"
-
-#import "Formation.h"
-
-#import "Bedding.h"
-#import "Contact.h"
-#import "JointSet.h"
-#import "JointSet+Description.h"
-#import "Fault.h"
-#import "Other.h"
-
 #import "Image.h"
 #import "Record+DateAndTimeFormatter.h"
 

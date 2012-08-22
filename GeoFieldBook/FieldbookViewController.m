@@ -59,17 +59,10 @@
         //Set new background
         [self setFieldBookBackgroundForRecord:self.record];
         
-        //Flip Direction (Forward if new record or record is after current one)
-         MPFlipViewControllerDirection direction=(currentPercentage<percentage || record.recordState==RecordStateNew) ? MPFlipViewControllerDirectionForward : MPFlipViewControllerDirectionReverse;
-        
         //Create the new record vc
         RecordViewController *recordVC=[self.storyboard instantiateViewControllerWithIdentifier:@"Record Detail View Controller"];
         recordVC.record=self.record;
-        
-        //Notify delegate
-        [self.delegate recordPage:self isTurningToRecordViewController:recordVC];
-        
-        //Flip
+        MPFlipViewControllerDirection direction=currentPercentage<percentage ? MPFlipViewControllerDirectionForward : MPFlipViewControllerDirectionReverse;
         [self.flipViewController setViewController:recordVC direction:direction animated:YES completion:^(BOOL success){}];
     }
 }
