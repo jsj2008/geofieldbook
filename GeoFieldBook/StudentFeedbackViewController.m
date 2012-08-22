@@ -53,6 +53,8 @@
             CLLocationCoordinate2D coordinate=self.answerLocation.coordinate;
             answer.longitude=[NSNumber numberWithFloat:coordinate.longitude];
             answer.latitude=[NSNumber numberWithFloat:coordinate.latitude];
+            answer.content=@"";
+            answer.date=[NSDate date];
             [mutableAnswers addObject:answer];
         }
         
