@@ -162,14 +162,16 @@
     //Get the selected record
     Record *selectedRecord=[notification.userInfo objectForKey:GeoNotificationKeyModelGroupSelectedRecord];
     
-    //Push the detail
-    [self pushRecordViewController];
-    
-    //Update the detail side
-    [self updateRecordDetailViewWithRecord:selectedRecord];
-    
-    //Update the map
-    [self setMapSelectedRecord:selectedRecord];    
+    if (selectedRecord) {
+        //Push the detail
+        [self pushRecordViewController];
+        
+        //Update the detail side
+        [self updateRecordDetailViewWithRecord:selectedRecord];
+        
+        //Update the map
+        [self setMapSelectedRecord:selectedRecord];   
+    }
 }
 
 - (void)registerForModelGroupNotifications {
