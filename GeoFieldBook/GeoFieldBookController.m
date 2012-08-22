@@ -330,25 +330,11 @@
     [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:YES updateRegion:YES];
 }
 
-- (void)modelGroupRecordDatabaseDidChange:(NSNotification *)notification {
-    //Update the map
-    DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-    [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:YES updateRegion:YES];
-    
-    //Pop the detail record vc (if the chosen record got deleted)
-    RecordTableViewController *recordTVC=[self recordTableViewController];
-    if (!recordTVC.chosenRecord) {
-        [dataMapSegmentVC pushInitialViewController];
-        if (!dataMapSegmentVC.topViewController)
-            [self swapToSegmentIndex:0];
-    }
-}
-
 - (void)modelGroupRecordDatabaseDidUpdate:(NSNotification *)notification {
     //Update the map
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
-    [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:YES updateRegion:NO];
-    
+    [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:YES updateRegion:YES];
+        
     //Pop the detail record vc (if the chosen record got deleted)
     RecordTableViewController *recordTVC=[self recordTableViewController];
     if (!recordTVC.chosenRecord) {
@@ -381,7 +367,7 @@
     //Reload the record vc if the currently chosen record is not fresh
     RecordTableViewController *recordTVC=[self recordTableViewController];
     Record *record=recordTVC.chosenRecord;
-    if (!record.recordState==RecordStateNew)
+    if (record.recordState!=RecordStateNew)
         [[self dataMapSegmentViewController] resetRecordViewController];
 }
 
@@ -433,10 +419,6 @@
     [notificationCenter addObserver:self 
                            selector:@selector(modelGroupFolderDatabaseDidUpdate:) 
                                name:GeoNotificationModelGroupFolderDatabaseDidChange 
-                             object:nil];
-    [notificationCenter addObserver:self 
-                           selector:@selector(modelGroupRecordDatabaseDidChange:) 
-                               name:GeoNotificationModelGroupRecordDatabaseDidChange 
                              object:nil];
     [notificationCenter addObserver:self 
                            selector:@selector(modelGroupRecordDatabaseDidUpdate:) 

@@ -86,7 +86,7 @@
     //Set up the fetched results controller to fetch records
     NSFetchRequest *request=[[NSFetchRequest alloc] initWithEntityName:@"Record"];
     request.predicate=[NSPredicate predicateWithFormat:@"folder.folderName=%@",self.folder.folderName];
-    request.sortDescriptors=[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]];
+    request.sortDescriptors=[NSArray arrayWithObjects:[NSSortDescriptor sortDescriptorWithKey:@"state" ascending:NO],[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES],nil];
     
     self.fetchedResultsController=[[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.database.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     self.fetchedResultsController.delegate=self;
@@ -165,16 +165,6 @@
     return _filteredRecords;
 }
 
-- (void)setFilteredRecords:(NSArray *)filteredRecords {
-    if (filteredRecords) {
-        _filteredRecords=filteredRecords;
-        
-        //Post a notification
-        NSDictionary *userInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.chosenRecord,GeoNotificationKeyModelGroupSelectedRecord, nil];
-        [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidChange andUserInfo:userInfo];
-    }
-}
-
 #pragma mark - Getters
 
 - (NSArray *)records {
@@ -238,10 +228,6 @@
 - (void)modifyRecord:(Record *)record 
          withNewInfo:(NSDictionary *)recordInfo
 {
-    //Save the current longitude and latitude of the record for reference
-    CLLocationDegrees latitude=record.latitude.doubleValue;
-    CLLocationDegrees longitude=record.longitude.doubleValue;
-    
     //If the record state is new, increment the feedback counter
     if (record.recordState==RecordStateNew) {
         SettingManager *settingManager=[SettingManager standardSettingManager];
@@ -251,21 +237,15 @@
     
     //Update the record
     [record updateWithNewRecordInfo:recordInfo];
-    
+        
     //Save changes to database
     [self saveChangesToDatabase:self.database completion:^(BOOL success){
         if (success) {
-            //If the record's latitude and longitude weren't updated, post a notification to indicate that the database has updated
-            if (latitude==record.latitude.doubleValue && longitude==record.longitude.doubleValue) {
-                //Post a notification to indicate that the record database has changed
-                [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidUpdate andUserInfo:[NSDictionary dictionary]];
-            }
+            //Choose the newly modified record
+            self.chosenRecord=[self.fetchedResultsController objectAtIndexPath:[self.fetchedResultsController indexPathForObject:record]];
             
-            //Else post a notification to indicate that the database has changed (to update location)
-            else {
-                //Post a notification to indicate that the record database has changed
-                [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
-            }
+            //Post a notification to indicate that the record database has changed
+            [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidUpdate andUserInfo:[NSDictionary dictionary]];
         }
     }];
 }
@@ -284,7 +264,7 @@
     //Save changes to database
     [self saveChangesToDatabase:self.database completion:^(BOOL success){
         //Post a notification to indicate that the record database has changed
-        [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+        [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidUpdate andUserInfo:[NSDictionary dictionary]];
     }];
 }
 
@@ -680,6 +660,10 @@
     
     //Update the list of filtered records
     self.filteredRecords=filteredRecords.copy;
+    
+    //Post a notification to indicate the filtered array of records has changed
+    NSDictionary *userInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.chosenRecord,GeoNotificationKeyModelGroupSelectedRecord, nil];
+    [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidUpdate andUserInfo:userInfo];
 }
 
 #pragma mark - FolderSelectTableViewController Protocol methods
@@ -692,7 +676,7 @@
     }
     
     //Post a notification
-    [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidChange andUserInfo:[NSDictionary dictionary]];
+    [self postNotificationWithName:GeoNotificationModelGroupRecordDatabaseDidUpdate andUserInfo:[NSDictionary dictionary]];
     
     //Press edit to end editing mode
     [self editPressed:self.editButton];

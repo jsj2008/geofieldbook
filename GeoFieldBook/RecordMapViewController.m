@@ -109,7 +109,7 @@
 }
 
 - (void)updateRecords:(NSArray *)records forceUpdate:(BOOL)willForceUpdate updateRegion:(BOOL)willUpdateRegion {
-    if ((willForceUpdate && self.records!=records) || (!willForceUpdate && ![self.records isEqualToArray:records])) {
+    if (willForceUpdate || (!willForceUpdate && ![self.records isEqualToArray:records])) {
         self.records=records;
         [self updateMapView:self.mapView willUpdateRegion:willUpdateRegion];
     }
