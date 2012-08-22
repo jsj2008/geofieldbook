@@ -148,9 +148,12 @@
 }
 
 - (void)pushInitialViewController {    
-    [self performSegueWithIdentifier:@"Initial View Controller" sender:nil];
-    if (!self.topViewController)
-        [self swapToViewControllerAtSegmentIndex:0];
+    __weak DataMapSegmentViewController *weakSelf=self;
+    [self.recordPageViewController closeWithCompletionHandler:^{
+        [weakSelf performSegueWithIdentifier:@"Initial View Controller" sender:nil];
+        if (!self.topViewController)
+            [weakSelf swapToViewControllerAtSegmentIndex:0];
+    }];
 }
 
 #pragma mark - KVO/NSNotification Managers

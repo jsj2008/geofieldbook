@@ -119,6 +119,16 @@
     }
 }
 
+- (void)closeWithCompletionHandler:(animation_completion_t)completionHandler {    
+    //Create the initial record vc
+    InitialDetailViewController *fieldbookCover=[self.storyboard instantiateViewControllerWithIdentifier:@"Initial Detail View Controller"];
+    
+    //Close animation
+    [self.flipViewController setViewController:fieldbookCover direction:MPFlipViewControllerDirectionReverse animated:YES completion:^(BOOL success){
+        completionHandler();
+    }];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

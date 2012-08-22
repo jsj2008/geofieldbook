@@ -26,4 +26,7 @@
 - (void)updateRecord:(Record *)record;
 - (void)reloadPagePosition;
 
+typedef void (^animation_completion_t)(void);
+- (void)closeWithCompletionHandler:(animation_completion_t)completionHandler;
+
 @end
