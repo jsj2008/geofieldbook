@@ -836,10 +836,10 @@
     else {
         //Put up an alert
         UIAlertView *cancelAlert=[[UIAlertView alloc] initWithTitle:CANCEL_ALERT_TITLE 
-                                                            message:@"Are you sure you want to cancel? All the changes you made will be lost." 
+                                                            message:@"Are you sure you want to cancel editing? All the changes you made will be lost." 
                                                            delegate:self 
-                                                  cancelButtonTitle:@"Go Back" 
-                                                  otherButtonTitles:@"Confirm", nil];
+                                                  cancelButtonTitle:@"Keep Editing" 
+                                                  otherButtonTitles:@"Cancel Editing", nil];
         [cancelAlert show];
     }
 }
@@ -931,7 +931,7 @@
     //If the alert is the cancel alert (from RecordViewController)
     else if ([alertView.title isEqualToString:CANCEL_ALERT_TITLE]) {
         //If user click "Continue", cancel the editing mode of the record view controller
-        if ([buttonTitle isEqualToString:@"Confirm"]) {
+        if ([buttonTitle isEqualToString:@"Cancel Editing"]) {
             //Delete the record if it's "fresh" (newly created and has not been modified) and push the initial view on screen
             RecordTableViewController *recordTVC=[self recordTableViewController];
             Record *record=recordTVC.chosenRecord;
