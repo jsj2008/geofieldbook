@@ -50,6 +50,8 @@
 - (void)showKeyboard;
 - (void)resignAllTextFieldsAndAreas;
 
+- (void)showImage;
+
 #define RECORD_DEFAULT_GPS_STABLILIZING_INTERVAL_LENGTH 12
 
 @end

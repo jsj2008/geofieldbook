@@ -45,6 +45,7 @@
 
 @property (nonatomic,readonly) NSArray *records;
 @property (nonatomic,strong) NSArray *filteredRecords;
+@property (nonatomic,strong) NSArray *mapFilteredRecords;
 
 #pragma mark - Record Manipulators
 

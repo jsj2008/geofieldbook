@@ -40,7 +40,10 @@
 
 - (void)userDidSelectRecordType:(NSString *)recordType {
     //Add the selected record type to the array of selected record types
-    [self loadRecordTypes:[NSArray arrayWithObject:recordType]];
+    NSMutableArray *selectedRecordTypes=self.selectedRecordTypes.mutableCopy;
+    if (![selectedRecordTypes containsObject:recordType])
+        [selectedRecordTypes addObject:recordType];
+    self.selectedRecordTypes=selectedRecordTypes.copy;
 }
 
 - (void)userDidDeselectRecordType:(NSString *)recordType {

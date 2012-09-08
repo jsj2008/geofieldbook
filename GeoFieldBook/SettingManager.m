@@ -218,7 +218,7 @@ static SettingManager *settingManager;
     uuidObject=CFUUIDCreate(kCFAllocatorDefault);
     NSString *uniqueIdentifier2=(__bridge NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuidObject);
     
-    NSString *groupID=[NSString stringWithFormat:@"%@%f%@%f",uniqueIdentifier1,timeInterval,uniqueIdentifier2];
+    NSString *groupID=[NSString stringWithFormat:@"%@%f%@",uniqueIdentifier1,timeInterval,uniqueIdentifier2];
     
     //Save the id to settings
     [SettingManager standardSettingManager].groupID=groupID;

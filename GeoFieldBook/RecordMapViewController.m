@@ -344,7 +344,7 @@
 - (void)filterByTypeController:(FilterByRecordTypeController *)sender userDidSelectRecordType:(NSString *)recordType {
     //Add the selected record type
     [self.recordFilter userDidSelectRecordType:recordType];
-    
+        
     //Update the map view
     [self updateMapView:self.mapView willUpdateRegion:YES];
     

@@ -61,6 +61,7 @@
 
 @synthesize selectedRecords=_selectedRecords;
 @synthesize filteredRecords=_filteredRecords;
+@synthesize mapFilteredRecords=_mapFilteredRecords;
 
 @synthesize setLocationButton = _setLocationButton;
 @synthesize editButton = _editButton;
@@ -108,12 +109,12 @@
 - (void)setSelectedRecordTypes:(NSArray *)selectedRecordTypes {
     if (![_selectedRecordTypes isEqualToArray:selectedRecordTypes]) {
         _selectedRecordTypes=selectedRecordTypes;
-        
+                        
         //Update the filtered record list
         GeoFilter *recordFilter=self.recordFilter;
         [recordFilter loadRecordTypes:selectedRecordTypes];
-        self.filteredRecords=[recordFilter filterRecordCollectionByRecordType:self.filteredRecords];
-                
+        self.mapFilteredRecords=[recordFilter filterRecordCollectionByRecordType:self.records];
+                      
         //Reload the table
         [self.tableView reloadData];
     }
@@ -160,11 +161,19 @@
 }
 
 - (NSArray *)filteredRecords {
-    //Lazy instantiation for the array of fitlered records (all records by default)
+    //Lazy instantiation for the array of filtered records (all records by default)
     if (!_filteredRecords)
         _filteredRecords=self.fetchedResultsController.fetchedObjects;
     
     return _filteredRecords;
+}
+
+- (NSArray *)mapFilteredRecords {
+    //Lazy instantiation for the list of map-filtered records
+    if (!_mapFilteredRecords)
+        _mapFilteredRecords=self.filteredRecords.copy;
+    
+    return _mapFilteredRecords;
 }
 
 #pragma mark - Getters
@@ -318,14 +327,6 @@
         [self editPressed:self.editButton];
 }
 
-- (void)viewDidUnload {
-    [self setSetLocationButton:nil];
-    [self setEditButton:nil];
-    [self setDeleteButton:nil];
-    [self setAddButton:nil];
-    [super viewDidUnload];
-}
-
 #pragma mark - Target-Action Handlers
 
 - (void)reloadCheckboxesInVisibleCellsForEditingMode:(BOOL)editing {
@@ -388,7 +389,7 @@
     if (![toolbarItems containsObject:hiddenButton])
         [toolbarItems insertObject:hiddenButton atIndex:(editing ? 2 : 0)];
     
-    self.toolbarItems=[toolbarItems copy];
+    self.toolbarItems=toolbarItems.copy;
     
     //Reset the title of the delete button and disable it
     self.deleteButton.title=@"Delete";
@@ -539,7 +540,7 @@
     
     //Load the visibility icon if table view is not in editing mode and willShowCheckBoxes is YES (the map is visible)
     if (!tableView.editing && self.willFilterRecord) {
-        [cell setVisible:[self.filteredRecords containsObject:record] animated:YES];
+        [cell setVisible:[self.mapFilteredRecords containsObject:record] animated:YES];
     }
     else {
         //Show the checkboxes
@@ -598,17 +599,26 @@
       newIndexPath:(NSIndexPath *)newIndexPath {
     
     UITableView *tableView = self.tableView;
+    
+    //The master list
     NSMutableArray *filteredRecords=self.filteredRecords.mutableCopy;
+    
+    //The map filtered list
+    NSMutableArray *mapFilteredRecords=self.mapFilteredRecords.mutableCopy;
+    
     switch(type) {
             //Add the newly inserted folder to the list of filtered records
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                              withRowAnimation:UITableViewRowAnimationFade];
-            if (![filteredRecords containsObject:anObject])
+            if (![filteredRecords containsObject:anObject]) {
                 [filteredRecords addObject:anObject];
+                [mapFilteredRecords addObject:anObject];
+            }
             
-            //Update the filtered records
+            //Update the master list and the map filtered records
             self.filteredRecords=filteredRecords.copy;
+            self.mapFilteredRecords=mapFilteredRecords.copy;
             break;
             
             //Remove the folder from the list of filtered records
@@ -617,9 +627,12 @@
                              withRowAnimation:UITableViewRowAnimationFade];
             if ([filteredRecords containsObject:anObject])
                 [filteredRecords removeObject:anObject];
+            if ([mapFilteredRecords containsObject:anObject])
+                [mapFilteredRecords removeObject:anObject];
             
             //Update the filtered records
             self.filteredRecords=filteredRecords.copy;
+            self.mapFilteredRecords=mapFilteredRecords.copy;
             break;
             
         case NSFetchedResultsChangeUpdate:
@@ -654,15 +667,25 @@
 #pragma mark - CustomRecordCellDelegate Protocol Methods
 
 - (void)recordCell:(CustomRecordCell *)sender record:(Record *)record visibilityChanged:(BOOL)visible {
-    //Add/Remove record from the list of filtered records
+    //Add/Remove record from the master list of and the map filtered records
     NSMutableArray *filteredRecords=self.filteredRecords.mutableCopy;
-    if (visible && ![filteredRecords containsObject:record])
+    NSMutableArray *mapFilteredRecords=self.mapFilteredRecords.mutableCopy;
+    if (visible && ![filteredRecords containsObject:record]) {
         [filteredRecords addObject:record];
-    else if (!visible && [filteredRecords containsObject:record])
+        [mapFilteredRecords addObject:record];
+    }
+    else if (!visible && [filteredRecords containsObject:record]) {
         [filteredRecords removeObject:record];
+        
+        if ([mapFilteredRecords containsObject:record])
+            [mapFilteredRecords removeObject:record];
+    }
     
-    //Update the list of filtered records
+    //Update the master list of filtered records
     self.filteredRecords=filteredRecords.copy;
+    
+    //Update the map filtered records
+    self.mapFilteredRecords=mapFilteredRecords.copy;
     
     //Post a notification to indicate the filtered array of records has changed
     NSDictionary *userInfo=[NSDictionary dictionaryWithObjectsAndKeys:self.chosenRecord,GeoNotificationKeyModelGroupSelectedRecord, nil];

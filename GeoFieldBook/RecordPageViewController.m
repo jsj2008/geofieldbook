@@ -74,7 +74,9 @@
         [self.delegate recordPage:self isTurningToRecordViewController:recordVC];
         
         //Flip
-        [self.flipViewController setViewController:recordVC direction:direction animated:YES completion:^(BOOL success){}];
+        [self.flipViewController setViewController:recordVC direction:direction animated:YES completion:^(BOOL success){
+            [recordVC showImage];
+        }];
     }
 }
 
@@ -150,6 +152,9 @@
     
     //Notify delegate
     [self.delegate recordPage:self isTurningToRecordViewController:recordVC];
+    
+    //Notify the record page to load the image
+    [self.currentRecordViewController showImage];
 }
 
 - (MPFlipViewControllerOrientation)flipViewController:(MPFlipViewController *)flipViewController orientationForInterfaceOrientation:(UIInterfaceOrientation)orientation

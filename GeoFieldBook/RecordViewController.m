@@ -192,6 +192,11 @@
     [self.fieldObservationTextArea resignFirstResponder];
 }
 
+- (void)showImage {
+    //set the image
+    self.imageView.image=[UIImage imageWithData:self.record.image.imageData];
+}
+
 #pragma mark - Form Information Extractors and Processors
 
 - (void)dictionary:(NSMutableDictionary *)dictionary 
@@ -869,9 +874,6 @@
     self.recordNameTextField.text=self.record.name;
     self.latitudeTextField.text=self.record.latitude;
     self.longitudeTextField.text=self.record.longitude;
-    
-    //set the image
-    self.imageView.image=[UIImage imageWithData:self.record.image.imageData];
     
     //Set the date and time
     self.dateTextField.text = [Record dateFromNSDate:record.date];

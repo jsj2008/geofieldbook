@@ -42,6 +42,10 @@
 @property (nonatomic, strong) NSDictionary *recordModifiedInfo;
 @property (nonatomic, strong) Record *modifiedRecord;
 
+#pragma mark - Flags indicating whether the record TVC and folderTVC are currently on screen
+
+@property (nonatomic) BOOL recordTVCIsVisible;
+\
 #pragma mark - Temporary Popover Controllers
 
 @property (nonatomic, strong) UIPopoverController *importPopover;
@@ -73,6 +77,8 @@
 
 @synthesize importPopover=_importPopover;
 @synthesize exportPopover=_exportPopover;
+
+@synthesize recordTVCIsVisible=_recordTVCIsVisible;
 
 - (DataMapSegmentViewController *)dataMapSegmentViewController {
     id dataMapSegmentViewController=self.viewGroupController;
@@ -256,14 +262,18 @@
     DataMapSegmentViewController *dataMapSegmentVC=[self dataMapSegmentViewController];
     if (navigationController==self.popoverViewController.contentViewController) {
         //If the recently pushed view controller is a folder tvc, swap the view MVC group to show the initial view
-        if ([viewController isKindOfClass:[FolderTableViewController class]])
+        if ([viewController isKindOfClass:[FolderTableViewController class]]) {
             [self pushInitialViewControllerOnScreen];
+        }
         
         //Update the map view if it's on screen
         if ([dataMapSegmentVC.topViewController isKindOfClass:[RecordMapViewController class]]) {
             //Update the records of the map
             [dataMapSegmentVC updateMapWithRecords:[self recordsFromModelGroup] forceUpdate:NO updateRegion:YES];
-            [dataMapSegmentVC setMapSelectedRecord:nil];  
+            [dataMapSegmentVC setMapSelectedRecord:nil];
+            
+            //Update the flag
+            self.recordTVCIsVisible=YES;
         }
         
         //If switching to the record tvc and the map is on screen, show the visibilty icons in the record tvc
@@ -279,7 +289,6 @@
             }
             else {
                 recordTVC.willFilterRecord=NO;
-        
             }
         }
     }
