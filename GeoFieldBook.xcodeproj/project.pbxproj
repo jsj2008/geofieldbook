@@ -170,7 +170,6 @@
 		02A7766715BCC37D008A22C2 /* CustomSplitViewControllerSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A7766615BCC37D008A22C2 /* CustomSplitViewControllerSegue.m */; };
 		02A7767115BCE39A008A22C2 /* SettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A7767015BCE39A008A22C2 /* SettingManager.m */; };
 		02A7767415BD28BB008A22C2 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 02A7767315BD28BA008A22C2 /* Settings.bundle */; };
-		02A9BEC015EEAD9000A23B2E /* Icon-72.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 02A9BEBF15EEAD9000A23B2E /* Icon-72.jpg */; };
 		02AC0F8A15A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AC0F8915A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.m */; };
 		02AC0F9515A5408300FBA9D3 /* folder.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC0F9415A5408300FBA9D3 /* folder.png */; };
 		02AC0F9915A5483700FBA9D3 /* formation.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AC0F9815A5483700FBA9D3 /* formation.png */; };
@@ -198,6 +197,7 @@
 		02B63D6015E73BC90033BD89 /* JCGridMenuRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B63D5815E73BC90033BD89 /* JCGridMenuRow.m */; };
 		02B63D6115E73BC90033BD89 /* JCGridMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B63D5B15E73BC90033BD89 /* JCGridMenuView.m */; };
 		02BBB43515C04DF2008F7D68 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 02BBB43415C04DF1008F7D68 /* Image.m */; };
+		02D298AA15FC135E00B9583A /* GFBIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 02D298A915FC135E00B9583A /* GFBIcon.png */; };
 		02F86EB415AF6E5B000A84D2 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F86EB315AF6E5B000A84D2 /* iAd.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		02F86EB815AF6F09000A84D2 /* IEEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F86EB715AF6F09000A84D2 /* IEEngine.m */; };
 		02F86EB915AF6F09000A84D2 /* IEEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F86EB715AF6F09000A84D2 /* IEEngine.m */; };
@@ -605,7 +605,6 @@
 		02A7767015BCE39A008A22C2 /* SettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingManager.m; sourceTree = "<group>"; };
 		02A7767215BD0F24008A22C2 /* SettingManagerNotificationNames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingManagerNotificationNames.h; sourceTree = "<group>"; };
 		02A7767315BD28BA008A22C2 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		02A9BEBF15EEAD9000A23B2E /* Icon-72.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Icon-72.jpg"; sourceTree = "<group>"; };
 		02AC0F8815A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKMapRecordInfoViewController.h; sourceTree = "<group>"; };
 		02AC0F8915A4DE8A00FBA9D3 /* MKMapRecordInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKMapRecordInfoViewController.m; sourceTree = "<group>"; };
 		02AC0F9415A5408300FBA9D3 /* folder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folder.png; sourceTree = "<group>"; };
@@ -649,6 +648,7 @@
 		02B63D5B15E73BC90033BD89 /* JCGridMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCGridMenuView.m; sourceTree = "<group>"; };
 		02BBB43315C04DF1008F7D68 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		02BBB43415C04DF1008F7D68 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
+		02D298A915FC135E00B9583A /* GFBIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GFBIcon.png; sourceTree = "<group>"; };
 		02E16FC415E56A010012A091 /* FlippablePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlippablePage.h; sourceTree = "<group>"; };
 		02F86EB315AF6E5B000A84D2 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		02F86EB615AF6F09000A84D2 /* IEEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IEEngine.h; path = GeoFieldBook/IEEngine.h; sourceTree = "<group>"; };
@@ -1451,9 +1451,9 @@
 				02A35AA915E3FB3C00EC7C4E /* fieldbook_front_cover.png */,
 				02A35AAA15E3FB3D00EC7C4E /* fieldbook_last_few.png */,
 				02A35AAB15E3FB3D00EC7C4E /* fieldbook_last_page.png */,
+				02D298A915FC135E00B9583A /* GFBIcon.png */,
 				02A35AAC15E3FB3D00EC7C4E /* fieldbook_page.png */,
 				026DD20915E49FB90022C00A /* nav_bar.png */,
-				02A9BEBF15EEAD9000A23B2E /* Icon-72.jpg */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -2133,7 +2133,7 @@
 				02B63D4A15E73BB20033BD89 /* FavouriteSmall@2x.png in Resources */,
 				02B63D4B15E73BB20033BD89 /* FavouriteSmallSelected.png in Resources */,
 				02B63D4C15E73BB20033BD89 /* FavouriteSmallSelected@2x.png in Resources */,
-				02A9BEC015EEAD9000A23B2E /* Icon-72.jpg in Resources */,
+				02D298AA15FC135E00B9583A /* GFBIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
